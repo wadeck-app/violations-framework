@@ -40,7 +40,7 @@ packages/
     cli.ts                 <- binary entry point (violations check/test/rules/config/cache)
     runner.ts              <- orchestrator: loads config, resolves rules, runs checks
     compiler.ts            <- TypeScript compiler API: on-demand compile of local .ts rules
-    suppress.ts            <- isSuppressed() — three suppress styles
+    suppress.ts            <- isSuppressed() - three suppress styles
     walk.ts                <- file tree walker with glob exclude support
     report.ts              <- writes .violations/.reports/
 .violations/
@@ -82,21 +82,21 @@ export const rule: Rule<Config> = {
 }
 ```
 
-2. Create `<id>.test.ts` next to it — at minimum one true-positive and one true-negative using `node:test`.
+2. Create `<id>.test.ts` next to it - at minimum one true-positive and one true-negative using `node:test`.
 3. Export from `src/rules/index.ts` and add to `allRules`.
 
-Rules receive pre-filtered `files[]` — never call `walk()` inside a rule.
+Rules receive pre-filtered `files[]` - never call `walk()` inside a rule.
 
 ---
 
 ## Key design decisions
 
-- **`tags: string`** (not array) — AND logic for activation; declare only the most-specific tag (`react` implies `ts`, `unity` implies `cs`).
-- **`$scope` was dropped** — use `$scopeAdd` to extend and `$exclude` to punch holes. Full replacement creates blind spots.
-- **TypeScript compiler API** (not esbuild) in `compiler.ts` — gives real type-checking of local `.ts` rules, not just transpilation.
-- **`Record<never, never>`** as default Config generic — avoids index signature conflict that `Record<string, never>` causes in `RuleOverride` intersection.
-- **Reports go in `.violations/.reports/`** — gitignored via `.violations/.gitignore`, never in project root.
-- **`violations-meta/no-legacy-violations-folder`** suppressed in this repo — we host the migration tooling, `scripts/violations/` intentionally absent here.
+- **`tags: string`** (not array) - AND logic for activation; declare only the most-specific tag (`react` implies `ts`, `unity` implies `cs`).
+- **`$scope` was dropped** - use `$scopeAdd` to extend and `$exclude` to punch holes. Full replacement creates blind spots.
+- **TypeScript compiler API** (not esbuild) in `compiler.ts` - gives real type-checking of local `.ts` rules, not just transpilation.
+- **`Record<never, never>`** as default Config generic - avoids index signature conflict that `Record<string, never>` causes in `RuleOverride` intersection.
+- **Reports go in `.violations/.reports/`** - gitignored via `.violations/.gitignore`, never in project root.
+- **`violations-meta/no-legacy-violations-folder`** suppressed in this repo - we host the migration tooling, `scripts/violations/` intentionally absent here.
 
 ---
 
@@ -110,7 +110,7 @@ Rules receive pre-filtered `files[]` — never call `walk()` inside a rule.
 
 ## CI
 
-- `ci.yml` — runs on every push and PR (build + test)
-- `publish.yml` — runs on every push to `main` (build + test + self-check + publish both packages)
+- `ci.yml` - runs on every push and PR (build + test)
+- `publish.yml` - runs on every push to `main` (build + test + self-check + publish both packages)
 - Required GitHub secret: `WDRIVE_NPM_TOKEN` (repository secret, same token as other `@wadeck` repos)
 - `violations-rules` is published before `violations-cli` (CLI has it as peer dep)

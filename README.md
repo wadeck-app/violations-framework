@@ -32,7 +32,7 @@ Rules are configured in `.violations/config.ts` at the project root. See `.claud
 Packages are versioned as `1.0.YYYYMMDD-HHMMSS-BUILD-SHA` (e.g. `1.0.20260712-195044-142-a3f2b1c4`), published on every push to `main`.
 
 Why this format:
-- `1.0` stays free for real API breaking changes — `^1.0.0` in consumers works forever
+- `1.0` stays free for real API breaking changes - `^1.0.0` in consumers works forever
 - `YYYYMMDD-HHMMSS` ensures correct semver sort for multiple releases per day (`195044 < 195320`)
 - `BUILD` (git commit count) is monotone and acts as tiebreaker
-- Avoid `2026.7.12` as major.minor.patch — `^2026.x` would break every January when the year rolls over
+- Avoid `2026.7.12` as major.minor.patch - `^2026.x` would break every January when the year rolls over
