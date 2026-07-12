@@ -1,0 +1,29 @@
+{
+  "name": "@wadeck/violations-rules",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./rules/*": {
+      "import": "./dist/rules/*.js",
+      "types": "./dist/rules/*.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "node --test dist/**/*.test.js"
+  },
+  "files": ["dist/"],
+  "publishConfig": {
+    "registry": "https://backup.wadeck.ch/npm"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.0",
+    "@types/node": "^22.0.0"
+  }
+}
