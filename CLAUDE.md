@@ -3,8 +3,8 @@
 Two npm packages that centralise code-quality violation rules across TypeScript, React, and C# projects.
 
 ```
-@wadeck/violations-rules   <- rule definitions + TypeScript types
-@wadeck/violations-cli     <- `violations` binary + runner + compiler
+wadeck-violations-rules   <- rule definitions + TypeScript types
+wadeck-violations-cli     <- `violations` binary + runner + compiler
 ```
 
 Published to `https://api.backup.wadeck.ch/npm` on every push to `main`. Version format: `1.0.YYYYMMDD-HHMMSS-BUILD-SHA` (see `ci/scripts/compute-version.sh`).
@@ -112,5 +112,5 @@ Rules receive pre-filtered `files[]` - never call `walk()` inside a rule.
 
 - `ci.yml` - runs on every push and PR (build + test)
 - `publish.yml` - runs on every push to `main` (build + test + self-check + publish both packages)
-- Required GitHub secret: `WDRIVE_NPM_TOKEN` (repository secret, same token as other `@wadeck` repos)
+- Required GitHub secret: `WDRIVE_NPM_TOKEN` (repository secret)
 - `violations-rules` is published before `violations-cli` (CLI has it as peer dep)

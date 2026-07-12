@@ -1,19 +1,19 @@
 # violations-framework
 
-A two-package npm framework that centralises generic code-quality rules shared across TypeScript, React, and C# projects. Replaces copy-pasted `scripts/violations/` folders with versioned, published packages. Generic rules live in `@wadeck/violations-rules`; `@wadeck/violations-cli` provides the `violations` binary and compiles local rules on demand.
+A two-package npm framework that centralises generic code-quality rules shared across TypeScript, React, and C# projects. Replaces copy-pasted `scripts/violations/` folders with versioned, published packages. Generic rules live in `wadeck-violations-rules`; `wadeck-violations-cli` provides the `violations` binary and compiles local rules on demand.
 
 ## Installation
 
 Add the private registry to your project `.npmrc`
 
 ```
-@wadeck:registry=https://backup.wadeck.ch/npm
+registry=https://backup.wadeck.ch/npm
 ```
 
 Then install both packages:
 
 ```sh
-npm install @wadeck/violations-rules @wadeck/violations-cli
+npm install wadeck-violations-rules wadeck-violations-cli
 ```
 
 ## Usage

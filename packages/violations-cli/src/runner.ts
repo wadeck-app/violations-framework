@@ -6,7 +6,7 @@ import micromatch from 'micromatch'
 import { walk } from './walk.js'
 import { isSuppressed, getSuppressReason } from './suppress.js'
 import { compileIfNeeded } from './compiler.js'
-import type { Rule, RuleResult, ViolationsConfig, Violation, RuleOverride } from '@wadeck/violations-rules'
+import type { Rule, RuleResult, ViolationsConfig, Violation, RuleOverride } from 'wadeck-violations-rules'
 
 export interface RunOptions {
 	projectRoot: string
@@ -76,9 +76,9 @@ async function loadRule(
 		}
 	}
 
-	// Package rule -- try @wadeck/violations-rules/rules/<id>
+	// Package rule -- try wadeck-violations-rules/rules/<id>
 	try {
-		const mod = await import(`@wadeck/violations-rules/rules/${ruleKey}`) as { default?: Rule; rule?: Rule }
+		const mod = await import(`wadeck-violations-rules/rules/${ruleKey}`) as { default?: Rule; rule?: Rule }
 		return mod.default ?? mod.rule ?? null
 	} catch {
 		console.warn(`[violations] Package rule '${ruleKey}' not found -- skipping (will be available in Phase 4)`)

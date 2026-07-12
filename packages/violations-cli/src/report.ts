@@ -1,7 +1,7 @@
 import { writeFile, mkdir } from 'node:fs/promises'
 import { join } from 'node:path'
 import { existsSync } from 'node:fs'
-import type { RuleResult } from '@wadeck/violations-rules'
+import type { RuleResult } from 'wadeck-violations-rules'
 
 async function ensureGitignore(dotViolationsDir: string): Promise<void> {
 	const gitignorePath = join(dotViolationsDir, '.gitignore')
