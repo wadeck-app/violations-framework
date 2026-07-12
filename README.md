@@ -4,7 +4,7 @@ A two-package npm framework that centralises generic code-quality rules shared a
 
 ## Installation
 
-Add the private registry to your project `.npmrc`:
+Add the private registry to your project `.npmrc`
 
 ```
 @wadeck:registry=https://backup.wadeck.ch/npm
