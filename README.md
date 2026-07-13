@@ -7,7 +7,7 @@ A two-package npm framework that centralises generic code-quality rules shared a
 Add the private registry to your project `.npmrc`
 
 ```
-registry=https://backup.wadeck.ch/npm
+registry=https://api.backup.wadeck.ch/npm
 ```
 
 Then install both packages:

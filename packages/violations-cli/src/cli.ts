@@ -96,7 +96,7 @@ function runVersionCheckInBackground(projectRoot: string): void {
 
 			if (!latestVersion) {
 				// Fetch from registry
-				const res = await fetch('https://backup.wadeck.ch/npm/wadeck-violations-cli')
+				const res = await fetch('https://api.backup.wadeck.ch/npm/wadeck-violations-cli')
 				if (res.ok) {
 					const data = await res.json() as { 'dist-tags': { latest: string } }
 					latestVersion = data['dist-tags']?.latest ?? null

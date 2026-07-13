@@ -20,7 +20,7 @@
   },
   "files": ["dist/"],
   "publishConfig": {
-    "registry": "https://backup.wadeck.ch/npm"
+    "registry": "https://api.backup.wadeck.ch/npm"
   },
   "devDependencies": {
     "typescript": "^5.5.0",
