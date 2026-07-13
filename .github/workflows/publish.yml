@@ -37,20 +37,18 @@ jobs:
       - name: Self-check violations
         run: node packages/violations-cli/dist/cli.js check
 
-      - name: Configure registry auth for publish
-        uses: actions/setup-node@v4
-        with:
-          node-version: '24'
-          registry-url: https:${{ env.NPM_REGISTRY_PATH }}
+      - name: Configure npm auth for publish
+        run: |
+          echo "registry=https:${NPM_REGISTRY_PATH}" > ~/.npmrc
+          echo "always-auth=true" >> ~/.npmrc
+          echo "${NPM_REGISTRY_PATH}/:_authToken=${NODE_AUTH_TOKEN}" >> ~/.npmrc
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.WDRIVE_NPM_TOKEN }}
 
       - name: Publish violations-rules first (CLI has it as peer dep)
         working-directory: packages/violations-rules
         run: npm publish --tag ${{ steps.version.outputs.npm_tag }}
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.WDRIVE_NPM_TOKEN }}
 
       - name: Publish violations-cli
         working-directory: packages/violations-cli
         run: npm publish --tag ${{ steps.version.outputs.npm_tag }}
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.WDRIVE_NPM_TOKEN }}
