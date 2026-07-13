@@ -9,7 +9,7 @@
   },
   "files": ["dist/"],
   "publishConfig": {
-    "registry": "https://api.backup.wadeck.ch/npm"
+    "registry": "https://api.backup.wadeck.ch/npm/"
   },
   "peerDependencies": {
     "wadeck-violations-rules": "^0.1.0"
