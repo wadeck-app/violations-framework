@@ -32,7 +32,7 @@ export const rule: Rule<Config> = {
         if (!match) continue
         const name = match[1]
         if (PASCAL_CASE.test(name)) continue
-        violations.push({ file, line: i + 1, message: `Const field "${name}" must be named in PascalCase.` })
+        violations.push({ file, line: i + 1, message: `Const field "${name}" must be named in PascalCase. When renaming: grep for all usages across the codebase including test files before editing (public consts are referenced as ClassName.${name}).` })
       }
     }
     return violations
