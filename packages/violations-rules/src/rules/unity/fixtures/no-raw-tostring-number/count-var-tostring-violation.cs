@@ -1,0 +1,1 @@
+label.text = scoreCount.ToString();

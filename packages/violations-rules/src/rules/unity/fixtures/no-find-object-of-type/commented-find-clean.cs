@@ -1,0 +1,1 @@
+// FindObjectOfType<MyComp>();

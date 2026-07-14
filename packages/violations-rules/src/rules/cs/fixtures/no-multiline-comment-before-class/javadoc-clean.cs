@@ -1,0 +1,2 @@
+/** Description */
+public class Foo {}

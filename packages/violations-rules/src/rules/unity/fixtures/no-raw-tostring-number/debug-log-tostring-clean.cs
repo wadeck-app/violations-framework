@@ -1,0 +1,1 @@
+Debug.Log(score.ToString());
