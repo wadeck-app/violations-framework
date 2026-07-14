@@ -3,7 +3,7 @@ import { dirname, join } from 'node:path'
 import { existsSync } from 'node:fs'
 import { randomBytes } from 'node:crypto'
 import ts from 'typescript'
-import type { CacheManifest } from 'wadeck-violations-rules'
+import type { CacheManifest } from '@wadeck/violations-rules'
 
 async function readManifest(manifestPath: string): Promise<CacheManifest> {
 	try {

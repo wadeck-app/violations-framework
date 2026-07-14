@@ -1,4 +1,4 @@
-import type { ViolationsConfig } from 'wadeck-violations-rules'
+import type { ViolationsConfig } from '@wadeck/violations-rules'
 
 export default {
   projectTags: ['ts', 'violations-meta'],

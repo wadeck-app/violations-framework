@@ -5,17 +5,17 @@ export type Config = Record<never, never>
 
 const ATOMIC_RE = /@registryCategory\s+atomic/
 
-function isAtomic(lines: string[]): boolean {
-  return lines.slice(0, 20).some(l => ATOMIC_RE.test(l))
+function isAtomic(text: string): boolean {
+  return ATOMIC_RE.test(text)
 }
 
 /**
  * Returns true for files that are allowed to contain inline SVG:
- *   - @registryCategory atomic files
+ *   - @registryCategory atomic files (anywhere in the file)
  *   - Chart.tsx in a display/ directory (recharts generates SVG internally)
  */
-function isExcluded(file: string, lines: string[]): boolean {
-  if (isAtomic(lines)) return true
+function isExcluded(file: string, text: string): boolean {
+  if (isAtomic(text)) return true
   // Normalise path separators
   const fwd = file.replace(/\\/g, '/')
   if (/\/display\/Chart\.tsx$/.test(fwd)) return true
@@ -40,7 +40,7 @@ export const rule: Rule<Config> = {
       }
 
       const lines = text.split('\n')
-      if (isExcluded(file, lines)) continue
+      if (isExcluded(file, text)) continue
 
       for (let i = 0; i < lines.length; i++) {
         if (!lines[i].includes('<svg')) continue

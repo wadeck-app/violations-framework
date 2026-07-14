@@ -6,8 +6,8 @@ export type Config = Record<never, never>
 const ATOMIC_RE = /@registryCategory\s+atomic/
 const BANNED_INPUT_TYPES = new Set(['text', 'number', 'email', 'password', 'search'])
 
-function isAtomic(lines: string[]): boolean {
-  return lines.slice(0, 20).some(l => ATOMIC_RE.test(l))
+function isAtomic(text: string): boolean {
+  return ATOMIC_RE.test(text)
 }
 
 /**
@@ -43,7 +43,7 @@ export const rule: Rule<Config> = {
       }
 
       const lines = text.split('\n')
-      if (isAtomic(lines)) continue
+      if (isAtomic(text)) continue
 
       for (let i = 0; i < lines.length; i++) {
         if (!isBannedInputBlock(lines, i)) continue

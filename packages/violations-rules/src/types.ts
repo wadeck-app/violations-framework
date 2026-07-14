@@ -125,7 +125,7 @@ export type SuppressDirective =
     }
 
 export type CacheManifest = {
-  // semver of wadeck-violations-cli at time of last compile
+  // semver of @wadeck/violations-cli at time of last compile
   frameworkVersion: string
   files: Record<
     string, // absolute path to source .ts rule file

@@ -3,8 +3,8 @@
 Two npm packages that centralise code-quality violation rules across TypeScript, React, and C# projects.
 
 ```
-wadeck-violations-rules   <- rule definitions + TypeScript types
-wadeck-violations-cli     <- `violations` binary + runner + compiler
+@wadeck/violations-rules   <- rule definitions + TypeScript types
+@wadeck/violations-cli     <- `violations` binary + runner + compiler
 ```
 
 Published to `https://api.backup.wadeck.ch/npm` on every push to `main`. Version format: `1.0.YYYYMMDD-HHMMSS-BUILD-SHA` (see `ci/scripts/compute-version.sh`).

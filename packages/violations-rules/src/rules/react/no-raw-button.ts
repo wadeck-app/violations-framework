@@ -6,11 +6,10 @@ export type Config = Record<never, never>
 const ATOMIC_RE = /@registryCategory\s+atomic/
 
 /**
- * Returns true if the file is an atomic component (first 20 lines contain @registryCategory atomic).
+ * Returns true if the file is an atomic component (contains @registryCategory atomic anywhere).
  */
-function isAtomic(lines: string[]): boolean {
-  const head = lines.slice(0, 20)
-  return head.some(l => ATOMIC_RE.test(l))
+function isAtomic(text: string): boolean {
+  return ATOMIC_RE.test(text)
 }
 
 export const rule: Rule<Config> = {
@@ -31,7 +30,7 @@ export const rule: Rule<Config> = {
       }
 
       const lines = text.split('\n')
-      if (isAtomic(lines)) continue
+      if (isAtomic(text)) continue
 
       for (let i = 0; i < lines.length; i++) {
         if (!lines[i].includes('<button')) continue

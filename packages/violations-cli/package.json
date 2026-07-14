@@ -1,5 +1,5 @@
 {
-  "name": "wadeck-violations-cli",
+  "name": "@wadeck/violations-cli",
   "version": "0.1.0",
   "type": "module",
   "bin": { "violations": "./dist/cli.js" },
@@ -9,10 +9,10 @@
   },
   "files": ["dist/"],
   "publishConfig": {
-    "registry": "https://api.backup.wadeck.ch/npm/"
+    "@wadeck:registry": "https://gitlab.com/api/v4/projects/84445653/packages/npm/"
   },
   "peerDependencies": {
-    "wadeck-violations-rules": "^0.1.0"
+    "@wadeck/violations-rules": "^0.1.0"
   },
   "dependencies": {
     "typescript": "^5.5.0",
@@ -21,6 +21,6 @@
   "devDependencies": {
     "@types/micromatch": "^4.0.9",
     "@types/node": "^22.0.0",
-    "wadeck-violations-rules": "*"
+    "@wadeck/violations-rules": "*"
   }
 }

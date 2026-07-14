@@ -6,7 +6,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url'
 import { run } from './runner.js'
 import { writeReports } from './report.js'
 import { compileIfNeeded, typeCheck } from './compiler.js'
-import type { RuleResult } from 'wadeck-violations-rules'
+import type { RuleResult } from '@wadeck/violations-rules'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
@@ -96,7 +96,7 @@ function runVersionCheckInBackground(projectRoot: string): void {
 
 			if (!latestVersion) {
 				// Fetch from registry
-				const res = await fetch('https://api.backup.wadeck.ch/npm/wadeck-violations-cli')
+				const res = await fetch('https://gitlab.com/api/v4/packages/npm/@wadeck/violations-cli')
 				if (res.ok) {
 					const data = await res.json() as { 'dist-tags': { latest: string } }
 					latestVersion = data['dist-tags']?.latest ?? null
@@ -114,7 +114,7 @@ function runVersionCheckInBackground(projectRoot: string): void {
 			}
 
 			if (latestVersion && isNewerVersion(latestVersion, currentVersion)) {
-				console.log(`\n  Update available: v${latestVersion} -> npm update -g wadeck-violations-cli`)
+				console.log(`\n  Update available: v${latestVersion} -> npm update -g @wadeck/violations-cli`)
 			}
 		} catch {
 			// Never throw from background check
@@ -331,7 +331,7 @@ async function cmdRulesList(args: string[]): Promise<void> {
 	let rules: Array<{ id: string; tags: string; defaultSeverity: string; defaultScope: string[] }> = []
 
 	try {
-		const mod = await import('wadeck-violations-rules') as { allRules?: typeof rules }
+		const mod = await import('@wadeck/violations-rules') as { allRules?: typeof rules }
 		if (mod.allRules) {
 			rules = mod.allRules
 		}
@@ -370,7 +370,7 @@ async function cmdRulesInfo(id: string): Promise<void> {
 	let rule: { id: string; tags: string; defaultSeverity: string; defaultScope: string[] } | undefined
 
 	try {
-		const mod = await import(`wadeck-violations-rules/rules/${id}`) as { default: typeof rule }
+		const mod = await import(`@wadeck/violations-rules/rules/${id}`) as { default: typeof rule }
 		rule = mod.default
 	} catch {
 		// Not found
@@ -393,7 +393,7 @@ async function cmdRulesInfo(id: string): Promise<void> {
 
 function buildRuleTemplate(name: string, lang: 'ts' | 'js'): string {
 	if (lang === 'ts') {
-		return `import type { Rule, Violation } from 'wadeck-violations-rules'
+		return `import type { Rule, Violation } from '@wadeck/violations-rules'
 
 export const rule: Rule = {
   id: 'local/${name}',
@@ -410,14 +410,14 @@ export const rule: Rule = {
 export default rule
 `
 	}
-	return `/** @type {import('wadeck-violations-rules').Rule} */
+	return `/** @type {import('@wadeck/violations-rules').Rule} */
 export const rule = {
   id: 'local/${name}',
   tags: 'shared',
   defaultScope: ['**/*'],
   defaultSeverity: 'error',
   async check(files, _config) {
-    /** @type {import('wadeck-violations-rules').Violation[]} */
+    /** @type {import('@wadeck/violations-rules').Violation[]} */
     const violations = []
     // TODO: implement
     return violations
@@ -577,7 +577,7 @@ async function cmdConfigValidate(): Promise<void> {
 			} else {
 				// Package rule - try to import it
 				try {
-					await import(`wadeck-violations-rules/rules/${ruleKey}`)
+					await import(`@wadeck/violations-rules/rules/${ruleKey}`)
 				} catch {
 					ruleErrors.push(`Package rule not found: ${ruleKey} (will be available in Phase 4)`)
 				}
