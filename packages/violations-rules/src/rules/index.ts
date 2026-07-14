@@ -43,6 +43,10 @@ export { rule as unityNoStringSplit } from './unity/no-string-split.js'
 export { rule as unityNoTrimChar } from './unity/no-trim-char.js'
 export { rule as unityNoRawTostringNumber } from './unity/no-raw-tostring-number.js'
 export { rule as unityListenerRegisterSymmetry } from './unity/listener-register-symmetry.js'
+export { rule as unityNoAsyncLambdaIntoSyncrunner } from './unity/no-async-lambda-into-syncrunner.js'
+export { editorPrefixGuard as unityEditorPrefixGuard, unitTestPrefixGuard as unityUnitTestPrefixGuard } from './unity/prefix-guard.js'
+export { rule as unityNoInstantiateWorldRotation } from './unity/no-instantiate-world-rotation.js'
+export { rule as unityNoRawGuiLayoutInTypedEditor } from './unity/no-raw-gui-layout-in-typed-editor.js'
 
 export type { Config as NoEmDashConfig } from './shared/no-em-dash.js'
 export type { Config as NoFrenchConfig } from './shared/no-french.js'
@@ -89,6 +93,10 @@ export type { Config as UnityNoStringSplitConfig } from './unity/no-string-split
 export type { Config as UnityNoTrimCharConfig } from './unity/no-trim-char.js'
 export type { Config as UnityNoRawTostringNumberConfig } from './unity/no-raw-tostring-number.js'
 export type { Config as UnityListenerRegisterSymmetryConfig } from './unity/listener-register-symmetry.js'
+export type { Config as UnityNoAsyncLambdaIntoSyncrunnerConfig } from './unity/no-async-lambda-into-syncrunner.js'
+export type { Config as UnityEditorPrefixGuardConfig } from './unity/prefix-guard.js'
+export type { Config as UnityNoInstantiateWorldRotationConfig } from './unity/no-instantiate-world-rotation.js'
+export type { Config as UnityNoRawGuiLayoutInTypedEditorConfig } from './unity/no-raw-gui-layout-in-typed-editor.js'
 
 import { rule as noEmDash } from './shared/no-em-dash.js'
 import { rule as noFrench } from './shared/no-french.js'
@@ -135,6 +143,10 @@ import { rule as unityNoStringSplit } from './unity/no-string-split.js'
 import { rule as unityNoTrimChar } from './unity/no-trim-char.js'
 import { rule as unityNoRawTostringNumber } from './unity/no-raw-tostring-number.js'
 import { rule as unityListenerRegisterSymmetry } from './unity/listener-register-symmetry.js'
+import { rule as unityNoAsyncLambdaIntoSyncrunner } from './unity/no-async-lambda-into-syncrunner.js'
+import { editorPrefixGuard as unityEditorPrefixGuard, unitTestPrefixGuard as unityUnitTestPrefixGuard } from './unity/prefix-guard.js'
+import { rule as unityNoInstantiateWorldRotation } from './unity/no-instantiate-world-rotation.js'
+import { rule as unityNoRawGuiLayoutInTypedEditor } from './unity/no-raw-gui-layout-in-typed-editor.js'
 import type { Rule } from '../types.js'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -184,4 +196,9 @@ export const allRules: Rule<any>[] = [
   unityNoTrimChar,
   unityNoRawTostringNumber,
   unityListenerRegisterSymmetry,
+  unityNoAsyncLambdaIntoSyncrunner,
+  unityEditorPrefixGuard,
+  unityUnitTestPrefixGuard,
+  unityNoInstantiateWorldRotation,
+  unityNoRawGuiLayoutInTypedEditor,
 ]

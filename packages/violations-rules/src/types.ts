@@ -73,6 +73,10 @@ type RuleConfigMap = {
   'unity/no-trim-char':                         Record<never, never>
   'unity/no-raw-tostring-number':               Record<never, never>
   'unity/no-async-lambda-into-syncrunner':      Record<never, never>
+  'unity/editor-prefix-guard':                   Record<never, never>
+  'unity/unit-test-prefix-guard':                Record<never, never>
+  'unity/no-instantiate-world-rotation':         Record<never, never>
+  'unity/no-raw-gui-layout-in-typed-editor':     Record<never, never>
   'violations-meta/no-dead-rule-scope':         { ruleFiles: string[]; projectRoot?: string }
   'violations-meta/no-rule-without-test':       { ruleFiles: string[] }
   'violations-meta/no-inline-walk':             { ruleFiles: string[] }
