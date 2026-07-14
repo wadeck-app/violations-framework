@@ -45,7 +45,7 @@ describe('react/no-context-in-renderer', () => {
   })
 
   // violations-suppress: shared/no-em-dash intentional test fixture
-  it('respects restrictToPackages — skips files not under the restricted path', async () => {
+  it('respects restrictToPackages - skips files not under the restricted path', async () => {
     const dir = await mkdtemp(join(tmpdir(), 'no-context-'))
     try {
       const file = join(dir, 'other.ts')
@@ -58,7 +58,7 @@ describe('react/no-context-in-renderer', () => {
   })
 
   // violations-suppress: shared/no-em-dash intentional test fixture
-  it('respects restrictToPackages — fires for files under the restricted path', async () => {
+  it('respects restrictToPackages - fires for files under the restricted path', async () => {
     const dir = await mkdtemp(join(tmpdir(), 'no-context-'))
     try {
       // Simulate a path that contains 'packages/dsl-renderer'

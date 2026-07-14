@@ -4,7 +4,7 @@ import type { Rule, Violation, Severity, RuleOverride, ViolationsConfig, RuleRes
 describe('Rule<Config> type constraints', () => {
   it('accepts a valid Rule<{ maxLines: number }> object', () => {
     // violations-suppress: shared/no-em-dash intentional test fixture
-    // This is a compile-time type test — if the types are wrong, tsc will reject this file.
+    // This is a compile-time type test - if the types are wrong, tsc will reject this file.
     const rule: Rule<{ maxLines: number }> = {
       id: 'ts/no-long-file',
       tags: 'ts',

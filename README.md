@@ -18,7 +18,7 @@ npm install @wadeck/violations-rules @wadeck/violations-cli
 
 ## npm Registry
 
-Packages are hosted on **GitLab Packages** — source code remains on GitHub.
+Packages are hosted on **GitLab Packages** - source code remains on GitHub.
 
 | Item | Value |
 |------|-------|
