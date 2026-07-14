@@ -44,6 +44,34 @@ describe('cs/const-field-pascal-case', () => {
     }
   })
 
+  it('does not fire on underscore-segmented PascalCase (Shortcut_Continue style)', async () => {
+    const dir = await mkdtemp(join(tmpdir(), 'test-'))
+    try {
+      const file = join(dir, 'Foo.cs')
+      await writeFile(file, [
+        'public const string Shortcut_Continue = "c";',
+        'public const string Stage_BasePrime = "s";',
+        'public const string Score_BonusMultiplier = "x";',
+      ].join('\n'))
+      const violations = await rule.check([file], {})
+      assert.equal(violations.length, 0)
+    } finally {
+      await rm(dir, { recursive: true })
+    }
+  })
+
+  it('fires on underscore segment starting with lowercase (Score_bonus)', async () => {
+    const dir = await mkdtemp(join(tmpdir(), 'test-'))
+    try {
+      const file = join(dir, 'Foo.cs')
+      await writeFile(file, 'public const string Score_bonus = "x";\n')
+      const violations = await rule.check([file], {})
+      assert.equal(violations.length, 1)
+    } finally {
+      await rm(dir, { recursive: true })
+    }
+  })
+
   it('does not fire on comment lines with const', async () => {
     const dir = await mkdtemp(join(tmpdir(), 'test-'))
     try {

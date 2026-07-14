@@ -4,7 +4,7 @@ import type { Rule, Violation } from '../../types.js'
 export type Config = Record<never, never>
 
 const CONST_FIELD = /^\s*(?:public|private|protected|internal|static|readonly|\s)*\bconst\s+[A-Za-z_][A-Za-z0-9_<>\[\],.\s]*?\s+([A-Za-z_][A-Za-z0-9_]*)\s*=/
-const PASCAL_CASE = /^[A-Z][a-zA-Z0-9]*$/
+const PASCAL_CASE = /^[A-Z][a-z][a-zA-Z0-9]*(?:_[A-Z][a-z][a-zA-Z0-9]*)*$/
 
 export const rule: Rule<Config> = {
   id: 'cs/const-field-pascal-case',

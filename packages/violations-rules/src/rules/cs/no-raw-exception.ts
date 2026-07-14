@@ -9,7 +9,6 @@ const DEFAULT_BANNED = [
   'InvalidOperationException',
   'ArgumentException',
   'NotSupportedException',
-  'NotImplementedException',
 ]
 
 export const rule: Rule<Config> = {
