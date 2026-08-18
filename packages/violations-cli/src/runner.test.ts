@@ -38,6 +38,31 @@ export default {
 }
 `
 
+describe('auto-activation via projectTags', () => {
+	it('auto-activates shared/no-em-dash when projectTags includes shared, without explicit config.rules entry', async () => {
+		const dir = await mkdtemp(join(tmpdir(), 'violations-auto-test-'))
+		try {
+			await mkdir(join(dir, '.violations'), { recursive: true })
+			await mkdir(join(dir, 'src'), { recursive: true })
+			// File containing an em dash - should be caught by auto-activated shared/no-em-dash
+			await writeFile(join(dir, 'src', 'bad.ts'), 'const msg = "Save this token — it will not be shown again."\n')
+			// Config declares projectTags but NO explicit config.rules entry for no-em-dash
+			await writeFile(join(dir, '.violations', 'config.ts'), `
+export default {
+  projectTags: ['shared'],
+  rules: {}
+}
+`)
+			const results = await run({ projectRoot: dir })
+			const emDashResult = results.find(r => r.ruleId === 'shared/no-em-dash')
+			assert.ok(emDashResult, 'shared/no-em-dash should be auto-activated via projectTags')
+			assert.equal(emDashResult.counts.violations, 1, 'expected 1 em-dash violation')
+		} finally {
+			await rm(dir, { recursive: true, force: true })
+		}
+	})
+})
+
 describe('runner integration', () => {
 	let tempDir: string
 

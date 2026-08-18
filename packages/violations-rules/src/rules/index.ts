@@ -3,6 +3,7 @@ export { rule as noFrench } from './shared/no-french.js'
 export { rule as partialImplFlag } from './shared/partial-impl-flag.js'
 export { rule as readmeSystemLength } from './shared/readme-system-length.js'
 export { rule as noDeadSuppress } from './shared/no-dead-suppress.js'
+export { rule as noWorkspaceShadow } from './shared/no-workspace-shadow.js'
 export { rule as noDeadRuleScope } from './violations-meta/no-dead-rule-scope.js'
 export { rule as noRuleWithoutTest } from './violations-meta/no-rule-without-test.js'
 export { rule as noLegacyViolationsFolder } from './violations-meta/no-legacy-violations-folder.js'
@@ -54,6 +55,7 @@ export type { Config as NoFrenchConfig } from './shared/no-french.js'
 export type { Config as PartialImplFlagConfig } from './shared/partial-impl-flag.js'
 export type { Config as ReadmeSystemLengthConfig } from './shared/readme-system-length.js'
 export type { Config as NoDeadSuppressConfig } from './shared/no-dead-suppress.js'
+export type { Config as NoWorkspaceShadowConfig } from './shared/no-workspace-shadow.js'
 export type { Config as NoDeadRuleScopeConfig } from './violations-meta/no-dead-rule-scope.js'
 export type { Config as NoRuleWithoutTestConfig } from './violations-meta/no-rule-without-test.js'
 export type { Config as NoLegacyViolationsFolderConfig } from './violations-meta/no-legacy-violations-folder.js'
@@ -105,6 +107,7 @@ import { rule as noFrench } from './shared/no-french.js'
 import { rule as partialImplFlag } from './shared/partial-impl-flag.js'
 import { rule as readmeSystemLength } from './shared/readme-system-length.js'
 import { rule as noDeadSuppress } from './shared/no-dead-suppress.js'
+import { rule as noWorkspaceShadow } from './shared/no-workspace-shadow.js'
 import { rule as noDeadRuleScope } from './violations-meta/no-dead-rule-scope.js'
 import { rule as noRuleWithoutTest } from './violations-meta/no-rule-without-test.js'
 import { rule as noLegacyViolationsFolder } from './violations-meta/no-legacy-violations-folder.js'
@@ -159,6 +162,7 @@ export const allRules: Rule<any>[] = [
   partialImplFlag,
   readmeSystemLength,
   noDeadSuppress,
+  noWorkspaceShadow,
   noDeadRuleScope,
   noRuleWithoutTest,
   noLegacyViolationsFolder,

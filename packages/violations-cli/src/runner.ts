@@ -103,8 +103,23 @@ export async function run(options: RunOptions): Promise<RuleResult[]> {
 	const rulesConfig = config.rules ?? {}
 	const results: RuleResult[] = []
 
+	// Auto-activate all library rules whose tag matches projectTags.
+	// Explicit config.rules entries take priority (override or disable with $severity: false).
+	const { allRules } = await import('@wadeck/violations-rules')
+	const projectTags = new Set(config.projectTags ?? [])
+	const mergedRules: Record<string, RuleOverride | true> = {}
+	for (const libRule of allRules) {
+		const ruleTags = Array.isArray(libRule.tags) ? libRule.tags : [libRule.tags]
+		if (ruleTags.some(t => projectTags.has(t))) {
+			mergedRules[libRule.id] = true
+		}
+	}
+	for (const [key, val] of Object.entries(rulesConfig)) {
+		mergedRules[key] = val as RuleOverride | true
+	}
+
 	await Promise.all(
-		Object.entries(rulesConfig).map(async ([ruleKey, override]) => {
+		Object.entries(mergedRules).map(async ([ruleKey, override]) => {
 			// $severity: false = disabled
 			if (override !== true && override != null && (override as RuleOverride).$severity === false) {
 				return
