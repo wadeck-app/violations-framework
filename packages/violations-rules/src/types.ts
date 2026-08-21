@@ -16,6 +16,8 @@ export type Rule<Config extends Record<string, unknown> = Record<never, never>> 
   // glob patterns relative to project root
   defaultScope: string[]
   defaultSeverity: Severity
+  // when true, the rule activates for every project regardless of projectTags
+  alwaysActive?: boolean
   check(files: string[], config: Config): Promise<Violation[]>
 }
 
@@ -79,7 +81,7 @@ type RuleConfigMap = {
   'unity/no-instantiate-world-rotation':         Record<never, never>
   'unity/no-raw-gui-layout-in-typed-editor':     Record<never, never>
   'violations-meta/no-dead-rule-scope':         { ruleFiles: string[]; projectRoot?: string }
-  'violations-meta/no-rule-without-test':       { ruleFiles: string[] }
+  'violations-meta/no-rule-without-test':       Record<never, never>
   'violations-meta/no-inline-walk':             { ruleFiles: string[] }
   'violations-meta/no-legacy-violations-folder': { projectRoot: string }
 }

@@ -2,9 +2,7 @@ import { access } from 'node:fs/promises'
 import { dirname, basename, join } from 'node:path'
 import type { Rule, Violation } from '../../types.js'
 
-export type Config = {
-  ruleFiles: string[]
-}
+export type Config = Record<never, never>
 
 // Rules that are intentionally exempt from the test requirement
 const EXEMPT_RULE_IDS = new Set(['no-rule-without-test', 'violations-meta/no-rule-without-test'])
@@ -26,13 +24,14 @@ async function fileExists(path: string): Promise<boolean> {
 export const rule: Rule<Config> = {
   id: 'violations-meta/no-rule-without-test',
   tags: 'violations-meta',
+  alwaysActive: true,
   defaultScope: ['.violations/rules/**/*.ts', '.violations/rules/**/*.js'],
   defaultSeverity: 'error',
 
-  async check(_files: string[], config: Config): Promise<Violation[]> {
+  async check(files: string[], _config: Config): Promise<Violation[]> {
     const violations: Violation[] = []
 
-    for (const ruleFile of config.ruleFiles) {
+    for (const ruleFile of files) {
       // Skip test files themselves
       if (ruleFile.endsWith('.test.ts') || ruleFile.endsWith('.test.js')) continue
       // Skip exempt rules
@@ -49,7 +48,7 @@ export const rule: Rule<Config> = {
         violations.push({
           file: ruleFile,
           line: 1,
-          message: `Rule '${base}' has no corresponding test file (${base}.test.ts or ${base}.test.js)`,
+          message: `Rule '${base}' has no corresponding test file (${base}.test.ts or ${base}.test.js) — see docs/writing-rule-tests.md`,
         })
       }
     }

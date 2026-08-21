@@ -28,6 +28,7 @@ export default {
 
     // no-rule-without-test: exclude helper files (types.ts, index.ts)
     'violations-meta/no-rule-without-test': {
+      $scopeAdd: ['packages/violations-rules/src/rules/**/*.ts'],
       $exclude: ['**/types.ts', '**/index.ts'],
     },
   },

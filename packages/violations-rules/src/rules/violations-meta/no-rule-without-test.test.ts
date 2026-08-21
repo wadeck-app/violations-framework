@@ -11,9 +11,10 @@ describe('violations-meta/no-rule-without-test', () => {
     try {
       const ruleFile = join(dir, 'my-rule.ts')
       await writeFile(ruleFile, 'export const rule = {}')
-      const violations = await rule.check([], { ruleFiles: [ruleFile] })
+      const violations = await rule.check([ruleFile], {})
       assert.equal(violations.length, 1)
       assert.match(violations[0].message, /my-rule/)
+      assert.match(violations[0].message, /docs\/writing-rule-tests\.md/)
     } finally {
       await rm(dir, { recursive: true })
     }
@@ -26,7 +27,7 @@ describe('violations-meta/no-rule-without-test', () => {
       const testFile = join(dir, 'my-rule.test.ts')
       await writeFile(ruleFile, 'export const rule = {}')
       await writeFile(testFile, 'import { describe } from "node:test"')
-      const violations = await rule.check([], { ruleFiles: [ruleFile] })
+      const violations = await rule.check([ruleFile, testFile], {})
       assert.equal(violations.length, 0)
     } finally {
       await rm(dir, { recursive: true })
@@ -40,7 +41,7 @@ describe('violations-meta/no-rule-without-test', () => {
       const testFile = join(dir, 'my-rule.test.js')
       await writeFile(ruleFile, 'export const rule = {}')
       await writeFile(testFile, '// test')
-      const violations = await rule.check([], { ruleFiles: [ruleFile] })
+      const violations = await rule.check([ruleFile], {})
       assert.equal(violations.length, 0)
     } finally {
       await rm(dir, { recursive: true })
@@ -52,15 +53,15 @@ describe('violations-meta/no-rule-without-test', () => {
     try {
       const testFile = join(dir, 'my-rule.test.ts')
       await writeFile(testFile, '// test')
-      const violations = await rule.check([], { ruleFiles: [testFile] })
+      const violations = await rule.check([testFile], {})
       assert.equal(violations.length, 0)
     } finally {
       await rm(dir, { recursive: true })
     }
   })
 
-  it('returns empty array when ruleFiles is empty', async () => {
-    const violations = await rule.check([], { ruleFiles: [] })
+  it('returns empty array when files is empty', async () => {
+    const violations = await rule.check([], {})
     assert.equal(violations.length, 0)
   })
 })

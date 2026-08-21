@@ -110,7 +110,7 @@ export async function run(options: RunOptions): Promise<RuleResult[]> {
 	const mergedRules: Record<string, RuleOverride | true> = {}
 	for (const libRule of allRules) {
 		const ruleTags = Array.isArray(libRule.tags) ? libRule.tags : [libRule.tags]
-		if (ruleTags.some(t => projectTags.has(t))) {
+		if (libRule.alwaysActive || ruleTags.some(t => projectTags.has(t))) {
 			mergedRules[libRule.id] = true
 		}
 	}
