@@ -2,6 +2,14 @@
 
 Two npm packages that centralise code-quality violation rules across TypeScript, React, and C# projects.
 
+## Local setup (one time)
+
+Add to `~/.npmrc` to publish/consume `@wadeck` packages from the private GitLab registry:
+```
+@wadeck:registry=https://gitlab.com/api/v4/packages/npm/
+//gitlab.com/api/v4/packages/npm/:_authToken=<GitLab personal access token with read_api + write_package_registry scopes>
+```
+
 ```
 @wadeck/violations-rules   <- rule definitions + TypeScript types
 @wadeck/violations-cli     <- `violations` binary + runner + compiler

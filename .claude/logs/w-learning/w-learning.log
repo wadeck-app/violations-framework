@@ -1,0 +1,61 @@
+[2026-08-21 08:41:14] [cc97e40c:M] [ INFO] SessionEnd: queued session cc97e40c for analysis
+[2026-08-21 08:41:15] [d3bfe61c:M] [ INFO] SessionStart: 1 pending, 0 running, dispatching 1
+[2026-08-21 08:41:15] [d3bfe61c:M] [ INFO] SessionStart: dispatched analysis for session cc97e40c
+[2026-08-21 08:41:15] [d3bfe61c:M] [ INFO] SessionStart: dispatching consolidation
+[2026-08-21 08:41:15] [cc97e40c:M] [ INFO] analyze: starting for session cc97e40c
+[2026-08-21 08:41:15] [unknown:M] [ INFO] consolidate: starting
+[2026-08-21 08:41:15] [cc97e40c:M] [ INFO] analyze: 233 lines to process in 1 chunk(s)
+[2026-08-21 08:41:21] [102f2368:M] [ INFO] SessionStart: 1 analyze job(s) already running
+[2026-08-21 08:41:21] [102f2368:M] [DEBUG] SessionStart: skip recent .jsonl d3bfe61c (< 2min old)
+[2026-08-21 08:41:21] [102f2368:M] [DEBUG] SessionStart: no pending sessions
+[2026-08-21 08:41:21] [102f2368:M] [ INFO] SessionStart: dispatching consolidation
+[2026-08-21 08:41:21] [unknown:M] [ INFO] consolidate: starting
+[2026-08-21 08:41:21] [a9d263b7:M] [ INFO] SessionStart: 1 analyze job(s) already running
+[2026-08-21 08:41:21] [a9d263b7:M] [DEBUG] SessionStart: skip recent .jsonl 102f2368 (< 2min old)
+[2026-08-21 08:41:21] [a9d263b7:M] [DEBUG] SessionStart: skip recent .jsonl d3bfe61c (< 2min old)
+[2026-08-21 08:41:21] [a9d263b7:M] [DEBUG] SessionStart: no pending sessions
+[2026-08-21 08:41:21] [a9d263b7:M] [ INFO] SessionStart: dispatching consolidation
+[2026-08-21 08:41:22] [unknown:M] [ INFO] consolidate: starting
+[2026-08-21 08:41:26] [a9d263b7:M] [DEBUG] SessionEnd: session a9d263b7 too short (13 lines), skipping
+[2026-08-21 08:41:26] [unknown:M] [ INFO] consolidate: recommendations appended
+[2026-08-21 08:41:26] [unknown:M] [ INFO] consolidate: done
+[2026-08-21 08:41:28] [unknown:M] [ WARN] consolidate: could not acquire _lessons.lock, skipping
+[2026-08-21 08:41:32] [9b815ad6:M] [ INFO] SessionStart: 1 analyze job(s) already running
+[2026-08-21 08:41:32] [9b815ad6:M] [DEBUG] SessionStart: skip recent .jsonl 102f2368 (< 2min old)
+[2026-08-21 08:41:32] [9b815ad6:M] [DEBUG] SessionStart: skip recent .jsonl d3bfe61c (< 2min old)
+[2026-08-21 08:41:32] [9b815ad6:M] [DEBUG] SessionStart: no pending sessions
+[2026-08-21 08:41:38] [102f2368:M] [DEBUG] SessionEnd: session 102f2368 too short (14 lines), skipping
+[2026-08-21 08:41:38] [cc97e40c:M] [DEBUG] chunk 1/1 raw: [Agent errors] Attempted to save project feedback memory to violations-framework/.claude/memory instead of wdrive/.claude/...
+[2026-08-21 08:41:38] [cc97e40c:M] [ INFO] finding [Agent errors] Attempted to save project feedback memory to violations-framework/.claude/memory instead of wdrive/.claude/docs — ...
+[2026-08-21 08:41:38] [cc97e40c:M] [ INFO] finding [Recurring feedback] Previous CI analysis (Aug 19) was "too confident" with insufficient diagnostics — next time, prioritize addi...
+[2026-08-21 08:41:38] [cc97e40c:M] [ INFO] finding [Known constraints] User's GitHub artifact storage is permanently full — cannot recommend GitHub artifacts as a solution; must us...
+[2026-08-21 08:41:38] [cc97e40c:M] [ INFO] finding [Documentation gaps] When Go version mismatches occur between `go-version-file` (reads directive) and explicit `go-version:` in w...
+[2026-08-21 08:41:38] [cc97e40c:M] [ INFO] finding [Agent errors] Used inline `node -e` despite guardrail block, then wasted rounds creating/editing temporary scripts before adapti...
+[2026-08-21 08:41:38] [cc97e40c:M] [ INFO] finding [Recurring feedback] When saving documentation for multi-project work, write to the target project's `.claude/docs/` folder, not ...
+[2026-08-21 08:41:40] [9b815ad6:M] [DEBUG] SessionEnd: session 9b815ad6 too short (17 lines), skipping
+[2026-08-21 08:41:40] [unknown:M] [ INFO] consolidate: recommendations appended
+[2026-08-21 08:41:40] [unknown:M] [ INFO] consolidate: done
+[2026-08-21 08:41:40] [cc97e40c:M] [ INFO] analyze: done - 6 findings for session cc97e40c
+[2026-08-21 08:42:15] [cc97e40c:M] [ WARN] chunk 1/1: chunk timed out after 60s, partial findings will be lost
+[2026-08-21 08:59:12] [d3bfe61c:M] [ INFO] SessionEnd: queued session d3bfe61c for analysis
+[2026-08-21 08:59:12] [ac098af8:M] [ INFO] SessionStart: 1 pending, 0 running, dispatching 1
+[2026-08-21 08:59:12] [ac098af8:M] [ INFO] SessionStart: dispatched analysis for session d3bfe61c
+[2026-08-21 08:59:12] [d3bfe61c:M] [ INFO] analyze: starting for session d3bfe61c
+[2026-08-21 08:59:12] [d3bfe61c:M] [ INFO] analyze: 150 lines to process in 1 chunk(s)
+[2026-08-21 08:59:19] [3b938351:M] [ INFO] SessionStart: 1 analyze job(s) already running
+[2026-08-21 08:59:19] [3b938351:M] [DEBUG] SessionStart: skip recent .jsonl ac098af8 (< 2min old)
+[2026-08-21 08:59:19] [3b938351:M] [DEBUG] SessionStart: no pending sessions
+[2026-08-21 08:59:28] [3b938351:M] [DEBUG] SessionEnd: session 3b938351 too short (14 lines), skipping
+[2026-08-21 08:59:28] [d3bfe61c:M] [DEBUG] chunk 1/1 raw: [Agent errors] Made assumptions about `process.pid` without checking the actual process topology first. User asked for thr...
+[2026-08-21 08:59:28] [d3bfe61c:M] [DEBUG] chunk 1/1: 1 non-conforming line(s), retrying format correction
+[2026-08-21 08:59:34] [32d5295c:M] [ INFO] SessionStart: 1 analyze job(s) already running
+[2026-08-21 08:59:34] [32d5295c:M] [DEBUG] SessionStart: skip recent .jsonl ac098af8 (< 2min old)
+[2026-08-21 08:59:34] [32d5295c:M] [DEBUG] SessionStart: no pending sessions
+[2026-08-21 08:59:40] [32d5295c:M] [DEBUG] SessionEnd: session 32d5295c too short (13 lines), skipping
+[2026-08-21 08:59:40] [d3bfe61c:M] [DEBUG] chunk 1/1 retry raw: [Agent errors] Made assumptions about `process.pid` without checking the actual process topology first. User asked f...
+[2026-08-21 08:59:40] [d3bfe61c:M] [ INFO] finding [Agent errors] Made assumptions about `process.pid` without checking the actual process topology first. User asked for three PIDs...
+[2026-08-21 08:59:40] [d3bfe61c:M] [ INFO] finding [Recurring feedback] When dealing with system-level behavior (process structure, launch modes), investigate the actual implementa...
+[2026-08-21 08:59:40] [d3bfe61c:M] [ INFO] analyze: done - 2 findings for session d3bfe61c
+[2026-08-21 09:00:12] [d3bfe61c:M] [ WARN] chunk 1/1: chunk timed out after 60s, partial findings will be lost
+[2026-08-21 09:00:28] [d3bfe61c:M] [ WARN] chunk 1/1 retry: chunk timed out after 60s, partial findings will be lost
+[2026-08-21 09:02:42] [ac098af8:M] [ INFO] SessionEnd: queued session ac098af8 for analysis

@@ -22,7 +22,7 @@ function getLines(absPath: string): string[] {
 export function parseSuppress(line: string): ParsedSuppress | null {
 	if (!line) return null
 	const match = line.match(
-		/(?:\/\/|\/\*|#|<!--)\s*violations-suppress:\s*([a-z0-9,/\-]+)(?:\s+(.*))?(?:\*\/|-->)?$/i
+		/(?:\/\/|\{?\/\*|#|<!--)\s*violations-suppress:\s*([a-z0-9,/\-]+)(?:\s+(.*))?(?:\*\/\}?|-->)?$/i
 	)
 	if (!match) return null
 	const ruleIds = match[1].split(',').map(s => s.trim().toLowerCase()).filter(Boolean)
@@ -33,7 +33,7 @@ export function parseSuppress(line: string): ParsedSuppress | null {
 function parseSuppressStart(line: string): string[] | null {
 	if (!line) return null
 	const match = line.match(
-		/(?:\/\/|\/\*|#|<!--)\s*violations-suppress-start:\s*([a-z0-9,/\-]+)(?:\s.*)?(?:\*\/|-->)?$/i
+		/(?:\/\/|\{?\/\*|#|<!--)\s*violations-suppress-start:\s*([a-z0-9,/\-]+)(?:\s.*)?(?:\*\/\}?|-->)?$/i
 	)
 	if (!match) return null
 	return match[1].split(',').map(s => s.trim().toLowerCase()).filter(Boolean)
@@ -42,7 +42,7 @@ function parseSuppressStart(line: string): string[] | null {
 function parseSuppressEnd(line: string): string[] | null {
 	if (!line) return null
 	const match = line.match(
-		/(?:\/\/|\/\*|#|<!--)\s*violations-suppress-end:\s*([a-z0-9,/\-]+)(?:\s.*)?(?:\*\/|-->)?$/i
+		/(?:\/\/|\{?\/\*|#|<!--)\s*violations-suppress-end:\s*([a-z0-9,/\-]+)(?:\s.*)?(?:\*\/\}?|-->)?$/i
 	)
 	if (!match) return null
 	return match[1].split(',').map(s => s.trim().toLowerCase()).filter(Boolean)

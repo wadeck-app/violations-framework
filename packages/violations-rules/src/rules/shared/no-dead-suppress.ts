@@ -7,7 +7,7 @@ export type Config = {
 
 // Matches violations-suppress lines in source files (single-line suppress only)
 // Handles //, /*, #, and <!-- prefix styles
-const SUPPRESS_RE = /(?:\/\/|\/\*|#|<!--)\s*violations-suppress:\s*([a-z0-9/,\-]+)/i
+const SUPPRESS_RE = /(?:\/\/|\{?\/\*|#|<!--)\s*violations-suppress:\s*([a-z0-9/,\-]+)/i
 
 export const rule: Rule<Config> = {
   id: 'shared/no-dead-suppress',

@@ -1,0 +1,912 @@
+[2026-08-20 22:00:19] [cc97e40c:M] [ INFO] on-prompt-submit: hook triggered
+[2026-08-20 22:00:19] [cc97e40c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:00:19] [cc97e40c:M] [ INFO] on-prompt-submit: query=[/summary]
+[2026-08-20 22:00:19] [cc97e40c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:00:19] [cc97e40c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-20 22:00:19] [cc97e40c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-20 22:00:23] [cc97e40c:M] [ INFO] on-message-display: input={"session_id":"cc97e40c-a5f8-44ee-bafd-3befff4edbeb","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-20 22:00:24] [cc97e40c:M] [ INFO] on-message-display: input={"session_id":"cc97e40c-a5f8-44ee-bafd-3befff4edbeb","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-20 22:00:25] [cc97e40c:M] [ INFO] on-message-display: input={"session_id":"cc97e40c-a5f8-44ee-bafd-3befff4edbeb","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-20 22:00:27] [cc97e40c:M] [ INFO] on-message-display: input={"session_id":"cc97e40c-a5f8-44ee-bafd-3befff4edbeb","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-20 22:00:28] [cc97e40c:M] [ INFO] on-message-display: input={"session_id":"cc97e40c-a5f8-44ee-bafd-3befff4edbeb","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-20 22:00:29] [cc97e40c:M] [ INFO] on-message-display: input={"session_id":"cc97e40c-a5f8-44ee-bafd-3befff4edbeb","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-20 22:00:29] [cc97e40c:M] [ INFO] on-stop: hook triggered
+[2026-08-20 22:00:29] [cc97e40c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:00:29] [cc97e40c:M] [ INFO] on-stop: transcript_path=C:\Users\Wadeck\.claude\projects\C--Workspace-Tooling-violations-framework\cc97e40c-a5f8-44ee-bafd-3befff4edbeb....
+[2026-08-20 22:00:29] [cc97e40c:M] [ INFO] on-stop: query=[Base directory for this skill: C:\Users\Wadeck\.claude\skills\summary
+
+Produce a conversation summary in this exact forma...
+[2026-08-20 22:00:29] [cc97e40c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:00:29] [cc97e40c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-20 22:00:29] [cc97e40c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-20 22:01:29] [cc97e40c:M] [ INFO] on-notification: hook triggered
+[2026-08-20 22:01:29] [cc97e40c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:01:29] [cc97e40c:M] [ INFO] on-notification: notif_type=idle_prompt msg=Claude is waiting for your input
+[2026-08-20 22:01:29] [cc97e40c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:01:29] [cc97e40c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-20 22:01:29] [cc97e40c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-20 22:49:54] [cc97e40c:M] [ INFO] on-prompt-submit: hook triggered
+[2026-08-20 22:49:54] [cc97e40c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:49:54] [cc97e40c:M] [ INFO] on-prompt-submit: query=[FEedback sur les pages de la UI:
+  - le "delete scope..." n'est pas un bouton ordinaire... fais en sorte qu'il l...
+[2026-08-20 22:49:54] [cc97e40c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:49:54] [cc97e40c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-20 22:49:54] [cc97e40c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-20 22:50:06] [cc97e40c:M] [ INFO] on-message-display: input={"session_id":"cc97e40c-a5f8-44ee-bafd-3befff4edbeb","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-20 22:50:06] [cc97e40c:M] [ INFO] on-post-tool-use: hook triggered
+[2026-08-20 22:50:06] [cc97e40c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:50:06] [cc97e40c:M] [ INFO] on-post-tool-use: tool=Agent
+[2026-08-20 22:50:06] [cc97e40c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:50:06] [cc97e40c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-20 22:50:06] [cc97e40c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-20 22:50:09] [cc97e40c:A:aad5:Explore] [ INFO] on-post-tool-use: hook triggered
+[2026-08-20 22:50:09] [cc97e40c:A:aad5:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:50:09] [cc97e40c:A:aad5:Explore] [ INFO] on-post-tool-use: tool=Grep
+[2026-08-20 22:50:09] [cc97e40c:A:aad5:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:50:09] [cc97e40c:A:aad5:Explore] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-20 22:50:09] [cc97e40c:A:aad5:Explore] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-20 22:50:10] [cc97e40c:M] [ INFO] on-message-display: input={"session_id":"cc97e40c-a5f8-44ee-bafd-3befff4edbeb","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-20 22:50:10] [cc97e40c:M] [ INFO] on-stop: hook triggered
+[2026-08-20 22:50:10] [cc97e40c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:50:10] [cc97e40c:M] [ INFO] on-stop: transcript_path=C:\Users\Wadeck\.claude\projects\C--Workspace-Tooling-violations-framework\cc97e40c-a5f8-44ee-bafd-3befff4edbeb....
+[2026-08-20 22:50:10] [cc97e40c:M] [ INFO] on-stop: query=[FEedback sur les pages de la UI:
+  - le "delete scope..." n'est pas un bouton ordinaire... fais en sorte qu'il le soit !
+...
+[2026-08-20 22:50:10] [cc97e40c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:50:10] [cc97e40c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-20 22:50:10] [cc97e40c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-20 22:50:10] [cc97e40c:A:aad5:Explore] [ INFO] on-post-tool-use: hook triggered
+[2026-08-20 22:50:10] [cc97e40c:A:aad5:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:50:10] [cc97e40c:A:aad5:Explore] [ INFO] on-post-tool-use: tool=Grep
+[2026-08-20 22:50:10] [cc97e40c:A:aad5:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:50:10] [cc97e40c:A:aad5:Explore] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-20 22:50:10] [cc97e40c:A:aad5:Explore] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-20 22:50:11] [cc97e40c:A:aad5:Explore] [ INFO] on-post-tool-use: hook triggered
+[2026-08-20 22:50:11] [cc97e40c:A:aad5:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:50:11] [cc97e40c:A:aad5:Explore] [ INFO] on-post-tool-use: tool=Glob
+[2026-08-20 22:50:11] [cc97e40c:A:aad5:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:50:11] [cc97e40c:A:aad5:Explore] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-20 22:50:11] [cc97e40c:A:aad5:Explore] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-20 22:50:12] [cc97e40c:A:aad5:Explore] [ INFO] on-post-tool-use: hook triggered
+[2026-08-20 22:50:12] [cc97e40c:A:aad5:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:50:12] [cc97e40c:A:aad5:Explore] [ INFO] on-post-tool-use: tool=Glob
+[2026-08-20 22:50:12] [cc97e40c:A:aad5:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:50:12] [cc97e40c:A:aad5:Explore] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-20 22:50:12] [cc97e40c:A:aad5:Explore] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-20 22:50:15] [cc97e40c:A:aad5:Explore] [ INFO] on-post-tool-use: hook triggered
+[2026-08-20 22:50:15] [cc97e40c:A:aad5:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:50:15] [cc97e40c:A:aad5:Explore] [ INFO] on-post-tool-use: tool=Grep
+[2026-08-20 22:50:15] [cc97e40c:A:aad5:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:50:15] [cc97e40c:A:aad5:Explore] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-20 22:50:15] [cc97e40c:A:aad5:Explore] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-20 22:50:17] [cc97e40c:A:aad5:Explore] [ INFO] on-post-tool-use: hook triggered
+[2026-08-20 22:50:17] [cc97e40c:A:aad5:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:50:17] [cc97e40c:A:aad5:Explore] [ INFO] on-post-tool-use: tool=Bash
+[2026-08-20 22:50:17] [cc97e40c:A:aad5:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:50:17] [cc97e40c:A:aad5:Explore] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-20 22:50:17] [cc97e40c:A:aad5:Explore] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-20 22:50:21] [cc97e40c:A:aad5:Explore] [ INFO] on-post-tool-use: hook triggered
+[2026-08-20 22:50:21] [cc97e40c:A:aad5:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:50:21] [cc97e40c:A:aad5:Explore] [ INFO] on-post-tool-use: tool=Glob
+[2026-08-20 22:50:21] [cc97e40c:A:aad5:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:50:21] [cc97e40c:A:aad5:Explore] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-20 22:50:21] [cc97e40c:A:aad5:Explore] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-20 22:50:23] [cc97e40c:A:aad5:Explore] [ INFO] on-post-tool-use: hook triggered
+[2026-08-20 22:50:23] [cc97e40c:A:aad5:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:50:23] [cc97e40c:A:aad5:Explore] [ INFO] on-post-tool-use: tool=Read
+[2026-08-20 22:50:23] [cc97e40c:A:aad5:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:50:23] [cc97e40c:A:aad5:Explore] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-20 22:50:23] [cc97e40c:A:aad5:Explore] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-20 22:50:35] [cc97e40c:M] [ INFO] on-prompt-submit: hook triggered
+[2026-08-20 22:50:35] [cc97e40c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:50:35] [cc97e40c:M] [ INFO] on-prompt-submit: query=[<task-notification>
+<task-id>aad51ee15782c1147</task-id>
+<tool-use-id>toolu_bdrk_016gHJ7fmuxLYgL9Hg87H1Tz</tool-...
+[2026-08-20 22:50:35] [cc97e40c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:50:35] [cc97e40c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-20 22:50:35] [cc97e40c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-20 22:50:41] [cc97e40c:M] [ INFO] on-post-tool-use: hook triggered
+[2026-08-20 22:50:41] [cc97e40c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:50:41] [cc97e40c:M] [ INFO] on-post-tool-use: tool=Read
+[2026-08-20 22:50:41] [cc97e40c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:50:41] [cc97e40c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-20 22:50:41] [cc97e40c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-20 22:50:42] [cc97e40c:M] [ INFO] on-post-tool-use: hook triggered
+[2026-08-20 22:50:42] [cc97e40c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:50:42] [cc97e40c:M] [ INFO] on-post-tool-use: tool=Read
+[2026-08-20 22:50:42] [cc97e40c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:50:42] [cc97e40c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-20 22:50:42] [cc97e40c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-20 22:50:42] [cc97e40c:M] [ INFO] on-message-display: input={"session_id":"cc97e40c-a5f8-44ee-bafd-3befff4edbeb","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-20 22:50:42] [cc97e40c:M] [ INFO] on-post-tool-use: hook triggered
+[2026-08-20 22:50:42] [cc97e40c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:50:42] [cc97e40c:M] [ INFO] on-post-tool-use: tool=Read
+[2026-08-20 22:50:42] [cc97e40c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:50:42] [cc97e40c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-20 22:50:42] [cc97e40c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-20 22:50:48] [cc97e40c:M] [ INFO] on-post-tool-use: hook triggered
+[2026-08-20 22:50:48] [cc97e40c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:50:48] [cc97e40c:M] [ INFO] on-post-tool-use: tool=Grep
+[2026-08-20 22:50:48] [cc97e40c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:50:48] [cc97e40c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-20 22:50:48] [cc97e40c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-20 22:50:48] [cc97e40c:M] [ INFO] on-post-tool-use: hook triggered
+[2026-08-20 22:50:48] [cc97e40c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:50:48] [cc97e40c:M] [ INFO] on-post-tool-use: tool=Grep
+[2026-08-20 22:50:48] [cc97e40c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:50:48] [cc97e40c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-20 22:50:48] [cc97e40c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-20 22:51:19] [cc97e40c:M] [ INFO] on-post-tool-use: hook triggered
+[2026-08-20 22:51:19] [cc97e40c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:51:19] [cc97e40c:M] [ INFO] on-post-tool-use: tool=Read
+[2026-08-20 22:51:19] [cc97e40c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:51:19] [cc97e40c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-20 22:51:19] [cc97e40c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-20 22:51:20] [cc97e40c:M] [ INFO] on-message-display: input={"session_id":"cc97e40c-a5f8-44ee-bafd-3befff4edbeb","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-20 22:51:20] [cc97e40c:M] [ INFO] on-post-tool-use: hook triggered
+[2026-08-20 22:51:20] [cc97e40c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:51:20] [cc97e40c:M] [ INFO] on-post-tool-use: tool=Read
+[2026-08-20 22:51:20] [cc97e40c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:51:20] [cc97e40c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-20 22:51:20] [cc97e40c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-20 22:51:23] [cc97e40c:M] [ INFO] on-post-tool-use: hook triggered
+[2026-08-20 22:51:23] [cc97e40c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:51:23] [cc97e40c:M] [ INFO] on-post-tool-use: tool=Edit
+[2026-08-20 22:51:23] [cc97e40c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:51:23] [cc97e40c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-20 22:51:23] [cc97e40c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-20 22:51:25] [cc97e40c:M] [ INFO] on-post-tool-use: hook triggered
+[2026-08-20 22:51:25] [cc97e40c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:51:25] [cc97e40c:M] [ INFO] on-post-tool-use: tool=Edit
+[2026-08-20 22:51:25] [cc97e40c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:51:25] [cc97e40c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-20 22:51:25] [cc97e40c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-20 22:51:31] [cc97e40c:M] [ INFO] on-post-tool-use: hook triggered
+[2026-08-20 22:51:31] [cc97e40c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:51:31] [cc97e40c:M] [ INFO] on-post-tool-use: tool=Read
+[2026-08-20 22:51:31] [cc97e40c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:51:31] [cc97e40c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-20 22:51:31] [cc97e40c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-20 22:51:31] [cc97e40c:M] [ INFO] on-message-display: input={"session_id":"cc97e40c-a5f8-44ee-bafd-3befff4edbeb","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-20 22:51:31] [cc97e40c:M] [ INFO] on-post-tool-use: hook triggered
+[2026-08-20 22:51:31] [cc97e40c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:51:31] [cc97e40c:M] [ INFO] on-post-tool-use: tool=Read
+[2026-08-20 22:51:31] [cc97e40c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:51:31] [cc97e40c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-20 22:51:31] [cc97e40c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-20 22:51:35] [cc97e40c:M] [ INFO] on-post-tool-use: hook triggered
+[2026-08-20 22:51:35] [cc97e40c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:51:35] [cc97e40c:M] [ INFO] on-post-tool-use: tool=Edit
+[2026-08-20 22:51:35] [cc97e40c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:51:35] [cc97e40c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-20 22:51:35] [cc97e40c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-20 22:51:42] [cc97e40c:M] [ INFO] on-post-tool-use: hook triggered
+[2026-08-20 22:51:42] [cc97e40c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:51:42] [cc97e40c:M] [ INFO] on-post-tool-use: tool=Bash
+[2026-08-20 22:51:42] [cc97e40c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:51:42] [cc97e40c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-20 22:51:42] [cc97e40c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-20 22:51:46] [cc97e40c:M] [ INFO] on-post-tool-use: hook triggered
+[2026-08-20 22:51:46] [cc97e40c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:51:46] [cc97e40c:M] [ INFO] on-post-tool-use: tool=Edit
+[2026-08-20 22:51:46] [cc97e40c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:51:46] [cc97e40c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-20 22:51:46] [cc97e40c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-20 22:51:50] [cc97e40c:M] [ INFO] on-message-display: input={"session_id":"cc97e40c-a5f8-44ee-bafd-3befff4edbeb","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-20 22:51:52] [cc97e40c:M] [ INFO] on-message-display: input={"session_id":"cc97e40c-a5f8-44ee-bafd-3befff4edbeb","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-20 22:51:53] [cc97e40c:M] [ INFO] on-message-display: input={"session_id":"cc97e40c-a5f8-44ee-bafd-3befff4edbeb","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-20 22:51:56] [cc97e40c:M] [ INFO] on-post-tool-use: hook triggered
+[2026-08-20 22:51:56] [cc97e40c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:51:56] [cc97e40c:M] [ INFO] on-post-tool-use: tool=Bash
+[2026-08-20 22:51:56] [cc97e40c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:51:56] [cc97e40c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-20 22:51:56] [cc97e40c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-20 22:52:00] [cc97e40c:M] [ INFO] on-post-tool-use: hook triggered
+[2026-08-20 22:52:00] [cc97e40c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:52:00] [cc97e40c:M] [ INFO] on-post-tool-use: tool=Edit
+[2026-08-20 22:52:00] [cc97e40c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:52:00] [cc97e40c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-20 22:52:00] [cc97e40c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-20 22:52:03] [cc97e40c:M] [ INFO] on-message-display: input={"session_id":"cc97e40c-a5f8-44ee-bafd-3befff4edbeb","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-20 22:52:03] [cc97e40c:M] [ INFO] on-message-display: input={"session_id":"cc97e40c-a5f8-44ee-bafd-3befff4edbeb","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-20 22:52:03] [cc97e40c:M] [ INFO] on-message-display: input={"session_id":"cc97e40c-a5f8-44ee-bafd-3befff4edbeb","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-20 22:52:03] [cc97e40c:M] [ INFO] on-message-display: input={"session_id":"cc97e40c-a5f8-44ee-bafd-3befff4edbeb","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-20 22:52:04] [cc97e40c:M] [ INFO] on-message-display: input={"session_id":"cc97e40c-a5f8-44ee-bafd-3befff4edbeb","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-20 22:52:04] [cc97e40c:M] [ INFO] on-message-display: input={"session_id":"cc97e40c-a5f8-44ee-bafd-3befff4edbeb","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-20 22:52:05] [cc97e40c:M] [ INFO] on-message-display: input={"session_id":"cc97e40c-a5f8-44ee-bafd-3befff4edbeb","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-20 22:52:05] [cc97e40c:M] [ INFO] on-message-display: input={"session_id":"cc97e40c-a5f8-44ee-bafd-3befff4edbeb","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-20 22:52:05] [cc97e40c:M] [ INFO] on-stop: hook triggered
+[2026-08-20 22:52:05] [cc97e40c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:52:05] [cc97e40c:M] [ INFO] on-stop: transcript_path=C:\Users\Wadeck\.claude\projects\C--Workspace-Tooling-violations-framework\cc97e40c-a5f8-44ee-bafd-3befff4edbeb....
+[2026-08-20 22:52:06] [cc97e40c:M] [ INFO] on-stop: query=[<task-notification>
+<task-id>aad51ee15782c1147</task-id>
+<tool-use-id>toolu_bdrk_016gHJ7fmuxLYgL9Hg87H1Tz</tool-use-id>
+<...
+[2026-08-20 22:52:06] [cc97e40c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:52:06] [cc97e40c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-20 22:52:06] [cc97e40c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-20 22:53:06] [cc97e40c:M] [ INFO] on-notification: hook triggered
+[2026-08-20 22:53:06] [cc97e40c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:53:06] [cc97e40c:M] [ INFO] on-notification: notif_type=idle_prompt msg=Claude is waiting for your input
+[2026-08-20 22:53:06] [cc97e40c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-20 22:53:06] [cc97e40c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-20 22:53:06] [cc97e40c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:41:14] [cc97e40c:M] [ INFO] on-session-end: input={"session_id":"cc97e40c-a5f8-44ee-bafd-3befff4edbeb","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C--Wo...
+[2026-08-21 08:41:21] [102f2368:M] [ INFO] on-session-start: hook triggered (raw={"session_id":"102f2368-54e6-48f3-9e6e-441591a74be7","transcript_path":"C:\\Users\\Wadeck\\.claude\...
+[2026-08-21 08:41:21] [102f2368:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:41:21] [102f2368:M] [ INFO] on-session-start: startup detected (no transcript yet)
+[2026-08-21 08:41:21] [102f2368:M] [ INFO] on-session-start: detected CLAUDE_CODE_VERSION=2.1.238 (Claude Code)
+[2026-08-21 08:41:21] [102f2368:M] [ INFO] on-session-start: plugin_version=1.0.0, sending notification
+[2026-08-21 08:41:21] [102f2368:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:41:21] [102f2368:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:41:21] [102f2368:M] [ INFO] emitTerminalSequence: using terminalSequence (CC version=2.1.238)
+[2026-08-21 08:41:21] [102f2368:M] [ INFO] on-prompt-submit: hook triggered
+[2026-08-21 08:41:21] [102f2368:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:41:21] [102f2368:M] [ INFO] on-prompt-submit: query=[You are analyzing a chunk of a Claude Code session to extract lessons for future sessions.
+This is chunk 1 of 1....
+[2026-08-21 08:41:21] [102f2368:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:41:21] [102f2368:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:41:21] [102f2368:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:41:21] [a9d263b7:M] [ INFO] on-session-start: hook triggered (raw={"session_id":"a9d263b7-1662-4381-b838-4066c2c330af","transcript_path":"C:\\Users\\Wadeck\\.claude\...
+[2026-08-21 08:41:21] [a9d263b7:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:41:21] [a9d263b7:M] [ INFO] on-session-start: startup detected (no transcript yet)
+[2026-08-21 08:41:22] [a9d263b7:M] [ INFO] on-session-start: detected CLAUDE_CODE_VERSION=2.1.238 (Claude Code)
+[2026-08-21 08:41:22] [a9d263b7:M] [ INFO] on-session-start: plugin_version=1.0.0, sending notification
+[2026-08-21 08:41:22] [a9d263b7:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:41:22] [a9d263b7:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:41:22] [a9d263b7:M] [ INFO] emitTerminalSequence: using terminalSequence (CC version=2.1.238)
+[2026-08-21 08:41:22] [a9d263b7:M] [ INFO] on-prompt-submit: hook triggered
+[2026-08-21 08:41:22] [a9d263b7:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:41:22] [a9d263b7:M] [ INFO] on-prompt-submit: query=[You are synthesizing lessons learned from Claude Code sessions into actionable recommendations.
+
+Group recommend...
+[2026-08-21 08:41:22] [a9d263b7:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:41:22] [a9d263b7:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:41:22] [a9d263b7:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:41:26] [a9d263b7:M] [ INFO] on-message-display: input={"session_id":"a9d263b7-1662-4381-b838-4066c2c330af","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-21 08:41:26] [a9d263b7:M] [ INFO] on-stop: hook triggered
+[2026-08-21 08:41:26] [a9d263b7:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:41:26] [a9d263b7:M] [ INFO] on-stop: transcript_path=C:\Users\Wadeck\.claude\projects\C--Workspace-Tooling-violations-framework\a9d263b7-1662-4381-b838-4066c2c330af....
+[2026-08-21 08:41:26] [a9d263b7:M] [ INFO] on-stop: query=[You are synthesizing lessons learned from Claude Code sessions into actionable recommendations.
+
+Group recommendations by...
+[2026-08-21 08:41:26] [a9d263b7:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:41:26] [a9d263b7:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:41:26] [a9d263b7:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:41:26] [a9d263b7:M] [ INFO] on-session-end: input={"session_id":"a9d263b7-1662-4381-b838-4066c2c330af","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C--Wo...
+[2026-08-21 08:41:32] [9b815ad6:M] [ INFO] on-session-start: hook triggered (raw={"session_id":"9b815ad6-20de-491c-a7d6-562e119ef167","transcript_path":"C:\\Users\\Wadeck\\.claude\...
+[2026-08-21 08:41:32] [9b815ad6:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:41:32] [9b815ad6:M] [ INFO] on-session-start: startup detected (no transcript yet)
+[2026-08-21 08:41:32] [9b815ad6:M] [ INFO] on-session-start: detected CLAUDE_CODE_VERSION=2.1.238 (Claude Code)
+[2026-08-21 08:41:32] [9b815ad6:M] [ INFO] on-session-start: plugin_version=1.0.0, sending notification
+[2026-08-21 08:41:32] [9b815ad6:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:41:32] [9b815ad6:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:41:32] [9b815ad6:M] [ INFO] emitTerminalSequence: using terminalSequence (CC version=2.1.238)
+[2026-08-21 08:41:33] [9b815ad6:M] [ INFO] on-prompt-submit: hook triggered
+[2026-08-21 08:41:33] [9b815ad6:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:41:33] [9b815ad6:M] [ INFO] on-prompt-submit: query=[You are synthesizing lessons learned from Claude Code sessions into actionable recommendations.
+
+Group recommend...
+[2026-08-21 08:41:33] [9b815ad6:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:41:33] [9b815ad6:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:41:33] [9b815ad6:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:41:36] [d3bfe61c:M] [ INFO] on-prompt-submit: hook triggered
+[2026-08-21 08:41:36] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:41:36] [d3bfe61c:M] [ INFO] on-prompt-submit: query=[pourrais tu ajouter à coté de wdrive (premier ligne) dans le systray les pid des process associés stp ? pour aid...
+[2026-08-21 08:41:36] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:41:36] [d3bfe61c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:41:36] [d3bfe61c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:41:37] [102f2368:M] [ INFO] on-message-display: input={"session_id":"102f2368-54e6-48f3-9e6e-441591a74be7","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-21 08:41:37] [102f2368:M] [ INFO] on-stop: hook triggered
+[2026-08-21 08:41:37] [102f2368:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:41:37] [102f2368:M] [ INFO] on-stop: transcript_path=C:\Users\Wadeck\.claude\projects\C--Workspace-Tooling-violations-framework\102f2368-54e6-48f3-9e6e-441591a74be7....
+[2026-08-21 08:41:38] [9b815ad6:M] [ INFO] on-post-tool-use: hook triggered
+[2026-08-21 08:41:38] [9b815ad6:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:41:38] [9b815ad6:M] [ INFO] on-post-tool-use: tool=Read
+[2026-08-21 08:41:38] [9b815ad6:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:41:38] [9b815ad6:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:41:38] [9b815ad6:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:41:38] [102f2368:M] [ INFO] on-stop: query=[You are analyzing a chunk of a Claude Code session to extract lessons for future sessions.
+This is chunk 1 of 1. Focus on...
+[2026-08-21 08:41:38] [102f2368:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:41:38] [102f2368:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:41:38] [102f2368:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:41:38] [102f2368:M] [ INFO] on-session-end: input={"session_id":"102f2368-54e6-48f3-9e6e-441591a74be7","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C--Wo...
+[2026-08-21 08:41:40] [9b815ad6:M] [ INFO] on-message-display: input={"session_id":"9b815ad6-20de-491c-a7d6-562e119ef167","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-21 08:41:40] [9b815ad6:M] [ INFO] on-stop: hook triggered
+[2026-08-21 08:41:40] [9b815ad6:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:41:40] [9b815ad6:M] [ INFO] on-stop: transcript_path=C:\Users\Wadeck\.claude\projects\C--Workspace-Tooling-violations-framework\9b815ad6-20de-491c-a7d6-562e119ef167....
+[2026-08-21 08:41:40] [9b815ad6:M] [ INFO] on-stop: query=[You are synthesizing lessons learned from Claude Code sessions into actionable recommendations.
+
+Group recommendations by...
+[2026-08-21 08:41:40] [9b815ad6:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:41:40] [9b815ad6:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:41:40] [9b815ad6:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:41:40] [9b815ad6:M] [ INFO] on-session-end: input={"session_id":"9b815ad6-20de-491c-a7d6-562e119ef167","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C--Wo...
+[2026-08-21 08:41:43] [d3bfe61c:M] [ INFO] on-message-display: input={"session_id":"d3bfe61c-f63b-4d48-a261-64b9c4b7b152","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-21 08:41:43] [d3bfe61c:M] [ INFO] on-post-tool-use: hook triggered
+[2026-08-21 08:41:43] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:41:43] [d3bfe61c:M] [ INFO] on-post-tool-use: tool=Agent
+[2026-08-21 08:41:43] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:41:43] [d3bfe61c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:41:43] [d3bfe61c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:41:47] [d3bfe61c:A:a85a:Explore] [ INFO] on-post-tool-use: hook triggered
+[2026-08-21 08:41:47] [d3bfe61c:A:a85a:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:41:47] [d3bfe61c:A:a85a:Explore] [ INFO] on-post-tool-use: tool=Grep
+[2026-08-21 08:41:47] [d3bfe61c:A:a85a:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:41:47] [d3bfe61c:A:a85a:Explore] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:41:47] [d3bfe61c:A:a85a:Explore] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:41:48] [d3bfe61c:A:a85a:Explore] [ INFO] on-post-tool-use: hook triggered
+[2026-08-21 08:41:48] [d3bfe61c:A:a85a:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:41:48] [d3bfe61c:A:a85a:Explore] [ INFO] on-post-tool-use: tool=Grep
+[2026-08-21 08:41:48] [d3bfe61c:A:a85a:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:41:48] [d3bfe61c:A:a85a:Explore] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:41:48] [d3bfe61c:A:a85a:Explore] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:41:49] [d3bfe61c:M] [ INFO] on-message-display: input={"session_id":"d3bfe61c-f63b-4d48-a261-64b9c4b7b152","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-21 08:41:49] [d3bfe61c:M] [ INFO] on-stop: hook triggered
+[2026-08-21 08:41:49] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:41:49] [d3bfe61c:M] [ INFO] on-stop: transcript_path=C:\Users\Wadeck\.claude\projects\C--Workspace-Tooling-violations-framework\d3bfe61c-f63b-4d48-a261-64b9c4b7b152....
+[2026-08-21 08:41:49] [d3bfe61c:M] [ INFO] on-stop: query=[pourrais tu ajouter à coté de wdrive (premier ligne) dans le systray les pid des process associés stp ? pour aider à debu...
+[2026-08-21 08:41:49] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:41:49] [d3bfe61c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:41:49] [d3bfe61c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:41:50] [d3bfe61c:A:a85a:Explore] [ INFO] on-post-tool-use: hook triggered
+[2026-08-21 08:41:50] [d3bfe61c:A:a85a:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:41:50] [d3bfe61c:A:a85a:Explore] [ INFO] on-post-tool-use: tool=Grep
+[2026-08-21 08:41:50] [d3bfe61c:A:a85a:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:41:50] [d3bfe61c:A:a85a:Explore] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:41:50] [d3bfe61c:A:a85a:Explore] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:41:52] [d3bfe61c:A:a85a:Explore] [ INFO] on-post-tool-use: hook triggered
+[2026-08-21 08:41:52] [d3bfe61c:A:a85a:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:41:52] [d3bfe61c:A:a85a:Explore] [ INFO] on-post-tool-use: tool=Glob
+[2026-08-21 08:41:52] [d3bfe61c:A:a85a:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:41:52] [d3bfe61c:A:a85a:Explore] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:41:52] [d3bfe61c:A:a85a:Explore] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:41:53] [d3bfe61c:A:a85a:Explore] [ INFO] on-post-tool-use: hook triggered
+[2026-08-21 08:41:53] [d3bfe61c:A:a85a:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:41:53] [d3bfe61c:A:a85a:Explore] [ INFO] on-post-tool-use: tool=Glob
+[2026-08-21 08:41:53] [d3bfe61c:A:a85a:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:41:53] [d3bfe61c:A:a85a:Explore] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:41:53] [d3bfe61c:A:a85a:Explore] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:41:56] [d3bfe61c:A:a85a:Explore] [ INFO] on-post-tool-use: hook triggered
+[2026-08-21 08:41:56] [d3bfe61c:A:a85a:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:41:56] [d3bfe61c:A:a85a:Explore] [ INFO] on-post-tool-use: tool=Glob
+[2026-08-21 08:41:56] [d3bfe61c:A:a85a:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:41:56] [d3bfe61c:A:a85a:Explore] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:41:56] [d3bfe61c:A:a85a:Explore] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:41:57] [d3bfe61c:A:a85a:Explore] [ INFO] on-post-tool-use: hook triggered
+[2026-08-21 08:41:57] [d3bfe61c:A:a85a:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:41:57] [d3bfe61c:A:a85a:Explore] [ INFO] on-post-tool-use: tool=Bash
+[2026-08-21 08:41:57] [d3bfe61c:A:a85a:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:41:57] [d3bfe61c:A:a85a:Explore] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:41:57] [d3bfe61c:A:a85a:Explore] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:42:00] [d3bfe61c:A:a85a:Explore] [ INFO] on-post-tool-use: hook triggered
+[2026-08-21 08:42:00] [d3bfe61c:A:a85a:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:42:00] [d3bfe61c:A:a85a:Explore] [ INFO] on-post-tool-use: tool=Read
+[2026-08-21 08:42:00] [d3bfe61c:A:a85a:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:42:00] [d3bfe61c:A:a85a:Explore] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:42:00] [d3bfe61c:A:a85a:Explore] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:42:00] [d3bfe61c:A:a85a:Explore] [ INFO] on-post-tool-use: hook triggered
+[2026-08-21 08:42:00] [d3bfe61c:A:a85a:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:42:00] [d3bfe61c:A:a85a:Explore] [ INFO] on-post-tool-use: tool=Read
+[2026-08-21 08:42:00] [d3bfe61c:A:a85a:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:42:00] [d3bfe61c:A:a85a:Explore] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:42:00] [d3bfe61c:A:a85a:Explore] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:42:04] [d3bfe61c:A:a85a:Explore] [ INFO] on-post-tool-use: hook triggered
+[2026-08-21 08:42:04] [d3bfe61c:A:a85a:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:42:04] [d3bfe61c:A:a85a:Explore] [ INFO] on-post-tool-use: tool=Grep
+[2026-08-21 08:42:04] [d3bfe61c:A:a85a:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:42:04] [d3bfe61c:A:a85a:Explore] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:42:04] [d3bfe61c:A:a85a:Explore] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:42:07] [d3bfe61c:A:a85a:Explore] [ INFO] on-post-tool-use: hook triggered
+[2026-08-21 08:42:07] [d3bfe61c:A:a85a:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:42:07] [d3bfe61c:A:a85a:Explore] [ INFO] on-post-tool-use: tool=Bash
+[2026-08-21 08:42:07] [d3bfe61c:A:a85a:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:42:07] [d3bfe61c:A:a85a:Explore] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:42:07] [d3bfe61c:A:a85a:Explore] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:42:12] [d3bfe61c:A:a85a:Explore] [ INFO] on-post-tool-use: hook triggered
+[2026-08-21 08:42:12] [d3bfe61c:A:a85a:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:42:12] [d3bfe61c:A:a85a:Explore] [ INFO] on-post-tool-use: tool=Bash
+[2026-08-21 08:42:12] [d3bfe61c:A:a85a:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:42:12] [d3bfe61c:A:a85a:Explore] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:42:12] [d3bfe61c:A:a85a:Explore] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:42:18] [d3bfe61c:A:a85a:Explore] [ INFO] on-post-tool-use: hook triggered
+[2026-08-21 08:42:18] [d3bfe61c:A:a85a:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:42:18] [d3bfe61c:A:a85a:Explore] [ INFO] on-post-tool-use: tool=Bash
+[2026-08-21 08:42:18] [d3bfe61c:A:a85a:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:42:18] [d3bfe61c:A:a85a:Explore] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:42:18] [d3bfe61c:A:a85a:Explore] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:42:19] [d3bfe61c:A:a85a:Explore] [ INFO] on-post-tool-use: hook triggered
+[2026-08-21 08:42:19] [d3bfe61c:A:a85a:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:42:19] [d3bfe61c:A:a85a:Explore] [ INFO] on-post-tool-use: tool=Bash
+[2026-08-21 08:42:19] [d3bfe61c:A:a85a:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:42:19] [d3bfe61c:A:a85a:Explore] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:42:19] [d3bfe61c:A:a85a:Explore] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:42:23] [d3bfe61c:A:a85a:Explore] [ INFO] on-post-tool-use: hook triggered
+[2026-08-21 08:42:23] [d3bfe61c:A:a85a:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:42:23] [d3bfe61c:A:a85a:Explore] [ INFO] on-post-tool-use: tool=Bash
+[2026-08-21 08:42:23] [d3bfe61c:A:a85a:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:42:23] [d3bfe61c:A:a85a:Explore] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:42:23] [d3bfe61c:A:a85a:Explore] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:42:35] [d3bfe61c:M] [ INFO] on-prompt-submit: hook triggered
+[2026-08-21 08:42:35] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:42:35] [d3bfe61c:M] [ INFO] on-prompt-submit: query=[<task-notification>
+<task-id>a85a717b51b4d7355</task-id>
+<tool-use-id>toolu_bdrk_01UPed7TdqBQ1Uia8a5J3Lhu</tool-...
+[2026-08-21 08:42:35] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:42:35] [d3bfe61c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:42:35] [d3bfe61c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:42:38] [d3bfe61c:M] [ INFO] on-message-display: input={"session_id":"d3bfe61c-f63b-4d48-a261-64b9c4b7b152","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-21 08:42:38] [d3bfe61c:M] [ INFO] on-post-tool-use: hook triggered
+[2026-08-21 08:42:38] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:42:38] [d3bfe61c:M] [ INFO] on-post-tool-use: tool=Read
+[2026-08-21 08:42:38] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:42:38] [d3bfe61c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:42:38] [d3bfe61c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:42:43] [d3bfe61c:M] [ INFO] on-message-display: input={"session_id":"d3bfe61c-f63b-4d48-a261-64b9c4b7b152","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-21 08:42:43] [d3bfe61c:M] [ INFO] on-post-tool-use: hook triggered
+[2026-08-21 08:42:43] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:42:43] [d3bfe61c:M] [ INFO] on-post-tool-use: tool=Grep
+[2026-08-21 08:42:43] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:42:43] [d3bfe61c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:42:43] [d3bfe61c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:42:46] [d3bfe61c:M] [ INFO] on-post-tool-use: hook triggered
+[2026-08-21 08:42:46] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:42:46] [d3bfe61c:M] [ INFO] on-post-tool-use: tool=Grep
+[2026-08-21 08:42:46] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:42:46] [d3bfe61c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:42:46] [d3bfe61c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:42:49] [d3bfe61c:M] [ INFO] on-message-display: input={"session_id":"d3bfe61c-f63b-4d48-a261-64b9c4b7b152","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-21 08:42:51] [d3bfe61c:M] [ INFO] on-post-tool-use: hook triggered
+[2026-08-21 08:42:51] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:42:51] [d3bfe61c:M] [ INFO] on-post-tool-use: tool=Read
+[2026-08-21 08:42:51] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:42:51] [d3bfe61c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:42:51] [d3bfe61c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:43:14] [d3bfe61c:M] [ INFO] on-message-display: input={"session_id":"d3bfe61c-f63b-4d48-a261-64b9c4b7b152","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-21 08:43:14] [d3bfe61c:M] [ INFO] on-message-display: input={"session_id":"d3bfe61c-f63b-4d48-a261-64b9c4b7b152","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-21 08:43:16] [d3bfe61c:M] [ INFO] on-message-display: input={"session_id":"d3bfe61c-f63b-4d48-a261-64b9c4b7b152","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-21 08:43:16] [d3bfe61c:M] [ INFO] on-post-tool-use: hook triggered
+[2026-08-21 08:43:16] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:43:16] [d3bfe61c:M] [ INFO] on-post-tool-use: tool=Grep
+[2026-08-21 08:43:16] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:43:16] [d3bfe61c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:43:16] [d3bfe61c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:43:25] [d3bfe61c:M] [ INFO] on-message-display: input={"session_id":"d3bfe61c-f63b-4d48-a261-64b9c4b7b152","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-21 08:43:25] [d3bfe61c:M] [ INFO] on-post-tool-use: hook triggered
+[2026-08-21 08:43:25] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:43:25] [d3bfe61c:M] [ INFO] on-post-tool-use: tool=Edit
+[2026-08-21 08:43:25] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:43:25] [d3bfe61c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:43:25] [d3bfe61c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:43:29] [d3bfe61c:M] [ INFO] on-post-tool-use: hook triggered
+[2026-08-21 08:43:29] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:43:29] [d3bfe61c:M] [ INFO] on-post-tool-use: tool=Edit
+[2026-08-21 08:43:29] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:43:29] [d3bfe61c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:43:29] [d3bfe61c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:43:37] [d3bfe61c:M] [ INFO] on-message-display: input={"session_id":"d3bfe61c-f63b-4d48-a261-64b9c4b7b152","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-21 08:43:37] [d3bfe61c:M] [ INFO] on-post-tool-use: hook triggered
+[2026-08-21 08:43:37] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:43:37] [d3bfe61c:M] [ INFO] on-post-tool-use: tool=Edit
+[2026-08-21 08:43:37] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:43:37] [d3bfe61c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:43:37] [d3bfe61c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:43:43] [d3bfe61c:M] [ INFO] on-post-tool-use: hook triggered
+[2026-08-21 08:43:43] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:43:43] [d3bfe61c:M] [ INFO] on-post-tool-use: tool=Edit
+[2026-08-21 08:43:43] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:43:43] [d3bfe61c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:43:43] [d3bfe61c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:43:46] [d3bfe61c:M] [ INFO] on-message-display: input={"session_id":"d3bfe61c-f63b-4d48-a261-64b9c4b7b152","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-21 08:43:46] [d3bfe61c:M] [ INFO] on-post-tool-use: hook triggered
+[2026-08-21 08:43:46] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:43:46] [d3bfe61c:M] [ INFO] on-post-tool-use: tool=Read
+[2026-08-21 08:43:46] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:43:46] [d3bfe61c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:43:46] [d3bfe61c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:43:56] [d3bfe61c:M] [ INFO] on-message-display: input={"session_id":"d3bfe61c-f63b-4d48-a261-64b9c4b7b152","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-21 08:43:56] [d3bfe61c:M] [ INFO] on-post-tool-use: hook triggered
+[2026-08-21 08:43:56] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:43:56] [d3bfe61c:M] [ INFO] on-post-tool-use: tool=Edit
+[2026-08-21 08:43:56] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:43:56] [d3bfe61c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:43:56] [d3bfe61c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:43:59] [d3bfe61c:M] [ INFO] on-message-display: input={"session_id":"d3bfe61c-f63b-4d48-a261-64b9c4b7b152","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-21 08:44:03] [d3bfe61c:M] [ INFO] on-post-tool-use: hook triggered
+[2026-08-21 08:44:03] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:44:03] [d3bfe61c:M] [ INFO] on-post-tool-use: tool=Bash
+[2026-08-21 08:44:03] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:44:03] [d3bfe61c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:44:03] [d3bfe61c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:45:07] [d3bfe61c:M] [ INFO] on-post-tool-use: hook triggered
+[2026-08-21 08:45:07] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:45:07] [d3bfe61c:M] [ INFO] on-post-tool-use: tool=Bash
+[2026-08-21 08:45:07] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:45:07] [d3bfe61c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:45:07] [d3bfe61c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:45:13] [d3bfe61c:M] [ INFO] on-message-display: input={"session_id":"d3bfe61c-f63b-4d48-a261-64b9c4b7b152","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-21 08:46:06] [d3bfe61c:M] [ INFO] on-post-tool-use: hook triggered
+[2026-08-21 08:46:06] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:46:06] [d3bfe61c:M] [ INFO] on-post-tool-use: tool=Bash
+[2026-08-21 08:46:06] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:46:06] [d3bfe61c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:46:06] [d3bfe61c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:46:39] [d3bfe61c:M] [ INFO] on-post-tool-use: hook triggered
+[2026-08-21 08:46:39] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:46:39] [d3bfe61c:M] [ INFO] on-post-tool-use: tool=Bash
+[2026-08-21 08:46:39] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:46:39] [d3bfe61c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:46:39] [d3bfe61c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:46:42] [d3bfe61c:M] [ INFO] on-message-display: input={"session_id":"d3bfe61c-f63b-4d48-a261-64b9c4b7b152","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-21 08:46:42] [d3bfe61c:M] [ INFO] on-message-display: input={"session_id":"d3bfe61c-f63b-4d48-a261-64b9c4b7b152","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-21 08:46:43] [d3bfe61c:M] [ INFO] on-message-display: input={"session_id":"d3bfe61c-f63b-4d48-a261-64b9c4b7b152","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-21 08:46:43] [d3bfe61c:M] [ INFO] on-message-display: input={"session_id":"d3bfe61c-f63b-4d48-a261-64b9c4b7b152","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-21 08:46:44] [d3bfe61c:M] [ INFO] on-message-display: input={"session_id":"d3bfe61c-f63b-4d48-a261-64b9c4b7b152","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-21 08:46:45] [d3bfe61c:M] [ INFO] on-message-display: input={"session_id":"d3bfe61c-f63b-4d48-a261-64b9c4b7b152","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-21 08:46:45] [d3bfe61c:M] [ INFO] on-stop: hook triggered
+[2026-08-21 08:46:45] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:46:45] [d3bfe61c:M] [ INFO] on-stop: transcript_path=C:\Users\Wadeck\.claude\projects\C--Workspace-Tooling-violations-framework\d3bfe61c-f63b-4d48-a261-64b9c4b7b152....
+[2026-08-21 08:46:45] [d3bfe61c:M] [ INFO] on-stop: query=[<task-notification>
+<task-id>a85a717b51b4d7355</task-id>
+<tool-use-id>toolu_bdrk_01UPed7TdqBQ1Uia8a5J3Lhu</tool-use-id>
+<...
+[2026-08-21 08:46:45] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:46:45] [d3bfe61c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:46:45] [d3bfe61c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:47:12] [d3bfe61c:M] [ INFO] on-prompt-submit: hook triggered
+[2026-08-21 08:47:12] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:47:12] [d3bfe61c:M] [ INFO] on-prompt-submit: query=[<task-notification>
+<task-id>bmwiec2oe</task-id>
+<tool-use-id>toolu_bdrk_01EMoGq1mKi9M7ZuKS7h2DFL</tool-use-id>
+...
+[2026-08-21 08:47:12] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:47:12] [d3bfe61c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:47:12] [d3bfe61c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:47:15] [d3bfe61c:M] [ INFO] on-message-display: input={"session_id":"d3bfe61c-f63b-4d48-a261-64b9c4b7b152","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-21 08:47:15] [d3bfe61c:M] [ INFO] on-stop: hook triggered
+[2026-08-21 08:47:15] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:47:15] [d3bfe61c:M] [ INFO] on-stop: transcript_path=C:\Users\Wadeck\.claude\projects\C--Workspace-Tooling-violations-framework\d3bfe61c-f63b-4d48-a261-64b9c4b7b152....
+[2026-08-21 08:47:15] [d3bfe61c:M] [ INFO] on-stop: query=[<task-notification>
+<task-id>bmwiec2oe</task-id>
+<tool-use-id>toolu_bdrk_01EMoGq1mKi9M7ZuKS7h2DFL</tool-use-id>
+<output-f...
+[2026-08-21 08:47:15] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:47:15] [d3bfe61c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:47:15] [d3bfe61c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:48:15] [d3bfe61c:M] [ INFO] on-notification: hook triggered
+[2026-08-21 08:48:15] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:48:15] [d3bfe61c:M] [ INFO] on-notification: notif_type=idle_prompt msg=Claude is waiting for your input
+[2026-08-21 08:48:15] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:48:15] [d3bfe61c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:48:15] [d3bfe61c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:48:22] [d3bfe61c:M] [ INFO] on-prompt-submit: hook triggered
+[2026-08-21 08:48:22] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:48:22] [d3bfe61c:M] [ INFO] on-prompt-submit: query=[pourquoi tu n'inclus pas le pid du wdrive.exe ?]
+[2026-08-21 08:48:22] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:48:22] [d3bfe61c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:48:22] [d3bfe61c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:48:43] [d3bfe61c:M] [ INFO] on-message-display: input={"session_id":"d3bfe61c-f63b-4d48-a261-64b9c4b7b152","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-21 08:48:48] [d3bfe61c:M] [ INFO] on-message-display: input={"session_id":"d3bfe61c-f63b-4d48-a261-64b9c4b7b152","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-21 08:48:48] [d3bfe61c:M] [ INFO] on-post-tool-use: hook triggered
+[2026-08-21 08:48:48] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:48:48] [d3bfe61c:M] [ INFO] on-post-tool-use: tool=Edit
+[2026-08-21 08:48:48] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:48:48] [d3bfe61c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:48:48] [d3bfe61c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:48:52] [d3bfe61c:M] [ INFO] on-message-display: input={"session_id":"d3bfe61c-f63b-4d48-a261-64b9c4b7b152","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-21 08:48:52] [d3bfe61c:M] [ INFO] on-post-tool-use: hook triggered
+[2026-08-21 08:48:52] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:48:52] [d3bfe61c:M] [ INFO] on-post-tool-use: tool=Edit
+[2026-08-21 08:48:52] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:48:52] [d3bfe61c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:48:52] [d3bfe61c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:48:55] [d3bfe61c:M] [ INFO] on-message-display: input={"session_id":"d3bfe61c-f63b-4d48-a261-64b9c4b7b152","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-21 08:48:55] [d3bfe61c:M] [ INFO] on-stop: hook triggered
+[2026-08-21 08:48:55] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:48:55] [d3bfe61c:M] [ INFO] on-stop: transcript_path=C:\Users\Wadeck\.claude\projects\C--Workspace-Tooling-violations-framework\d3bfe61c-f63b-4d48-a261-64b9c4b7b152....
+[2026-08-21 08:48:55] [d3bfe61c:M] [ INFO] on-stop: query=[pourquoi tu n'inclus pas le pid du wdrive.exe ?] response=[En mode exe le label sera `wdrive:XXXX` (correspond à `wdrive....
+[2026-08-21 08:48:55] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:48:55] [d3bfe61c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:48:55] [d3bfe61c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:49:55] [d3bfe61c:M] [ INFO] on-notification: hook triggered
+[2026-08-21 08:49:55] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:49:55] [d3bfe61c:M] [ INFO] on-notification: notif_type=idle_prompt msg=Claude is waiting for your input
+[2026-08-21 08:49:55] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:49:55] [d3bfe61c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:49:55] [d3bfe61c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:50:14] [d3bfe61c:M] [ INFO] on-prompt-submit: hook triggered
+[2026-08-21 08:50:14] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:50:14] [d3bfe61c:M] [ INFO] on-prompt-submit: query=[je m'attends à avoir l'exe, le node ET le tray, les trois !!!]
+[2026-08-21 08:50:14] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:50:14] [d3bfe61c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:50:14] [d3bfe61c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:50:25] [d3bfe61c:M] [ INFO] on-message-display: input={"session_id":"d3bfe61c-f63b-4d48-a261-64b9c4b7b152","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-21 08:50:25] [d3bfe61c:M] [ INFO] on-post-tool-use: hook triggered
+[2026-08-21 08:50:25] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:50:25] [d3bfe61c:M] [ INFO] on-post-tool-use: tool=Agent
+[2026-08-21 08:50:25] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:50:25] [d3bfe61c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:50:25] [d3bfe61c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:50:28] [d3bfe61c:A:a041:Explore] [ INFO] on-post-tool-use: hook triggered
+[2026-08-21 08:50:28] [d3bfe61c:A:a041:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:50:28] [d3bfe61c:A:a041:Explore] [ INFO] on-post-tool-use: tool=Glob
+[2026-08-21 08:50:28] [d3bfe61c:A:a041:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:50:28] [d3bfe61c:A:a041:Explore] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:50:28] [d3bfe61c:A:a041:Explore] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:50:29] [d3bfe61c:M] [ INFO] on-message-display: input={"session_id":"d3bfe61c-f63b-4d48-a261-64b9c4b7b152","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-21 08:50:29] [d3bfe61c:M] [ INFO] on-stop: hook triggered
+[2026-08-21 08:50:29] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:50:29] [d3bfe61c:M] [ INFO] on-stop: transcript_path=C:\Users\Wadeck\.claude\projects\C--Workspace-Tooling-violations-framework\d3bfe61c-f63b-4d48-a261-64b9c4b7b152....
+[2026-08-21 08:50:29] [d3bfe61c:A:a041:Explore] [ INFO] on-post-tool-use: hook triggered
+[2026-08-21 08:50:29] [d3bfe61c:A:a041:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:50:29] [d3bfe61c:A:a041:Explore] [ INFO] on-post-tool-use: tool=Glob
+[2026-08-21 08:50:29] [d3bfe61c:A:a041:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:50:29] [d3bfe61c:A:a041:Explore] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:50:29] [d3bfe61c:A:a041:Explore] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:50:29] [d3bfe61c:M] [ INFO] on-stop: query=[je m'attends à avoir l'exe, le node ET le tray, les trois !!!] response=[En attente des résultats sur la structure des pr...
+[2026-08-21 08:50:29] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:50:29] [d3bfe61c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:50:29] [d3bfe61c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:50:30] [d3bfe61c:M] [ INFO] on-prompt-submit: hook triggered
+[2026-08-21 08:50:30] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:50:30] [d3bfe61c:M] [ INFO] on-prompt-submit: query=[tu ne sembles pas avoir analyé comment il etait lancé ..]
+[2026-08-21 08:50:30] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:50:30] [d3bfe61c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:50:30] [d3bfe61c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:50:32] [d3bfe61c:A:a041:Explore] [ INFO] on-post-tool-use: hook triggered
+[2026-08-21 08:50:32] [d3bfe61c:A:a041:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:50:32] [d3bfe61c:A:a041:Explore] [ INFO] on-post-tool-use: tool=Read
+[2026-08-21 08:50:32] [d3bfe61c:A:a041:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:50:32] [d3bfe61c:A:a041:Explore] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:50:32] [d3bfe61c:A:a041:Explore] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:50:32] [d3bfe61c:A:a041:Explore] [ INFO] on-post-tool-use: hook triggered
+[2026-08-21 08:50:32] [d3bfe61c:A:a041:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:50:32] [d3bfe61c:A:a041:Explore] [ INFO] on-post-tool-use: tool=Glob
+[2026-08-21 08:50:32] [d3bfe61c:A:a041:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:50:32] [d3bfe61c:A:a041:Explore] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:50:32] [d3bfe61c:A:a041:Explore] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:50:33] [d3bfe61c:A:a041:Explore] [ INFO] on-post-tool-use: hook triggered
+[2026-08-21 08:50:33] [d3bfe61c:A:a041:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:50:33] [d3bfe61c:A:a041:Explore] [ INFO] on-post-tool-use: tool=Grep
+[2026-08-21 08:50:33] [d3bfe61c:A:a041:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:50:33] [d3bfe61c:A:a041:Explore] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:50:33] [d3bfe61c:A:a041:Explore] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:50:34] [d3bfe61c:M] [ INFO] on-message-display: input={"session_id":"d3bfe61c-f63b-4d48-a261-64b9c4b7b152","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-21 08:50:34] [d3bfe61c:M] [ INFO] on-post-tool-use: hook triggered
+[2026-08-21 08:50:34] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:50:34] [d3bfe61c:M] [ INFO] on-post-tool-use: tool=Glob
+[2026-08-21 08:50:34] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:50:34] [d3bfe61c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:50:34] [d3bfe61c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:50:36] [d3bfe61c:A:a041:Explore] [ INFO] on-post-tool-use: hook triggered
+[2026-08-21 08:50:36] [d3bfe61c:A:a041:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:50:36] [d3bfe61c:A:a041:Explore] [ INFO] on-post-tool-use: tool=Read
+[2026-08-21 08:50:36] [d3bfe61c:A:a041:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:50:36] [d3bfe61c:A:a041:Explore] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:50:36] [d3bfe61c:A:a041:Explore] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:50:37] [d3bfe61c:M] [ INFO] on-post-tool-use: hook triggered
+[2026-08-21 08:50:37] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:50:37] [d3bfe61c:M] [ INFO] on-post-tool-use: tool=Read
+[2026-08-21 08:50:37] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:50:37] [d3bfe61c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:50:37] [d3bfe61c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:50:37] [d3bfe61c:A:a041:Explore] [ INFO] on-post-tool-use: hook triggered
+[2026-08-21 08:50:37] [d3bfe61c:A:a041:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:50:37] [d3bfe61c:A:a041:Explore] [ INFO] on-post-tool-use: tool=Glob
+[2026-08-21 08:50:37] [d3bfe61c:A:a041:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:50:37] [d3bfe61c:A:a041:Explore] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:50:37] [d3bfe61c:A:a041:Explore] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:50:37] [d3bfe61c:A:a041:Explore] [ INFO] on-post-tool-use: hook triggered
+[2026-08-21 08:50:37] [d3bfe61c:A:a041:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:50:37] [d3bfe61c:A:a041:Explore] [ INFO] on-post-tool-use: tool=Glob
+[2026-08-21 08:50:37] [d3bfe61c:A:a041:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:50:37] [d3bfe61c:A:a041:Explore] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:50:37] [d3bfe61c:A:a041:Explore] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:50:41] [d3bfe61c:A:a041:Explore] [ INFO] on-post-tool-use: hook triggered
+[2026-08-21 08:50:41] [d3bfe61c:A:a041:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:50:41] [d3bfe61c:A:a041:Explore] [ INFO] on-post-tool-use: tool=Glob
+[2026-08-21 08:50:41] [d3bfe61c:A:a041:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:50:41] [d3bfe61c:A:a041:Explore] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:50:41] [d3bfe61c:A:a041:Explore] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:50:42] [d3bfe61c:A:a041:Explore] [ INFO] on-post-tool-use: hook triggered
+[2026-08-21 08:50:42] [d3bfe61c:A:a041:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:50:42] [d3bfe61c:A:a041:Explore] [ INFO] on-post-tool-use: tool=Bash
+[2026-08-21 08:50:42] [d3bfe61c:A:a041:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:50:42] [d3bfe61c:A:a041:Explore] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:50:42] [d3bfe61c:A:a041:Explore] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:50:44] [d3bfe61c:A:a041:Explore] [ INFO] on-post-tool-use: hook triggered
+[2026-08-21 08:50:44] [d3bfe61c:A:a041:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:50:44] [d3bfe61c:A:a041:Explore] [ INFO] on-post-tool-use: tool=Read
+[2026-08-21 08:50:44] [d3bfe61c:A:a041:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:50:44] [d3bfe61c:A:a041:Explore] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:50:44] [d3bfe61c:A:a041:Explore] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:50:46] [d3bfe61c:A:a041:Explore] [ INFO] on-post-tool-use: hook triggered
+[2026-08-21 08:50:46] [d3bfe61c:A:a041:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:50:46] [d3bfe61c:A:a041:Explore] [ INFO] on-post-tool-use: tool=Bash
+[2026-08-21 08:50:46] [d3bfe61c:A:a041:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:50:46] [d3bfe61c:A:a041:Explore] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:50:46] [d3bfe61c:A:a041:Explore] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:50:47] [d3bfe61c:A:a041:Explore] [ INFO] on-post-tool-use: hook triggered
+[2026-08-21 08:50:47] [d3bfe61c:A:a041:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:50:47] [d3bfe61c:A:a041:Explore] [ INFO] on-post-tool-use: tool=Bash
+[2026-08-21 08:50:47] [d3bfe61c:A:a041:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:50:47] [d3bfe61c:A:a041:Explore] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:50:47] [d3bfe61c:A:a041:Explore] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:50:49] [d3bfe61c:A:a041:Explore] [ INFO] on-post-tool-use: hook triggered
+[2026-08-21 08:50:49] [d3bfe61c:A:a041:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:50:49] [d3bfe61c:A:a041:Explore] [ INFO] on-post-tool-use: tool=Read
+[2026-08-21 08:50:49] [d3bfe61c:A:a041:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:50:49] [d3bfe61c:A:a041:Explore] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:50:49] [d3bfe61c:A:a041:Explore] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:50:49] [d3bfe61c:A:a041:Explore] [ INFO] on-post-tool-use: hook triggered
+[2026-08-21 08:50:49] [d3bfe61c:A:a041:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:50:49] [d3bfe61c:A:a041:Explore] [ INFO] on-post-tool-use: tool=Read
+[2026-08-21 08:50:49] [d3bfe61c:A:a041:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:50:49] [d3bfe61c:A:a041:Explore] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:50:49] [d3bfe61c:A:a041:Explore] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:50:49] [d3bfe61c:A:a041:Explore] [ INFO] on-post-tool-use: hook triggered
+[2026-08-21 08:50:49] [d3bfe61c:A:a041:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:50:49] [d3bfe61c:A:a041:Explore] [ INFO] on-post-tool-use: tool=Read
+[2026-08-21 08:50:49] [d3bfe61c:A:a041:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:50:49] [d3bfe61c:A:a041:Explore] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:50:49] [d3bfe61c:A:a041:Explore] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:50:50] [d3bfe61c:M] [ INFO] on-message-display: input={"session_id":"d3bfe61c-f63b-4d48-a261-64b9c4b7b152","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-21 08:50:50] [d3bfe61c:M] [ INFO] on-message-display: input={"session_id":"d3bfe61c-f63b-4d48-a261-64b9c4b7b152","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-21 08:50:52] [d3bfe61c:A:a041:Explore] [ INFO] on-post-tool-use: hook triggered
+[2026-08-21 08:50:52] [d3bfe61c:A:a041:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:50:52] [d3bfe61c:A:a041:Explore] [ INFO] on-post-tool-use: tool=Read
+[2026-08-21 08:50:52] [d3bfe61c:A:a041:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:50:52] [d3bfe61c:A:a041:Explore] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:50:52] [d3bfe61c:A:a041:Explore] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:50:53] [d3bfe61c:A:a041:Explore] [ INFO] on-post-tool-use: hook triggered
+[2026-08-21 08:50:53] [d3bfe61c:A:a041:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:50:53] [d3bfe61c:A:a041:Explore] [ INFO] on-post-tool-use: tool=Read
+[2026-08-21 08:50:53] [d3bfe61c:A:a041:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:50:53] [d3bfe61c:A:a041:Explore] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:50:53] [d3bfe61c:A:a041:Explore] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:50:55] [d3bfe61c:M] [ INFO] on-message-display: input={"session_id":"d3bfe61c-f63b-4d48-a261-64b9c4b7b152","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-21 08:50:55] [d3bfe61c:M] [ INFO] on-post-tool-use: hook triggered
+[2026-08-21 08:50:55] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:50:55] [d3bfe61c:M] [ INFO] on-post-tool-use: tool=Edit
+[2026-08-21 08:50:55] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:50:55] [d3bfe61c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:50:55] [d3bfe61c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:50:56] [d3bfe61c:A:a041:Explore] [ INFO] on-post-tool-use: hook triggered
+[2026-08-21 08:50:56] [d3bfe61c:A:a041:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:50:56] [d3bfe61c:A:a041:Explore] [ INFO] on-post-tool-use: tool=Glob
+[2026-08-21 08:50:56] [d3bfe61c:A:a041:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:50:56] [d3bfe61c:A:a041:Explore] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:50:56] [d3bfe61c:A:a041:Explore] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:50:58] [d3bfe61c:A:a041:Explore] [ INFO] on-post-tool-use: hook triggered
+[2026-08-21 08:50:58] [d3bfe61c:A:a041:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:50:58] [d3bfe61c:A:a041:Explore] [ INFO] on-post-tool-use: tool=Read
+[2026-08-21 08:50:58] [d3bfe61c:A:a041:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:50:58] [d3bfe61c:A:a041:Explore] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:50:58] [d3bfe61c:A:a041:Explore] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:50:58] [d3bfe61c:A:a041:Explore] [ INFO] on-post-tool-use: hook triggered
+[2026-08-21 08:50:58] [d3bfe61c:A:a041:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:50:58] [d3bfe61c:A:a041:Explore] [ INFO] on-post-tool-use: tool=Read
+[2026-08-21 08:50:58] [d3bfe61c:A:a041:Explore] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:50:58] [d3bfe61c:A:a041:Explore] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:50:58] [d3bfe61c:A:a041:Explore] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:51:00] [d3bfe61c:M] [ INFO] on-message-display: input={"session_id":"d3bfe61c-f63b-4d48-a261-64b9c4b7b152","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-21 08:51:00] [d3bfe61c:M] [ INFO] on-post-tool-use: hook triggered
+[2026-08-21 08:51:00] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:51:00] [d3bfe61c:M] [ INFO] on-post-tool-use: tool=Edit
+[2026-08-21 08:51:00] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:51:00] [d3bfe61c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:51:00] [d3bfe61c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:51:04] [d3bfe61c:M] [ INFO] on-message-display: input={"session_id":"d3bfe61c-f63b-4d48-a261-64b9c4b7b152","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-21 08:51:04] [d3bfe61c:M] [ INFO] on-message-display: input={"session_id":"d3bfe61c-f63b-4d48-a261-64b9c4b7b152","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-21 08:51:04] [d3bfe61c:M] [ INFO] on-stop: hook triggered
+[2026-08-21 08:51:04] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:51:04] [d3bfe61c:M] [ INFO] on-stop: transcript_path=C:\Users\Wadeck\.claude\projects\C--Workspace-Tooling-violations-framework\d3bfe61c-f63b-4d48-a261-64b9c4b7b152....
+[2026-08-21 08:51:04] [d3bfe61c:M] [ INFO] on-stop: query=[tu ne sembles pas avoir analyé comment il etait lancé ..] response=[Résultat en mode production :
+```
+WDrive  [wdrive:123...
+[2026-08-21 08:51:04] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:51:04] [d3bfe61c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:51:04] [d3bfe61c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:51:37] [d3bfe61c:M] [ INFO] on-prompt-submit: hook triggered
+[2026-08-21 08:51:37] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:51:37] [d3bfe61c:M] [ INFO] on-prompt-submit: query=[<task-notification>
+<task-id>a041c02455c52b516</task-id>
+<tool-use-id>toolu_bdrk_01H6zG9ubEno4mN9BD1Piqo7</tool-...
+[2026-08-21 08:51:37] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:51:37] [d3bfe61c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:51:37] [d3bfe61c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:51:44] [d3bfe61c:M] [ INFO] on-message-display: input={"session_id":"d3bfe61c-f63b-4d48-a261-64b9c4b7b152","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-21 08:51:44] [d3bfe61c:M] [ INFO] on-message-display: input={"session_id":"d3bfe61c-f63b-4d48-a261-64b9c4b7b152","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-21 08:51:45] [d3bfe61c:M] [ INFO] on-message-display: input={"session_id":"d3bfe61c-f63b-4d48-a261-64b9c4b7b152","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-21 08:51:45] [d3bfe61c:M] [ INFO] on-stop: hook triggered
+[2026-08-21 08:51:45] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:51:45] [d3bfe61c:M] [ INFO] on-stop: transcript_path=C:\Users\Wadeck\.claude\projects\C--Workspace-Tooling-violations-framework\d3bfe61c-f63b-4d48-a261-64b9c4b7b152....
+[2026-08-21 08:51:46] [d3bfe61c:M] [ INFO] on-stop: query=[<task-notification>
+<task-id>a041c02455c52b516</task-id>
+<tool-use-id>toolu_bdrk_01H6zG9ubEno4mN9BD1Piqo7</tool-use-id>
+<...
+[2026-08-21 08:51:46] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:51:46] [d3bfe61c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:51:46] [d3bfe61c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:52:46] [d3bfe61c:M] [ INFO] on-notification: hook triggered
+[2026-08-21 08:52:46] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:52:46] [d3bfe61c:M] [ INFO] on-notification: notif_type=idle_prompt msg=Claude is waiting for your input
+[2026-08-21 08:52:46] [d3bfe61c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:52:46] [d3bfe61c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:52:46] [d3bfe61c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:59:12] [d3bfe61c:M] [ INFO] on-session-end: input={"session_id":"d3bfe61c-f63b-4d48-a261-64b9c4b7b152","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C--Wo...
+[2026-08-21 08:59:19] [3b938351:M] [ INFO] on-session-start: hook triggered (raw={"session_id":"3b938351-c9ce-407e-94a8-62081bb6a266","transcript_path":"C:\\Users\\Wadeck\\.claude\...
+[2026-08-21 08:59:19] [3b938351:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:59:19] [3b938351:M] [ INFO] on-session-start: startup detected (no transcript yet)
+[2026-08-21 08:59:19] [3b938351:M] [ INFO] on-session-start: detected CLAUDE_CODE_VERSION=2.1.238 (Claude Code)
+[2026-08-21 08:59:19] [3b938351:M] [ INFO] on-session-start: plugin_version=1.0.0, sending notification
+[2026-08-21 08:59:19] [3b938351:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:59:19] [3b938351:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:59:19] [3b938351:M] [ INFO] emitTerminalSequence: using terminalSequence (CC version=2.1.238)
+[2026-08-21 08:59:19] [3b938351:M] [ INFO] on-prompt-submit: hook triggered
+[2026-08-21 08:59:19] [3b938351:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:59:19] [3b938351:M] [ INFO] on-prompt-submit: query=[You are analyzing a chunk of a Claude Code session to extract lessons for future sessions.
+This is chunk 1 of 1....
+[2026-08-21 08:59:19] [3b938351:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:59:19] [3b938351:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:59:19] [3b938351:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:59:28] [3b938351:M] [ INFO] on-message-display: input={"session_id":"3b938351-c9ce-407e-94a8-62081bb6a266","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-21 08:59:28] [3b938351:M] [ INFO] on-stop: hook triggered
+[2026-08-21 08:59:28] [3b938351:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:59:28] [3b938351:M] [ INFO] on-stop: transcript_path=C:\Users\Wadeck\.claude\projects\C--Workspace-Tooling-violations-framework\3b938351-c9ce-407e-94a8-62081bb6a266....
+[2026-08-21 08:59:28] [3b938351:M] [ INFO] on-stop: query=[You are analyzing a chunk of a Claude Code session to extract lessons for future sessions.
+This is chunk 1 of 1. Focus on...
+[2026-08-21 08:59:28] [3b938351:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:59:28] [3b938351:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:59:28] [3b938351:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:59:28] [3b938351:M] [ INFO] on-session-end: input={"session_id":"3b938351-c9ce-407e-94a8-62081bb6a266","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C--Wo...
+[2026-08-21 08:59:34] [32d5295c:M] [ INFO] on-session-start: hook triggered (raw={"session_id":"32d5295c-9eea-4449-8f9d-ef234825ea0a","transcript_path":"C:\\Users\\Wadeck\\.claude\...
+[2026-08-21 08:59:34] [32d5295c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:59:34] [32d5295c:M] [ INFO] on-session-start: startup detected (no transcript yet)
+[2026-08-21 08:59:35] [32d5295c:M] [ INFO] on-session-start: detected CLAUDE_CODE_VERSION=2.1.238 (Claude Code)
+[2026-08-21 08:59:35] [32d5295c:M] [ INFO] on-session-start: plugin_version=1.0.0, sending notification
+[2026-08-21 08:59:35] [32d5295c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:59:35] [32d5295c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:59:35] [32d5295c:M] [ INFO] emitTerminalSequence: using terminalSequence (CC version=2.1.238)
+[2026-08-21 08:59:35] [32d5295c:M] [ INFO] on-prompt-submit: hook triggered
+[2026-08-21 08:59:35] [32d5295c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:59:35] [32d5295c:M] [ INFO] on-prompt-submit: query=[Your previous output contained lines that do not match the required format.
+
+Required format - ONLY these patter...
+[2026-08-21 08:59:35] [32d5295c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:59:35] [32d5295c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:59:35] [32d5295c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:59:40] [32d5295c:M] [ INFO] on-message-display: input={"session_id":"32d5295c-9eea-4449-8f9d-ef234825ea0a","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-21 08:59:40] [32d5295c:M] [ INFO] on-stop: hook triggered
+[2026-08-21 08:59:40] [32d5295c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:59:40] [32d5295c:M] [ INFO] on-stop: transcript_path=C:\Users\Wadeck\.claude\projects\C--Workspace-Tooling-violations-framework\32d5295c-9eea-4449-8f9d-ef234825ea0a....
+[2026-08-21 08:59:40] [32d5295c:M] [ INFO] on-stop: query=[Your previous output contained lines that do not match the required format.
+
+Required format - ONLY these patterns are va...
+[2026-08-21 08:59:40] [32d5295c:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:59:40] [32d5295c:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:59:40] [32d5295c:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 08:59:40] [32d5295c:M] [ INFO] on-session-end: input={"session_id":"32d5295c-9eea-4449-8f9d-ef234825ea0a","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C--Wo...
+[2026-08-21 08:59:59] [ac098af8:M] [ INFO] on-prompt-submit: hook triggered
+[2026-08-21 08:59:59] [ac098af8:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:59:59] [ac098af8:M] [ INFO] on-prompt-submit: query=[ajoute des endpoints d'introspection pour toutes les facons de s'authentifier (pour recevoir leur "scope"), hist...
+[2026-08-21 08:59:59] [ac098af8:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 08:59:59] [ac098af8:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 08:59:59] [ac098af8:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 09:00:08] [ac098af8:M] [ INFO] on-message-display: input={"session_id":"ac098af8-70ad-4705-b8aa-689e81eccc51","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-21 09:00:08] [ac098af8:M] [ INFO] on-message-display: input={"session_id":"ac098af8-70ad-4705-b8aa-689e81eccc51","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C...
+[2026-08-21 09:00:08] [ac098af8:M] [ INFO] on-stop: hook triggered
+[2026-08-21 09:00:08] [ac098af8:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 09:00:08] [ac098af8:M] [ INFO] on-stop: transcript_path=C:\Users\Wadeck\.claude\projects\C--Workspace-Tooling-violations-framework\ac098af8-70ad-4705-b8aa-689e81eccc51....
+[2026-08-21 09:00:09] [ac098af8:M] [ INFO] on-stop: query=[ajoute des endpoints d'introspection pour toutes les facons de s'authentifier (pour recevoir leur "scope"), histoire que ...
+[2026-08-21 09:00:09] [ac098af8:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 09:00:09] [ac098af8:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 09:00:09] [ac098af8:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 09:01:09] [ac098af8:M] [ INFO] on-notification: hook triggered
+[2026-08-21 09:01:09] [ac098af8:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 09:01:09] [ac098af8:M] [ INFO] on-notification: notif_type=idle_prompt msg=Claude is waiting for your input
+[2026-08-21 09:01:09] [ac098af8:M] [DEBUG] shouldUseStructured=true (proto=1, client=v0.2026.08.12.21.54.stable_00)
+[2026-08-21 09:01:09] [ac098af8:M] [ INFO] notify: sending title=warp://cli-agent
+[2026-08-21 09:01:09] [ac098af8:M] [ INFO] emitTerminalSequence: CC version unknown, using terminalSequence as best-effort
+[2026-08-21 09:02:42] [ac098af8:M] [ INFO] on-session-end: input={"session_id":"ac098af8-70ad-4705-b8aa-689e81eccc51","transcript_path":"C:\\Users\\Wadeck\\.claude\\projects\\C--Wo...

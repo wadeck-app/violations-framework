@@ -4,6 +4,7 @@ export { rule as partialImplFlag } from './shared/partial-impl-flag.js'
 export { rule as readmeSystemLength } from './shared/readme-system-length.js'
 export { rule as noDeadSuppress } from './shared/no-dead-suppress.js'
 export { rule as noWorkspaceShadow } from './shared/no-workspace-shadow.js'
+export { rule as noEmoji } from './shared/no-emoji.js'
 export { rule as noDeadRuleScope } from './violations-meta/no-dead-rule-scope.js'
 export { rule as noRuleWithoutTest } from './violations-meta/no-rule-without-test.js'
 export { rule as noLegacyViolationsFolder } from './violations-meta/no-legacy-violations-folder.js'
@@ -13,6 +14,7 @@ export { rule as noUnionWithString } from './ts/no-union-with-string.js'
 export { rule as noSwitchDefaultBreak } from './ts/no-switch-default-break.js'
 export { rule as noLocaleDate } from './ts/no-locale-date.js'
 export { rule as noCrossPackageRelative } from './ts/no-cross-package-relative.js'
+export { rule as noDeepRelative } from './ts/no-deep-relative.js'
 export { rule as noBarrelIndex } from './ts/no-barrel-index.js'
 export { rule as noSingleFileFolder } from './ts/no-single-file-folder.js'
 export { rule as noInlineSubcomponent } from './ts/no-inline-subcomponent.js'
@@ -56,6 +58,7 @@ export type { Config as PartialImplFlagConfig } from './shared/partial-impl-flag
 export type { Config as ReadmeSystemLengthConfig } from './shared/readme-system-length.js'
 export type { Config as NoDeadSuppressConfig } from './shared/no-dead-suppress.js'
 export type { Config as NoWorkspaceShadowConfig } from './shared/no-workspace-shadow.js'
+export type { Config as NoEmojiConfig } from './shared/no-emoji.js'
 export type { Config as NoDeadRuleScopeConfig } from './violations-meta/no-dead-rule-scope.js'
 export type { Config as NoRuleWithoutTestConfig } from './violations-meta/no-rule-without-test.js'
 export type { Config as NoLegacyViolationsFolderConfig } from './violations-meta/no-legacy-violations-folder.js'
@@ -65,6 +68,7 @@ export type { Config as NoUnionWithStringConfig } from './ts/no-union-with-strin
 export type { Config as NoSwitchDefaultBreakConfig } from './ts/no-switch-default-break.js'
 export type { Config as NoLocaleDateConfig } from './ts/no-locale-date.js'
 export type { Config as NoCrossPackageRelativeConfig } from './ts/no-cross-package-relative.js'
+export type { Config as NoDeepRelativeConfig } from './ts/no-deep-relative.js'
 export type { Config as NoBarrelIndexConfig } from './ts/no-barrel-index.js'
 export type { Config as NoSingleFileFolderConfig } from './ts/no-single-file-folder.js'
 export type { Config as NoInlineSubcomponentConfig } from './ts/no-inline-subcomponent.js'
@@ -108,6 +112,7 @@ import { rule as partialImplFlag } from './shared/partial-impl-flag.js'
 import { rule as readmeSystemLength } from './shared/readme-system-length.js'
 import { rule as noDeadSuppress } from './shared/no-dead-suppress.js'
 import { rule as noWorkspaceShadow } from './shared/no-workspace-shadow.js'
+import { rule as noEmoji } from './shared/no-emoji.js'
 import { rule as noDeadRuleScope } from './violations-meta/no-dead-rule-scope.js'
 import { rule as noRuleWithoutTest } from './violations-meta/no-rule-without-test.js'
 import { rule as noLegacyViolationsFolder } from './violations-meta/no-legacy-violations-folder.js'
@@ -117,6 +122,7 @@ import { rule as noUnionWithString } from './ts/no-union-with-string.js'
 import { rule as noSwitchDefaultBreak } from './ts/no-switch-default-break.js'
 import { rule as noLocaleDate } from './ts/no-locale-date.js'
 import { rule as noCrossPackageRelative } from './ts/no-cross-package-relative.js'
+import { rule as noDeepRelative } from './ts/no-deep-relative.js'
 import { rule as noBarrelIndex } from './ts/no-barrel-index.js'
 import { rule as noSingleFileFolder } from './ts/no-single-file-folder.js'
 import { rule as noInlineSubcomponent } from './ts/no-inline-subcomponent.js'
@@ -163,6 +169,7 @@ export const allRules: Rule<any>[] = [
   readmeSystemLength,
   noDeadSuppress,
   noWorkspaceShadow,
+  noEmoji,
   noDeadRuleScope,
   noRuleWithoutTest,
   noLegacyViolationsFolder,
@@ -172,6 +179,7 @@ export const allRules: Rule<any>[] = [
   noSwitchDefaultBreak,
   noLocaleDate,
   noCrossPackageRelative,
+  noDeepRelative,
   noBarrelIndex,
   noSingleFileFolder,
   noInlineSubcomponent,

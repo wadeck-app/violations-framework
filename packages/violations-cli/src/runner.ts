@@ -118,6 +118,14 @@ export async function run(options: RunOptions): Promise<RuleResult[]> {
 		mergedRules[key] = val as RuleOverride | true
 	}
 
+	// Pre-compute active rule IDs for no-dead-suppress injection.
+	// For lib rules the config key IS the rule id; local rules (./...) are excluded
+	// from this list since we'd need to load them to get their id.
+	const activeRuleIds: string[] = Object.entries(mergedRules)
+		.filter(([, override]) => !(override !== true && override != null && (override as RuleOverride).$severity === false))
+		.filter(([ruleKey]) => !ruleKey.startsWith('./') && !ruleKey.startsWith('../'))
+		.map(([ruleKey]) => ruleKey)
+
 	await Promise.all(
 		Object.entries(mergedRules).map(async ([ruleKey, override]) => {
 			// $severity: false = disabled
@@ -177,6 +185,10 @@ export async function run(options: RunOptions): Promise<RuleResult[]> {
 
 			// Build config for rule.check()
 			const ruleConfig = override !== true && override != null ? stripMetaFields(override as RuleOverride) : {}
+			// Inject activeRuleIds for no-dead-suppress
+			if (rule.id === 'shared/no-dead-suppress') {
+				;(ruleConfig as Record<string, unknown>).activeRuleIds = activeRuleIds
+			}
 
 			// Run check
 			let violations: Violation[]
