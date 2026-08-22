@@ -3,6 +3,7 @@ import { readFile, writeFile, mkdir, rm } from 'node:fs/promises'
 import { existsSync } from 'node:fs'
 import { join, dirname, resolve, extname, basename } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
+import { UpdateManager } from '@wadeck/shared-cli'
 import { run } from './runner.js'
 import { writeReports } from './report.js'
 import { compileIfNeeded, typeCheck } from './compiler.js'
@@ -68,72 +69,6 @@ function formatViolations(results: RuleResult[]): { lines: string[]; errors: num
 	return { lines, errors, warnings }
 }
 
-function runVersionCheckInBackground(projectRoot: string): void {
-	// Non-blocking: fire and forget, never throw
-	void (async () => {
-		try {
-			const cacheDir = join(projectRoot, '.violations', '.cache')
-			const cacheFile = join(cacheDir, 'version-check.json')
-			const currentVersion = await getPackageVersion()
-
-			let latestVersion: string | null = null
-
-			// Check cache
-			if (existsSync(cacheFile)) {
-				try {
-					const raw = await readFile(cacheFile, 'utf8')
-					const cached = JSON.parse(raw) as { checkedAt: string; latestVersion: string; frameworkVersion?: string }
-					const checkedAt = new Date(cached.checkedAt).getTime()
-					const ageMs = Date.now() - checkedAt
-					// Use cached result if less than 24h old and same framework version
-					if (ageMs < 24 * 60 * 60 * 1000 && cached.frameworkVersion === currentVersion) {
-						latestVersion = cached.latestVersion
-					}
-				} catch {
-					// Ignore corrupt cache
-				}
-			}
-
-			if (!latestVersion) {
-				// Fetch from registry
-				const res = await fetch('https://gitlab.com/api/v4/packages/npm/@wadeck/violations-cli')
-				if (res.ok) {
-					const data = await res.json() as { 'dist-tags': { latest: string } }
-					latestVersion = data['dist-tags']?.latest ?? null
-
-					if (latestVersion) {
-						// Write cache
-						await mkdir(cacheDir, { recursive: true })
-						await writeFile(
-							cacheFile,
-							JSON.stringify({ checkedAt: new Date().toISOString(), latestVersion, frameworkVersion: currentVersion }, null, 2),
-							'utf8'
-						)
-					}
-				}
-			}
-
-			if (latestVersion && isNewerVersion(latestVersion, currentVersion)) {
-				console.log(`\n  Update available: v${latestVersion} -> npm update -g @wadeck/violations-cli`)
-			}
-		} catch {
-			// Never throw from background check
-		}
-	})()
-}
-
-function isNewerVersion(latest: string, current: string): boolean {
-	const parse = (v: string): number[] => v.split('.').map(n => parseInt(n, 10))
-	const l = parse(latest)
-	const c = parse(current)
-	for (let i = 0; i < 3; i++) {
-		const lv = l[i] ?? 0
-		const cv = c[i] ?? 0
-		if (lv > cv) return true
-		if (lv < cv) return false
-	}
-	return false
-}
 
 async function cmdCheck(args: string[]): Promise<void> {
 	const projectRoot = getProjectRoot()
@@ -180,10 +115,6 @@ async function cmdCheck(args: string[]): Promise<void> {
 		if (rest > 0) parts.push(`${rest} info`)
 		const breakdown = parts.length > 0 ? `  (${parts.join(', ')})` : ''
 		console.log(`${totalViolations} violation${totalViolations === 1 ? '' : 's'}${breakdown}`)
-	}
-
-	if (process.stdout.isTTY) {
-		runVersionCheckInBackground(projectRoot)
 	}
 
 	process.exit(Math.min(totalViolations, 254))
@@ -625,6 +556,25 @@ async function cmdCacheClear(): Promise<void> {
 
 async function main(): Promise<void> {
 	const argv = process.argv.slice(2)
+
+	// Show update notice from a previous background update run
+	const updater = new UpdateManager('@wadeck/violations-cli')
+	const updateState = updater.readAndClearState()
+	if (updateState?.status === 'success') {
+		process.stderr.write(`violations updated to ${updateState.newVersion}\n`)
+	}
+	if (updateState?.status === 'rolled-back') {
+		process.stderr.write(
+			`[violations] Update to v${updateState.targetVersion} failed (self-check failed). Rolled back to v${updateState.previousVersion}.\n`
+		)
+	}
+	if (updateState?.status === 'update-failed') {
+		process.stderr.write(`[violations] Update check failed (${updateState.reason}).\n`)
+	}
+
+	// Schedule background auto-update early; child is detached so it survives process.exit()
+	const bundlePath = process.env['LAUNCHER_BUNDLE_OVERRIDE'] ?? fileURLToPath(import.meta.url)
+	updater.scheduleBackgroundUpdate(bundlePath, 'violations-updater.cjs')
 
 	if (argv.length === 0 || argv[0] === '--help' || argv[0] === '-h') {
 		printUsage()
