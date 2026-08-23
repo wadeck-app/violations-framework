@@ -2,13 +2,18 @@
   "name": "@wadeck/violations-cli",
   "version": "0.1.0",
   "type": "module",
-  "bin": { "violations": "./dist-bundle/violations.cjs" },
+  "bin": {
+    "violations": "./dist-bundle/violations.cjs"
+  },
   "scripts": {
     "build": "tsc && npx tsx scripts/bundle.ts",
     "typecheck": "tsc --noEmit",
     "test": "node --test dist/**/*.test.js"
   },
-  "files": ["dist/", "dist-bundle/"],
+  "files": [
+    "dist/",
+    "dist-bundle/"
+  ],
   "publishConfig": {
     "@wadeck:registry": "https://gitlab.com/api/v4/projects/84445653/packages/npm/"
   },
@@ -16,9 +21,9 @@
     "@wadeck/violations-rules": "^1.0.0"
   },
   "dependencies": {
-    "@wadeck/shared-cli": "^2026.8.22-5-d3140e53",
-    "typescript": "^5.5.0",
-    "micromatch": "^4.0.8"
+    "@wadeck/shared-cli": "^2026.8.23-006-2d3e15d6",
+    "micromatch": "^4.0.8",
+    "typescript": "^5.5.0"
   },
   "devDependencies": {
     "@types/micromatch": "^4.0.9",

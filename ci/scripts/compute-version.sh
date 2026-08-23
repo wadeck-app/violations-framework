@@ -19,7 +19,10 @@ set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 
 DATETIME=$(date -u '+%Y%m%d%H%M%S')
-BUILD=$(git -C "$REPO_ROOT" rev-list --count HEAD)
+# Zero-pad BUILD to 3 digits minimum (e.g. 001, 015, 142) for visual consistency
+# across all @wadeck repos. npm compares the patch field numerically (003 == 3),
+# so this has no functional impact here — purely cosmetic.
+BUILD=$(printf '%03d' "$(git -C "$REPO_ROOT" rev-list --count HEAD)")
 
 VERSION="1.${DATETIME}.${BUILD}"
 NPM_TAG="latest"
