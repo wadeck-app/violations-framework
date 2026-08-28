@@ -34,6 +34,8 @@ export default {
   projectTags: ['test'],
   rules: {
     './.violations/rules/test-rule.js': true,
+    // Disable the alwaysActive meta-rule so only the local test-rule runs
+    'violations-meta/no-rule-without-test': { $severity: false },
   }
 }
 `
