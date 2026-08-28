@@ -3607,7 +3607,7 @@ var import_node_module = require("node:module");
 var _require = (0, import_node_module.createRequire)(__importMetaUrl);
 function checkBundleVersion() {
   try {
-    const v = "2026.08.28-235226-29-34ef1bef";
+    const v = "2026.08.28-235348-30-f667101f";
     if (!v) {
       return { name: "bundle-version", ok: false, reason: "version string is empty" };
     }
