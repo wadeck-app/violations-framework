@@ -20,11 +20,15 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: '24'
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@wadeck-app'
 
       - run: npm ci
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Compute version
         id: version
@@ -41,17 +45,14 @@ jobs:
       - name: Self-check violations
         run: node packages/violations-cli/dist/cli.js check
 
-      - name: Configure auth for GitHub Packages
-        run: |
-          echo "@wadeck-app:registry=https:${GITHUB_NPM_REGISTRY_PATH}" >> .npmrc
-          echo "${GITHUB_NPM_REGISTRY_PATH}:_authToken=${GITHUB_TOKEN}" >> .npmrc
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Publish violations-rules first (CLI has it as peer dep)
         working-directory: packages/violations-rules
         run: npm publish --tag ${{ steps.version.outputs.npm_tag }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish violations-cli
         working-directory: packages/violations-cli
         run: npm publish --tag ${{ steps.version.outputs.npm_tag }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
