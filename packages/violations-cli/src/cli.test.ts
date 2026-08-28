@@ -32,7 +32,7 @@ describe('violations CLI', () => {
 		try {
 			const { code, stdout } = await runCli(['cache', 'clear'], tempDir)
 			assert.equal(code, 0, `Expected exit 0, got ${code}`)
-			assert.ok(stdout.includes('Cache cleared'), `Expected "Cache cleared" in output, got: ${stdout}`)
+			assert.ok(stdout.includes('cache cleared'), `Expected "cache cleared" in output, got: ${stdout}`)
 		} finally {
 			await rm(tempDir, { recursive: true, force: true })
 		}
@@ -53,5 +53,17 @@ describe('violations CLI', () => {
 	it('violations unknown-command exits 1', async () => {
 		const { code } = await runCli(['unknown-command-xyz'])
 		assert.equal(code, 1, `Expected exit 1 for unknown command, got ${code}`)
+	})
+
+	it('violations --version exits 0 and prints CalVer', async () => {
+		const { code, stdout } = await runCli(['--version'])
+		assert.equal(code, 0, `Expected exit 0, got ${code}`)
+		assert.match(stdout.trim(), /^\d{4}\.\d{2}\.\d{2}/, `Expected CalVer in output, got: ${stdout}`)
+	})
+
+	it('violations -V exits 0 and prints CalVer', async () => {
+		const { code, stdout } = await runCli(['-V'])
+		assert.equal(code, 0, `Expected exit 0, got ${code}`)
+		assert.match(stdout.trim(), /^\d{4}\.\d{2}\.\d{2}/, `Expected CalVer in output, got: ${stdout}`)
 	})
 })

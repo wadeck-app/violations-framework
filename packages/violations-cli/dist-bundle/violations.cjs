@@ -1113,7 +1113,7 @@ var require_braces = __commonJS({
 var require_constants2 = __commonJS({
   "../../node_modules/picomatch/lib/constants.js"(exports2, module2) {
     "use strict";
-    var path3 = require("path");
+    var path4 = require("path");
     var WIN_SLASH = "\\\\/";
     var WIN_NO_SLASH = `[^${WIN_SLASH}]`;
     var DEFAULT_MAX_EXTGLOB_RECURSION = 0;
@@ -1287,7 +1287,7 @@ var require_constants2 = __commonJS({
       /* | */
       CHAR_ZERO_WIDTH_NOBREAK_SPACE: 65279,
       /* \uFEFF */
-      SEP: path3.sep,
+      SEP: path4.sep,
       /**
        * Create EXTGLOB_CHARS
        */
@@ -1314,7 +1314,7 @@ var require_constants2 = __commonJS({
 var require_utils2 = __commonJS({
   "../../node_modules/picomatch/lib/utils.js"(exports2) {
     "use strict";
-    var path3 = require("path");
+    var path4 = require("path");
     var win32 = process.platform === "win32";
     var {
       REGEX_BACKSLASH,
@@ -1343,7 +1343,7 @@ var require_utils2 = __commonJS({
       if (options && typeof options.windows === "boolean") {
         return options.windows;
       }
-      return win32 === true || path3.sep === "\\";
+      return win32 === true || path4.sep === "\\";
     };
     exports2.escapeLast = (input, char, lastIdx) => {
       const idx = input.lastIndexOf(char, lastIdx);
@@ -1705,7 +1705,7 @@ var require_scan = __commonJS({
 var require_parse2 = __commonJS({
   "../../node_modules/picomatch/lib/parse.js"(exports2, module2) {
     "use strict";
-    var constants = require_constants2();
+    var constants2 = require_constants2();
     var utils = require_utils2();
     var {
       MAX_LENGTH,
@@ -1713,7 +1713,7 @@ var require_parse2 = __commonJS({
       REGEX_NON_SPECIAL_CHARS,
       REGEX_SPECIAL_CHARS_BACKREF,
       REPLACEMENTS
-    } = constants;
+    } = constants2;
     var expandRange = (args, options) => {
       if (typeof options.expandRange === "function") {
         return options.expandRange(...args, options);
@@ -1919,7 +1919,7 @@ var require_parse2 = __commonJS({
       if (options.maxExtglobRecursion === false) {
         return { risky: false };
       }
-      const max = typeof options.maxExtglobRecursion === "number" ? options.maxExtglobRecursion : constants.DEFAULT_MAX_EXTGLOB_RECURSION;
+      const max = typeof options.maxExtglobRecursion === "number" ? options.maxExtglobRecursion : constants2.DEFAULT_MAX_EXTGLOB_RECURSION;
       const branches = splitTopLevel(body).map((branch) => branch.trim());
       if (branches.length > 1) {
         if (branches.some((branch) => branch === "") || branches.some((branch) => /^[*?]+$/.test(branch)) || hasRepeatedCharPrefixOverlap(branches)) {
@@ -1952,8 +1952,8 @@ var require_parse2 = __commonJS({
       const tokens = [bos];
       const capture = opts.capture ? "" : "?:";
       const win32 = utils.isWindows(options);
-      const PLATFORM_CHARS = constants.globChars(win32);
-      const EXTGLOB_CHARS = constants.extglobChars(PLATFORM_CHARS);
+      const PLATFORM_CHARS = constants2.globChars(win32);
+      const EXTGLOB_CHARS = constants2.extglobChars(PLATFORM_CHARS);
       const {
         DOT_LITERAL,
         PLUS_LITERAL,
@@ -2652,7 +2652,7 @@ var require_parse2 = __commonJS({
         NO_DOTS_SLASH,
         STAR,
         START_ANCHOR
-      } = constants.globChars(win32);
+      } = constants2.globChars(win32);
       const nodot = opts.dot ? NO_DOTS : NO_DOT;
       const slashDot = opts.dot ? NO_DOTS_SLASH : NO_DOT;
       const capture = opts.capture ? "" : "?:";
@@ -2707,11 +2707,11 @@ var require_parse2 = __commonJS({
 var require_picomatch = __commonJS({
   "../../node_modules/picomatch/lib/picomatch.js"(exports2, module2) {
     "use strict";
-    var path3 = require("path");
+    var path4 = require("path");
     var scan = require_scan();
     var parse = require_parse2();
     var utils = require_utils2();
-    var constants = require_constants2();
+    var constants2 = require_constants2();
     var isObject = (val) => val && typeof val === "object" && !Array.isArray(val);
     var picomatch = (glob2, options, returnState = false) => {
       if (Array.isArray(glob2)) {
@@ -2792,7 +2792,7 @@ var require_picomatch = __commonJS({
     };
     picomatch.matchBase = (input, glob2, options, posix = utils.isWindows(options)) => {
       const regex = glob2 instanceof RegExp ? glob2 : picomatch.makeRe(glob2, options);
-      return regex.test(path3.basename(input));
+      return regex.test(path4.basename(input));
     };
     picomatch.isMatch = (str, patterns, options) => picomatch(patterns, options)(str);
     picomatch.parse = (pattern, options) => {
@@ -2839,7 +2839,7 @@ var require_picomatch = __commonJS({
         return /$^/;
       }
     };
-    picomatch.constants = constants;
+    picomatch.constants = constants2;
     module2.exports = picomatch;
   }
 });
@@ -3015,7 +3015,8 @@ var require_micromatch = __commonJS({
 
 // dist/cli.js
 var import_promises5 = require("node:fs/promises");
-var import_node_fs5 = require("node:fs");
+var import_node_fs6 = require("node:fs");
+var import_node_child_process4 = require("node:child_process");
 var import_node_path5 = require("node:path");
 var import_node_url2 = require("node:url");
 
@@ -3106,6 +3107,61 @@ var UpdateManager = class {
     }
   }
 };
+
+// dist/config.js
+var fs3 = __toESM(require("node:fs"), 1);
+var path3 = __toESM(require("node:path"), 1);
+var DEFAULTS = {
+  update: {
+    channel: "edge",
+    checkInterval: "30m",
+    disabled: false
+  }
+};
+function loadUserConfig(configDir) {
+  const resolvedDir = configDir ?? ConfigDir.get("violations");
+  const configFile = path3.join(resolvedDir, "config.yml");
+  if (!fs3.existsSync(configFile))
+    return DEFAULTS;
+  try {
+    const raw = fs3.readFileSync(configFile, "utf-8");
+    const channelMatch = /^\s*channel:\s*['"]?(\S+?)['"]?\s*$/m.exec(raw);
+    const intervalMatch = /^\s*checkInterval:\s*['"]?(\S+?)['"]?\s*$/m.exec(raw);
+    const disabledMatch = /^\s*disabled:\s*(true|false)\s*$/m.exec(raw);
+    return {
+      update: {
+        channel: channelMatch?.[1] ?? DEFAULTS.update.channel,
+        checkInterval: intervalMatch?.[1] ?? DEFAULTS.update.checkInterval,
+        disabled: disabledMatch?.[1] === "true"
+      }
+    };
+  } catch {
+    process.stderr.write(`[violations] Warning: failed to read ${configFile}, using defaults.
+`);
+    return DEFAULTS;
+  }
+}
+
+// dist/version.js
+var import_node_child_process3 = require("node:child_process");
+function readBaseVersion() {
+  const now = /* @__PURE__ */ new Date();
+  const pad2 = (n) => String(n).padStart(2, "0");
+  const date = `${now.getFullYear()}.${pad2(now.getMonth() + 1)}.${pad2(now.getDate())}`;
+  const time = `${pad2(now.getHours())}${pad2(now.getMinutes())}${pad2(now.getSeconds())}`;
+  let count = "0";
+  let hash = "DEV";
+  try {
+    count = (0, import_node_child_process3.execSync)("git rev-list --count HEAD", { encoding: "utf8" }).trim();
+  } catch {
+  }
+  try {
+    hash = (0, import_node_child_process3.execSync)("git rev-parse --short=8 HEAD", { encoding: "utf8" }).trim();
+  } catch {
+  }
+  return `${date}-${time}-${count}-${hash}`;
+}
+var VERSION = readBaseVersion();
 
 // dist/runner.js
 var import_promises3 = require("node:fs/promises");
@@ -3545,8 +3601,81 @@ async function writeReports(dotViolationsDir, results) {
   return { reportPath, suppressedPath };
 }
 
+// dist/selfCheck.js
+var import_node_fs5 = require("node:fs");
+var import_node_module = require("node:module");
+var _require = (0, import_node_module.createRequire)(__importMetaUrl);
+function checkBundleVersion() {
+  try {
+    const v = "2026.08.28-204534-28-7ff93cc0";
+    if (!v) {
+      return { name: "bundle-version", ok: false, reason: "version string is empty" };
+    }
+    return { name: "bundle-version", ok: true };
+  } catch {
+    return { name: "bundle-version", ok: false, reason: "not bundled (dev build)" };
+  }
+}
+function checkConfigDirWritable() {
+  try {
+    const dir = process.env["VIOLATIONS_CONFIG_DIR"] ?? ConfigDir.get("violations");
+    (0, import_node_fs5.mkdirSync)(dir, { recursive: true });
+    (0, import_node_fs5.accessSync)(dir, import_node_fs5.constants.W_OK);
+    return { name: "config-dir-writable", ok: true };
+  } catch (err) {
+    return { name: "config-dir-writable", ok: false, reason: String(err) };
+  }
+}
+function checkTypeScriptApi() {
+  try {
+    _require.resolve("typescript");
+    return { name: "typescript-api", ok: true };
+  } catch (err) {
+    return { name: "typescript-api", ok: false, reason: String(err) };
+  }
+}
+function runSelfChecks() {
+  return [checkBundleVersion(), checkConfigDirWritable(), checkTypeScriptApi()];
+}
+function printSelfChecks(results) {
+  const quiet = process.env["CLI_SELF_CHECK_QUIET"] === "1";
+  for (const r of results) {
+    if (r.ok) {
+      if (!quiet)
+        process.stdout.write(`[ok] ${r.name}
+`);
+    } else {
+      process.stdout.write(`[fail] ${r.name}: ${r.reason ?? "unknown"}
+`);
+    }
+  }
+}
+
 // dist/cli.js
 var __dirname2 = (0, import_node_path5.dirname)((0, import_node_url2.fileURLToPath)(__importMetaUrl));
+var RULES_GROUP_HELP = `violations rules - manage violation rules
+
+Usage:
+  violations rules list [--tag <tag>]
+  violations rules info <id>
+  violations rules create <name> --lang ts|js
+`;
+var CONFIG_GROUP_HELP = `violations config - manage project configuration
+
+Usage:
+  violations config validate
+`;
+var CACHE_GROUP_HELP = `violations cache - manage compilation cache
+
+Usage:
+  violations cache clear
+`;
+var CLI_GROUP_HELP = `violations cli - CLI tooling commands
+
+Usage:
+  violations cli self-check
+  violations cli update
+`;
 function printUsage() {
   console.log(`violations - code quality rule runner
 
@@ -3558,6 +3687,17 @@ Usage:
   violations rules create <name> --lang ts|js
   violations config validate
   violations cache clear
+  violations cli self-check
+  violations cli update
+
+Exit codes:
+  0  ok
+  1  error
+  N  violation count (check)
+
+Env vars:
+  VIOLATIONS_CONFIG_DIR   override the config directory
+  CLI_SELF_CHECK_QUIET    set to 1 to suppress [ok] lines in self-check
 `);
 }
 function getProjectRoot() {
@@ -3597,7 +3737,7 @@ async function cmdCheck(args) {
   const dotViolationsDir = getDotViolationsDir(projectRoot);
   const configTs = (0, import_node_path5.join)(dotViolationsDir, "config.ts");
   const configJs = (0, import_node_path5.join)(dotViolationsDir, "config.js");
-  if (!(0, import_node_fs5.existsSync)(configTs) && !(0, import_node_fs5.existsSync)(configJs)) {
+  if (!(0, import_node_fs6.existsSync)(configTs) && !(0, import_node_fs6.existsSync)(configJs)) {
     process.stderr.write("No .violations/config.ts found. Run: violations rules create\n");
     process.exit(1);
   }
@@ -3621,7 +3761,7 @@ async function cmdCheck(args) {
     console.log(line);
   }
   if (totalViolations === 0) {
-    console.log("\u2713 0 violations");
+    console.log("[ok] 0 violations");
   } else {
     const parts = [];
     if (errors > 0)
@@ -3658,22 +3798,22 @@ async function cmdTest(args) {
     const localFiles = await glob(localPattern);
     testFiles.push(...localFiles);
     const pkgTest = (0, import_node_path5.join)(__dirname2, "..", "dist", "rules", `${ruleId}.test.js`);
-    if ((0, import_node_fs5.existsSync)(pkgTest))
+    if ((0, import_node_fs6.existsSync)(pkgTest))
       testFiles.push(pkgTest);
   } else if (localOnly) {
     const localDir = (0, import_node_path5.join)(dotViolationsDir, "rules");
-    if ((0, import_node_fs5.existsSync)(localDir)) {
+    if ((0, import_node_fs6.existsSync)(localDir)) {
       const found = await globDir(localDir, /\.test\.[jt]s$/);
       testFiles.push(...found);
     }
   } else {
     const pkgTestDir = (0, import_node_path5.join)(__dirname2, "..", "dist", "rules");
-    if ((0, import_node_fs5.existsSync)(pkgTestDir)) {
+    if ((0, import_node_fs6.existsSync)(pkgTestDir)) {
       const found = await globDir(pkgTestDir, /\.test\.js$/);
       testFiles.push(...found);
     }
     const localDir = (0, import_node_path5.join)(dotViolationsDir, "rules");
-    if ((0, import_node_fs5.existsSync)(localDir)) {
+    if ((0, import_node_fs6.existsSync)(localDir)) {
       const found = await globDir(localDir, /\.test\.[jt]s$/);
       testFiles.push(...found);
     }
@@ -3722,11 +3862,11 @@ async function globDir(dir, pattern) {
   return results;
 }
 async function glob(pattern) {
-  if ((0, import_node_fs5.existsSync)(pattern))
+  if ((0, import_node_fs6.existsSync)(pattern))
     return [pattern];
   for (const ext of [".ts", ".js"]) {
     const candidate = pattern.replace(/\.\*$/, ext);
-    if ((0, import_node_fs5.existsSync)(candidate))
+    if ((0, import_node_fs6.existsSync)(candidate))
       return [candidate];
   }
   return [];
@@ -3901,7 +4041,7 @@ async function cmdRulesCreate(name, args) {
   await (0, import_promises5.mkdir)(rulesDir, { recursive: true });
   const ruleFile = (0, import_node_path5.join)(rulesDir, `${name}.${lang}`);
   const testFile = (0, import_node_path5.join)(rulesDir, `${name}.test.${lang}`);
-  if ((0, import_node_fs5.existsSync)(ruleFile)) {
+  if ((0, import_node_fs6.existsSync)(ruleFile)) {
     process.stderr.write(`Rule already exists: ${ruleFile}
 `);
     process.exit(1);
@@ -3915,15 +4055,15 @@ async function cmdConfigValidate() {
   const projectRoot = getProjectRoot();
   const dotViolationsDir = getDotViolationsDir(projectRoot);
   const configTs = (0, import_node_path5.join)(dotViolationsDir, "config.ts");
-  if (!(0, import_node_fs5.existsSync)(configTs)) {
-    process.stderr.write("No .violations/config.ts found. Run: violations rules create\n");
+  if (!(0, import_node_fs6.existsSync)(configTs)) {
+    process.stderr.write("[fail] No .violations/config.ts found. Run: violations rules create\n");
     process.exit(1);
   }
   const errors = [];
   const { errors: typeErrors } = await typeCheck(configTs);
   errors.push(...typeErrors);
   if (errors.length > 0) {
-    process.stderr.write("TypeScript errors in config.ts:\n");
+    process.stderr.write("[fail] TypeScript errors in config.ts:\n");
     for (const e of errors) {
       process.stderr.write(`  ${e}
 `);
@@ -3945,7 +4085,7 @@ async function cmdConfigValidate() {
         const resolvedBase = (0, import_node_path5.resolve)(projectRoot, ruleKey);
         const resolvedTs = (0, import_node_path5.extname)(resolvedBase) === "" ? resolvedBase + ".ts" : resolvedBase;
         const resolvedJs = (0, import_node_path5.extname)(resolvedBase) === "" ? resolvedBase + ".js" : resolvedBase.replace(/\.ts$/, ".js");
-        if (!(0, import_node_fs5.existsSync)(resolvedBase) && !(0, import_node_fs5.existsSync)(resolvedTs) && !(0, import_node_fs5.existsSync)(resolvedJs)) {
+        if (!(0, import_node_fs6.existsSync)(resolvedBase) && !(0, import_node_fs6.existsSync)(resolvedTs) && !(0, import_node_fs6.existsSync)(resolvedJs)) {
           ruleErrors.push(`Rule not found: ${ruleKey} (resolved to ${resolvedBase})`);
         }
       } else {
@@ -3957,7 +4097,7 @@ async function cmdConfigValidate() {
       }
     }
     if (ruleErrors.length > 0) {
-      process.stderr.write("Rule resolution errors:\n");
+      process.stderr.write("[fail] Rule resolution errors:\n");
       for (const e of ruleErrors) {
         process.stderr.write(`  ${e}
 `);
@@ -3966,11 +4106,11 @@ async function cmdConfigValidate() {
     }
   } catch (err) {
     errors.push(`Failed to load config: ${String(err)}`);
-    process.stderr.write(`Failed to load config: ${String(err)}
+    process.stderr.write(`[fail] Failed to load config: ${String(err)}
 `);
   }
   if (errors.length === 0) {
-    console.log("Config is valid.");
+    console.log("[ok] config is valid.");
     process.exit(0);
   } else {
     process.exit(1);
@@ -3979,10 +4119,29 @@ async function cmdConfigValidate() {
 async function cmdCacheClear() {
   const projectRoot = getProjectRoot();
   const cacheDir = (0, import_node_path5.join)(projectRoot, ".violations", ".cache");
-  if ((0, import_node_fs5.existsSync)(cacheDir)) {
+  if ((0, import_node_fs6.existsSync)(cacheDir)) {
     await (0, import_promises5.rm)(cacheDir, { recursive: true, force: true });
   }
-  console.log("Cache cleared.");
+  process.stdout.write("[ok] cache cleared.\n");
+}
+function cmdCliSelfCheck() {
+  const results = runSelfChecks();
+  printSelfChecks(results);
+  const allPassed = results.every((r) => r.ok);
+  process.exit(allPassed ? 0 : 1);
+}
+function cmdCliUpdate() {
+  const bundlePath = process.env["LAUNCHER_BUNDLE_OVERRIDE"] ?? (0, import_node_url2.fileURLToPath)(__importMetaUrl);
+  const bundleDir = (0, import_node_path5.dirname)(bundlePath);
+  const updaterPath = (0, import_node_path5.join)(bundleDir, "violations-updater.cjs");
+  if (!(0, import_node_fs6.existsSync)(updaterPath)) {
+    process.stderr.write("[fail] updater not found (dev mode?)\n");
+    process.exit(1);
+  }
+  (0, import_node_child_process4.execFileSync)(process.execPath, [updaterPath], {
+    stdio: "inherit",
+    env: { ...process.env, UPDATER_FORCE: "1" }
+  });
 }
 async function main() {
   const argv = process.argv.slice(2);
@@ -4000,65 +4159,103 @@ async function main() {
     process.stderr.write(`[violations] Update check failed (${updateState.reason}).
 `);
   }
+  const configDir = process.env["VIOLATIONS_CONFIG_DIR"] ?? ConfigDir.get("violations");
+  const userConfig = loadUserConfig(configDir);
   const bundlePath = process.env["LAUNCHER_BUNDLE_OVERRIDE"] ?? (0, import_node_url2.fileURLToPath)(__importMetaUrl);
-  updater.scheduleBackgroundUpdate(bundlePath, "violations-updater.cjs");
+  if (argv[0] === "--version" || argv[0] === "-V") {
+    console.log(VERSION);
+    process.exit(0);
+  }
   if (argv.length === 0 || argv[0] === "--help" || argv[0] === "-h") {
     printUsage();
     process.exit(0);
   }
   const command = argv[0];
   const rest = argv.slice(1);
-  if (command === "check") {
-    await cmdCheck(rest);
-  } else if (command === "test") {
-    await cmdTest(rest);
-  } else if (command === "rules") {
-    const sub = rest[0];
-    const subRest = rest.slice(1);
-    if (sub === "list") {
-      await cmdRulesList(subRest);
-    } else if (sub === "info") {
-      await cmdRulesInfo(subRest[0]);
-    } else if (sub === "create") {
-      await cmdRulesCreate(subRest[0], subRest.slice(1));
+  try {
+    if (command === "check") {
+      await cmdCheck(rest);
+    } else if (command === "test") {
+      await cmdTest(rest);
+    } else if (command === "rules") {
+      const sub = rest[0];
+      const subRest = rest.slice(1);
+      if (sub === "--help" || sub === "-h") {
+        process.stdout.write(RULES_GROUP_HELP);
+        process.exit(0);
+      } else if (sub === "list") {
+        await cmdRulesList(subRest);
+      } else if (sub === "info") {
+        await cmdRulesInfo(subRest[0]);
+      } else if (sub === "create") {
+        await cmdRulesCreate(subRest[0], subRest.slice(1));
+      } else {
+        process.stderr.write(`[fail] Unknown subcommand: rules ${sub ?? ""}
+Run: violations rules --help
+`);
+        process.exit(1);
+      }
+    } else if (command === "config") {
+      const sub = rest[0];
+      if (sub === "--help" || sub === "-h") {
+        process.stdout.write(CONFIG_GROUP_HELP);
+        process.exit(0);
+      } else if (sub === "validate") {
+        await cmdConfigValidate();
+      } else {
+        process.stderr.write(`[fail] Unknown subcommand: config ${sub ?? ""}
+Run: violations config --help
+`);
+        process.exit(1);
+      }
+    } else if (command === "cache") {
+      const sub = rest[0];
+      if (sub === "--help" || sub === "-h") {
+        process.stdout.write(CACHE_GROUP_HELP);
+        process.exit(0);
+      } else if (sub === "clear") {
+        await cmdCacheClear();
+      } else {
+        process.stderr.write(`[fail] Unknown subcommand: cache ${sub ?? ""}
+Run: violations cache --help
+`);
+        process.exit(1);
+      }
+    } else if (command === "cli") {
+      const sub = rest[0];
+      if (sub === "--help" || sub === "-h") {
+        process.stdout.write(CLI_GROUP_HELP);
+        process.exit(0);
+      } else if (sub === "self-check") {
+        cmdCliSelfCheck();
+      } else if (sub === "update") {
+        cmdCliUpdate();
+      } else {
+        process.stderr.write(`[fail] Unknown subcommand: cli ${sub ?? ""}
+Run: violations cli --help
+`);
+        process.exit(1);
+      }
     } else {
-      process.stderr.write(`Unknown subcommand: rules ${sub ?? ""}
-Run violations --help for usage.
+      process.stderr.write(`[fail] Unknown command: ${command}
+Run: violations --help
 `);
       process.exit(1);
     }
-  } else if (command === "config") {
-    const sub = rest[0];
-    if (sub === "validate") {
-      await cmdConfigValidate();
-    } else {
-      process.stderr.write(`Unknown subcommand: config ${sub ?? ""}
-Run violations --help for usage.
-`);
-      process.exit(1);
+  } finally {
+    if (!userConfig.update.disabled) {
+      updater.scheduleBackgroundUpdate(bundlePath, "violations-updater.cjs");
     }
-  } else if (command === "cache") {
-    const sub = rest[0];
-    if (sub === "clear") {
-      await cmdCacheClear();
-    } else {
-      process.stderr.write(`Unknown subcommand: cache ${sub ?? ""}
-Run violations --help for usage.
-`);
-      process.exit(1);
-    }
-  } else {
-    process.stderr.write(`Unknown command: ${command}
-Run violations --help for usage.
-`);
-    process.exit(1);
   }
 }
-main().catch((err) => {
-  process.stderr.write(`violations: ${String(err)}
+var isMain = process.argv[1] !== void 0 && (0, import_node_path5.resolve)(process.argv[1]) === (0, import_node_url2.fileURLToPath)(__importMetaUrl);
+if (isMain) {
+  main().catch((err) => {
+    process.stderr.write(`violations: ${String(err)}
 `);
-  process.exit(1);
-});
+    process.exit(1);
+  });
+}
 /*! Bundled license information:
 
 is-number/index.js:

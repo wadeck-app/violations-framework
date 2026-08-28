@@ -8,7 +8,9 @@
   "scripts": {
     "build": "tsc && npx tsx scripts/bundle.ts",
     "typecheck": "tsc --noEmit",
-    "test": "node --test dist/**/*.test.js"
+    "test": "node --test dist/**/*.test.js",
+    "clean": "rimraf dist dist-bundle",
+    "preversion": "node -e \"if (!process.env.CI) { process.exit(1); }\""
   },
   "files": [
     "dist/",

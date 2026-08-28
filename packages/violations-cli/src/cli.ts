@@ -1,15 +1,51 @@
 #!/usr/bin/env node
 import { readFile, writeFile, mkdir, rm } from 'node:fs/promises'
 import { existsSync } from 'node:fs'
+import { execFileSync } from 'node:child_process'
 import { join, dirname, resolve, extname, basename } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { UpdateManager } from '@wadeck/shared-cli'
+import { ConfigDir } from '@wadeck/shared-cli/ConfigDir'
+import { loadUserConfig } from './config.js'
+import { VERSION } from './version.js'
 import { run } from './runner.js'
 import { writeReports } from './report.js'
 import { compileIfNeeded, typeCheck } from './compiler.js'
+import { runSelfChecks, printSelfChecks } from './selfCheck.js'
 import type { RuleResult } from '@wadeck/violations-rules'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
+
+// ---------------------------------------------------------------------------
+// Help constants
+// ---------------------------------------------------------------------------
+
+const RULES_GROUP_HELP = `violations rules - manage violation rules
+
+Usage:
+  violations rules list [--tag <tag>]
+  violations rules info <id>
+  violations rules create <name> --lang ts|js
+`
+
+const CONFIG_GROUP_HELP = `violations config - manage project configuration
+
+Usage:
+  violations config validate
+`
+
+const CACHE_GROUP_HELP = `violations cache - manage compilation cache
+
+Usage:
+  violations cache clear
+`
+
+const CLI_GROUP_HELP = `violations cli - CLI tooling commands
+
+Usage:
+  violations cli self-check
+  violations cli update
+`
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -26,6 +62,17 @@ Usage:
   violations rules create <name> --lang ts|js
   violations config validate
   violations cache clear
+  violations cli self-check
+  violations cli update
+
+Exit codes:
+  0  ok
+  1  error
+  N  violation count (check)
+
+Env vars:
+  VIOLATIONS_CONFIG_DIR   override the config directory
+  CLI_SELF_CHECK_QUIET    set to 1 to suppress [ok] lines in self-check
 `)
 }
 
@@ -106,7 +153,7 @@ async function cmdCheck(args: string[]): Promise<void> {
 	}
 
 	if (totalViolations === 0) {
-		console.log('✓ 0 violations')
+		console.log('[ok] 0 violations')
 	} else {
 		const parts: string[] = []
 		if (errors > 0) parts.push(`${errors} error${errors === 1 ? '' : 's'}`)
@@ -466,7 +513,7 @@ async function cmdConfigValidate(): Promise<void> {
 	const configTs = join(dotViolationsDir, 'config.ts')
 
 	if (!existsSync(configTs)) {
-		process.stderr.write('No .violations/config.ts found. Run: violations rules create\n')
+		process.stderr.write('[fail] No .violations/config.ts found. Run: violations rules create\n')
 		process.exit(1)
 	}
 
@@ -477,7 +524,7 @@ async function cmdConfigValidate(): Promise<void> {
 	errors.push(...typeErrors)
 
 	if (errors.length > 0) {
-		process.stderr.write('TypeScript errors in config.ts:\n')
+		process.stderr.write('[fail] TypeScript errors in config.ts:\n')
 		for (const e of errors) {
 			process.stderr.write(`  ${e}\n`)
 		}
@@ -516,7 +563,7 @@ async function cmdConfigValidate(): Promise<void> {
 		}
 
 		if (ruleErrors.length > 0) {
-			process.stderr.write('Rule resolution errors:\n')
+			process.stderr.write('[fail] Rule resolution errors:\n')
 			for (const e of ruleErrors) {
 				process.stderr.write(`  ${e}\n`)
 			}
@@ -524,11 +571,11 @@ async function cmdConfigValidate(): Promise<void> {
 		}
 	} catch (err) {
 		errors.push(`Failed to load config: ${String(err)}`)
-		process.stderr.write(`Failed to load config: ${String(err)}\n`)
+		process.stderr.write(`[fail] Failed to load config: ${String(err)}\n`)
 	}
 
 	if (errors.length === 0) {
-		console.log('Config is valid.')
+		console.log('[ok] config is valid.')
 		process.exit(0)
 	} else {
 		process.exit(1)
@@ -547,7 +594,38 @@ async function cmdCacheClear(): Promise<void> {
 		await rm(cacheDir, { recursive: true, force: true })
 	}
 
-	console.log('Cache cleared.')
+	process.stdout.write('[ok] cache cleared.\n')
+}
+
+// ---------------------------------------------------------------------------
+// `violations cli self-check`
+// ---------------------------------------------------------------------------
+
+function cmdCliSelfCheck(): void {
+	const results = runSelfChecks()
+	printSelfChecks(results)
+	const allPassed = results.every(r => r.ok)
+	process.exit(allPassed ? 0 : 1)
+}
+
+// ---------------------------------------------------------------------------
+// `violations cli update`
+// ---------------------------------------------------------------------------
+
+function cmdCliUpdate(): void {
+	const bundlePath = process.env['LAUNCHER_BUNDLE_OVERRIDE'] ?? fileURLToPath(import.meta.url)
+	const bundleDir = dirname(bundlePath)
+	const updaterPath = join(bundleDir, 'violations-updater.cjs')
+
+	if (!existsSync(updaterPath)) {
+		process.stderr.write('[fail] updater not found (dev mode?)\n')
+		process.exit(1)
+	}
+
+	execFileSync(process.execPath, [updaterPath], {
+		stdio: 'inherit',
+		env: { ...process.env, UPDATER_FORCE: '1' },
+	})
 }
 
 // ---------------------------------------------------------------------------
@@ -572,9 +650,14 @@ async function main(): Promise<void> {
 		process.stderr.write(`[violations] Update check failed (${updateState.reason}).\n`)
 	}
 
-	// Schedule background auto-update early; child is detached so it survives process.exit()
+	const configDir = process.env['VIOLATIONS_CONFIG_DIR'] ?? ConfigDir.get('violations')
+	const userConfig = loadUserConfig(configDir)
 	const bundlePath = process.env['LAUNCHER_BUNDLE_OVERRIDE'] ?? fileURLToPath(import.meta.url)
-	updater.scheduleBackgroundUpdate(bundlePath, 'violations-updater.cjs')
+
+	if (argv[0] === '--version' || argv[0] === '-V') {
+		console.log(VERSION)
+		process.exit(0)
+	}
 
 	if (argv.length === 0 || argv[0] === '--help' || argv[0] === '-h') {
 		printUsage()
@@ -584,46 +667,80 @@ async function main(): Promise<void> {
 	const command = argv[0]
 	const rest = argv.slice(1)
 
-	if (command === 'check') {
-		await cmdCheck(rest)
-	} else if (command === 'test') {
-		await cmdTest(rest)
-	} else if (command === 'rules') {
-		const sub = rest[0]
-		const subRest = rest.slice(1)
-		if (sub === 'list') {
-			await cmdRulesList(subRest)
-		} else if (sub === 'info') {
-			await cmdRulesInfo(subRest[0])
-		} else if (sub === 'create') {
-			await cmdRulesCreate(subRest[0], subRest.slice(1))
+	try {
+		if (command === 'check') {
+			await cmdCheck(rest)
+		} else if (command === 'test') {
+			await cmdTest(rest)
+		} else if (command === 'rules') {
+			const sub = rest[0]
+			const subRest = rest.slice(1)
+			if (sub === '--help' || sub === '-h') {
+				process.stdout.write(RULES_GROUP_HELP)
+				process.exit(0)
+			} else if (sub === 'list') {
+				await cmdRulesList(subRest)
+			} else if (sub === 'info') {
+				await cmdRulesInfo(subRest[0])
+			} else if (sub === 'create') {
+				await cmdRulesCreate(subRest[0], subRest.slice(1))
+			} else {
+				process.stderr.write(`[fail] Unknown subcommand: rules ${sub ?? ''}\nRun: violations rules --help\n`)
+				process.exit(1)
+			}
+		} else if (command === 'config') {
+			const sub = rest[0]
+			if (sub === '--help' || sub === '-h') {
+				process.stdout.write(CONFIG_GROUP_HELP)
+				process.exit(0)
+			} else if (sub === 'validate') {
+				await cmdConfigValidate()
+			} else {
+				process.stderr.write(`[fail] Unknown subcommand: config ${sub ?? ''}\nRun: violations config --help\n`)
+				process.exit(1)
+			}
+		} else if (command === 'cache') {
+			const sub = rest[0]
+			if (sub === '--help' || sub === '-h') {
+				process.stdout.write(CACHE_GROUP_HELP)
+				process.exit(0)
+			} else if (sub === 'clear') {
+				await cmdCacheClear()
+			} else {
+				process.stderr.write(`[fail] Unknown subcommand: cache ${sub ?? ''}\nRun: violations cache --help\n`)
+				process.exit(1)
+			}
+		} else if (command === 'cli') {
+			const sub = rest[0]
+			if (sub === '--help' || sub === '-h') {
+				process.stdout.write(CLI_GROUP_HELP)
+				process.exit(0)
+			} else if (sub === 'self-check') {
+				cmdCliSelfCheck()
+			} else if (sub === 'update') {
+				cmdCliUpdate()
+			} else {
+				process.stderr.write(`[fail] Unknown subcommand: cli ${sub ?? ''}\nRun: violations cli --help\n`)
+				process.exit(1)
+			}
 		} else {
-			process.stderr.write(`Unknown subcommand: rules ${sub ?? ''}\nRun violations --help for usage.\n`)
+			process.stderr.write(`[fail] Unknown command: ${command}\nRun: violations --help\n`)
 			process.exit(1)
 		}
-	} else if (command === 'config') {
-		const sub = rest[0]
-		if (sub === 'validate') {
-			await cmdConfigValidate()
-		} else {
-			process.stderr.write(`Unknown subcommand: config ${sub ?? ''}\nRun violations --help for usage.\n`)
-			process.exit(1)
+	} finally {
+		if (!userConfig.update.disabled) {
+			updater.scheduleBackgroundUpdate(bundlePath, 'violations-updater.cjs')
 		}
-	} else if (command === 'cache') {
-		const sub = rest[0]
-		if (sub === 'clear') {
-			await cmdCacheClear()
-		} else {
-			process.stderr.write(`Unknown subcommand: cache ${sub ?? ''}\nRun violations --help for usage.\n`)
-			process.exit(1)
-		}
-	} else {
-		process.stderr.write(`Unknown command: ${command}\nRun violations --help for usage.\n`)
-		process.exit(1)
 	}
 }
 
-main().catch(err => {
-	process.stderr.write(`violations: ${String(err)}\n`)
-	process.exit(1)
-})
+const isMain =
+	process.argv[1] !== undefined &&
+	resolve(process.argv[1]) === fileURLToPath(import.meta.url)
+
+if (isMain) {
+	main().catch(err => {
+		process.stderr.write(`violations: ${String(err)}\n`)
+		process.exit(1)
+	})
+}
