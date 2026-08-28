@@ -4,15 +4,15 @@ import { existsSync } from 'node:fs'
 import { execFileSync } from 'node:child_process'
 import { join, dirname, resolve, extname, basename } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
-import { UpdateManager } from '@wadeck/shared-cli'
-import { ConfigDir } from '@wadeck/shared-cli/ConfigDir'
+import { UpdateManager } from '@wadeck-app/shared-cli'
+import { ConfigDir } from '@wadeck-app/shared-cli/ConfigDir'
 import { loadUserConfig } from './config.js'
 import { VERSION } from './version.js'
 import { run } from './runner.js'
 import { writeReports } from './report.js'
 import { compileIfNeeded, typeCheck } from './compiler.js'
 import { runSelfChecks, printSelfChecks } from './selfCheck.js'
-import type { RuleResult } from '@wadeck/violations-rules'
+import type { RuleResult } from '@wadeck-app/violations-rules'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
@@ -309,7 +309,7 @@ async function cmdRulesList(args: string[]): Promise<void> {
 	let rules: Array<{ id: string; tags: string; defaultSeverity: string; defaultScope: string[] }> = []
 
 	try {
-		const mod = await import('@wadeck/violations-rules') as { allRules?: typeof rules }
+		const mod = await import('@wadeck-app/violations-rules') as { allRules?: typeof rules }
 		if (mod.allRules) {
 			rules = mod.allRules
 		}
@@ -348,7 +348,7 @@ async function cmdRulesInfo(id: string): Promise<void> {
 	let rule: { id: string; tags: string; defaultSeverity: string; defaultScope: string[] } | undefined
 
 	try {
-		const mod = await import(`@wadeck/violations-rules/rules/${id}`) as { default: typeof rule }
+		const mod = await import(`@wadeck-app/violations-rules/rules/${id}`) as { default: typeof rule }
 		rule = mod.default
 	} catch {
 		// Not found
@@ -371,7 +371,7 @@ async function cmdRulesInfo(id: string): Promise<void> {
 
 function buildRuleTemplate(name: string, lang: 'ts' | 'js'): string {
 	if (lang === 'ts') {
-		return `import type { Rule, Violation } from '@wadeck/violations-rules'
+		return `import type { Rule, Violation } from '@wadeck-app/violations-rules'
 
 export const rule: Rule = {
   id: 'local/${name}',
@@ -388,14 +388,14 @@ export const rule: Rule = {
 export default rule
 `
 	}
-	return `/** @type {import('@wadeck/violations-rules').Rule} */
+	return `/** @type {import('@wadeck-app/violations-rules').Rule} */
 export const rule = {
   id: 'local/${name}',
   tags: 'shared',
   defaultScope: ['**/*'],
   defaultSeverity: 'error',
   async check(files, _config) {
-    /** @type {import('@wadeck/violations-rules').Violation[]} */
+    /** @type {import('@wadeck-app/violations-rules').Violation[]} */
     const violations = []
     // TODO: implement
     return violations
@@ -555,7 +555,7 @@ async function cmdConfigValidate(): Promise<void> {
 			} else {
 				// Package rule - try to import it
 				try {
-					await import(`@wadeck/violations-rules/rules/${ruleKey}`)
+					await import(`@wadeck-app/violations-rules/rules/${ruleKey}`)
 				} catch {
 					ruleErrors.push(`Package rule not found: ${ruleKey} (will be available in Phase 4)`)
 				}
@@ -636,7 +636,7 @@ async function main(): Promise<void> {
 	const argv = process.argv.slice(2)
 
 	// Show update notice from a previous background update run
-	const updater = new UpdateManager('@wadeck/violations-cli')
+	const updater = new UpdateManager('@wadeck-app/violations-cli')
 	const updateState = updater.readAndClearState()
 	if (updateState?.status === 'success') {
 		process.stderr.write(`violations updated to ${updateState.newVersion}\n`)

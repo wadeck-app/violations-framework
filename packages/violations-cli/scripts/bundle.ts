@@ -32,8 +32,8 @@ await build({
 	format: 'cjs',
 	outfile: path.join(root, 'dist-bundle/violations.cjs'),
 	// typescript: uses __dirname for lib/*.d.ts resolution -- must stay external
-	// @wadeck/violations-rules: runtime plugin loaded from project -- must stay external
-	external: ['typescript', '@wadeck/violations-rules'],
+	// @wadeck-app/violations-rules: runtime plugin loaded from project -- must stay external
+	external: ['typescript', '@wadeck-app/violations-rules'],
 	supported: { 'top-level-await': false },
 	define: {
 		'import.meta.url': '__importMetaUrl',

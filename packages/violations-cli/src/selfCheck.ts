@@ -1,6 +1,6 @@
 import { mkdirSync, accessSync, constants } from 'node:fs'
 import { createRequire } from 'node:module'
-import { ConfigDir } from '@wadeck/shared-cli/ConfigDir'
+import { ConfigDir } from '@wadeck-app/shared-cli/ConfigDir'
 
 // Injected by esbuild at bundle time via define; not present in plain tsc output.
 declare const __VIOLATIONS_CLI_VERSION__: string

@@ -1,5 +1,5 @@
 {
-  "name": "@wadeck/violations-cli",
+  "name": "@wadeck-app/violations-cli",
   "version": "0.1.0",
   "type": "module",
   "bin": {
@@ -17,20 +17,20 @@
     "dist-bundle/"
   ],
   "publishConfig": {
-    "@wadeck:registry": "https://gitlab.com/api/v4/projects/84445653/packages/npm/"
+    "@wadeck-app:registry": "https://npm.pkg.github.com/"
   },
   "peerDependencies": {
-    "@wadeck/violations-rules": "^1.0.0"
+    "@wadeck-app/violations-rules": "^1.0.0"
   },
   "dependencies": {
-    "@wadeck/shared-cli": "^2026.8.23-006-2d3e15d6",
+    "@wadeck-app/shared-cli": "^2026.8.28-007-f471d994",
     "micromatch": "^4.0.8",
     "typescript": "^5.5.0"
   },
   "devDependencies": {
     "@types/micromatch": "^4.0.9",
     "@types/node": "^22.0.0",
-    "@wadeck/violations-rules": "*",
+    "@wadeck-app/violations-rules": "*",
     "esbuild": "^0.25.0",
     "tsx": "^4.0.0"
   }

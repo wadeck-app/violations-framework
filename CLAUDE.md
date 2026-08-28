@@ -4,18 +4,18 @@ Two npm packages that centralise code-quality violation rules across TypeScript,
 
 ## Local setup (one time)
 
-Add to `~/.npmrc` to publish/consume `@wadeck` packages from the private GitLab registry:
+Add to `~/.npmrc` to consume `@wadeck-app` packages from GitHub Packages:
 ```
-@wadeck:registry=https://gitlab.com/api/v4/packages/npm/
-//gitlab.com/api/v4/packages/npm/:_authToken=<GitLab personal access token with read_api + write_package_registry scopes>
-```
-
-```
-@wadeck/violations-rules   <- rule definitions + TypeScript types
-@wadeck/violations-cli     <- `violations` binary + runner + compiler
+@wadeck-app:registry=https://npm.pkg.github.com/
+//npm.pkg.github.com/:_authToken=<GitHub PAT with read:packages scope>
 ```
 
-Published to `https://api.backup.wadeck.ch/npm` on every push to `main`. Version format: `1.0.YYYYMMDD-HHMMSS-BUILD-SHA` (see `ci/scripts/compute-version.sh`).
+```
+@wadeck-app/violations-rules   <- rule definitions + TypeScript types
+@wadeck-app/violations-cli     <- `violations` binary + runner + compiler
+```
+
+Published to GitHub Packages (`https://npm.pkg.github.com/`) on every push to `main`. Version format: `1.0.YYYYMMDD-HHMMSS-BUILD-SHA` (see `ci/scripts/compute-version.sh`).
 
 ---
 
@@ -120,5 +120,5 @@ Rules receive pre-filtered `files[]` - never call `walk()` inside a rule.
 
 - `ci.yml` - runs on every push and PR (build + test)
 - `publish.yml` - runs on every push to `main` (build + test + self-check + publish both packages)
-- Required GitHub secret: `WDRIVE_NPM_TOKEN` (repository secret)
+- No repository secret needed — publishing uses the built-in `GITHUB_TOKEN`
 - `violations-rules` is published before `violations-cli` (CLI has it as peer dep)

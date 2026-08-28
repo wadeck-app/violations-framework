@@ -38,7 +38,7 @@ __export(UpdaterMain_exports, {
 });
 module.exports = __toCommonJS(UpdaterMain_exports);
 
-// ../../node_modules/@wadeck/shared-cli/dist/ConfigDir.js
+// ../../node_modules/@wadeck-app/shared-cli/dist/ConfigDir.js
 var fs = __toESM(require("node:fs"), 1);
 var os = __toESM(require("node:os"), 1);
 var path = __toESM(require("node:path"), 1);
@@ -85,7 +85,7 @@ var fs2 = __toESM(require("node:fs"), 1);
 var path2 = __toESM(require("node:path"), 1);
 var import_node_util = require("node:util");
 var execFileAsync = (0, import_node_util.promisify)(import_node_child_process.execFile);
-var PKG_NAME = process.env["UPDATER_PKG_NAME"] ?? "@wadeck/violations-cli";
+var PKG_NAME = process.env["UPDATER_PKG_NAME"] ?? "@wadeck-app/violations-cli";
 var VERSION_RE = /^\d+\.\d+\.\d+([-+][\w.-]+)?$/;
 function semverLte(a, b) {
   const parse = (v) => {
@@ -250,7 +250,7 @@ async function main() {
     }
     let currentVersion;
     try {
-      currentVersion = "2026.08.28-204534-28-7ff93cc0";
+      currentVersion = "2026.08.28-235226-29-34ef1bef";
     } catch {
       return;
     }

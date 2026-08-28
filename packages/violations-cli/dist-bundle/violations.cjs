@@ -3020,7 +3020,7 @@ var import_node_child_process4 = require("node:child_process");
 var import_node_path5 = require("node:path");
 var import_node_url2 = require("node:url");
 
-// ../../node_modules/@wadeck/shared-cli/dist/ConfigDir.js
+// ../../node_modules/@wadeck-app/shared-cli/dist/ConfigDir.js
 var fs = __toESM(require("node:fs"), 1);
 var os = __toESM(require("node:os"), 1);
 var path = __toESM(require("node:path"), 1);
@@ -3061,12 +3061,12 @@ var ConfigDir = class _ConfigDir {
   }
 };
 
-// ../../node_modules/@wadeck/shared-cli/dist/HookDispatcher.js
+// ../../node_modules/@wadeck-app/shared-cli/dist/HookDispatcher.js
 var import_node_child_process = require("node:child_process");
 var import_node_util = require("node:util");
 var execFileAsync = (0, import_node_util.promisify)(import_node_child_process.execFile);
 
-// ../../node_modules/@wadeck/shared-cli/dist/UpdateManager.js
+// ../../node_modules/@wadeck-app/shared-cli/dist/UpdateManager.js
 var import_node_child_process2 = require("node:child_process");
 var fs2 = __toESM(require("node:fs"), 1);
 var path2 = __toESM(require("node:path"), 1);
@@ -3419,7 +3419,7 @@ async function loadRule(ruleKey, projectRoot, cacheDir, manifestPath, frameworkV
     }
   }
   try {
-    const mod = await import(`@wadeck/violations-rules/rules/${ruleKey}`);
+    const mod = await import(`@wadeck-app/violations-rules/rules/${ruleKey}`);
     return mod.default ?? mod.rule ?? null;
   } catch {
     console.warn(`[violations] Package rule '${ruleKey}' not found -- skipping (will be available in Phase 4)`);
@@ -3439,7 +3439,7 @@ async function run(options) {
   await (0, import_promises3.mkdir)(cacheDir, { recursive: true });
   const rulesConfig = config.rules ?? {};
   const results = [];
-  const { allRules } = await import("@wadeck/violations-rules");
+  const { allRules } = await import("@wadeck-app/violations-rules");
   const projectTags = new Set(config.projectTags ?? []);
   const mergedRules = {};
   for (const libRule of allRules) {
@@ -3607,7 +3607,7 @@ var import_node_module = require("node:module");
 var _require = (0, import_node_module.createRequire)(__importMetaUrl);
 function checkBundleVersion() {
   try {
-    const v = "2026.08.28-204534-28-7ff93cc0";
+    const v = "2026.08.28-235226-29-34ef1bef";
     if (!v) {
       return { name: "bundle-version", ok: false, reason: "version string is empty" };
     }
@@ -3883,7 +3883,7 @@ async function cmdRulesList(args) {
   }
   let rules = [];
   try {
-    const mod = await import("@wadeck/violations-rules");
+    const mod = await import("@wadeck-app/violations-rules");
     if (mod.allRules) {
       rules = mod.allRules;
     }
@@ -3910,7 +3910,7 @@ async function cmdRulesInfo(id) {
   }
   let rule;
   try {
-    const mod = await import(`@wadeck/violations-rules/rules/${id}`);
+    const mod = await import(`@wadeck-app/violations-rules/rules/${id}`);
     rule = mod.default;
   } catch {
   }
@@ -3925,7 +3925,7 @@ async function cmdRulesInfo(id) {
 }
 function buildRuleTemplate(name, lang) {
   if (lang === "ts") {
-    return `import type { Rule, Violation } from '@wadeck/violations-rules'
+    return `import type { Rule, Violation } from '@wadeck-app/violations-rules'
 
 export const rule: Rule = {
   id: 'local/${name}',
@@ -3942,14 +3942,14 @@ export const rule: Rule = {
 export default rule
 `;
   }
-  return `/** @type {import('@wadeck/violations-rules').Rule} */
+  return `/** @type {import('@wadeck-app/violations-rules').Rule} */
 export const rule = {
   id: 'local/${name}',
   tags: 'shared',
   defaultScope: ['**/*'],
   defaultSeverity: 'error',
   async check(files, _config) {
-    /** @type {import('@wadeck/violations-rules').Violation[]} */
+    /** @type {import('@wadeck-app/violations-rules').Violation[]} */
     const violations = []
     // TODO: implement
     return violations
@@ -4090,7 +4090,7 @@ async function cmdConfigValidate() {
         }
       } else {
         try {
-          await import(`@wadeck/violations-rules/rules/${ruleKey}`);
+          await import(`@wadeck-app/violations-rules/rules/${ruleKey}`);
         } catch {
           ruleErrors.push(`Package rule not found: ${ruleKey} (will be available in Phase 4)`);
         }
@@ -4145,7 +4145,7 @@ function cmdCliUpdate() {
 }
 async function main() {
   const argv = process.argv.slice(2);
-  const updater = new UpdateManager("@wadeck/violations-cli");
+  const updater = new UpdateManager("@wadeck-app/violations-cli");
   const updateState = updater.readAndClearState();
   if (updateState?.status === "success") {
     process.stderr.write(`violations updated to ${updateState.newVersion}

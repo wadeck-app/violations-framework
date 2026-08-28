@@ -1,11 +1,12 @@
 name: CI
 
-env:
-  NPM_REGISTRY_PATH: //api.backup.wadeck.ch/npm
-
 on:
   push:
   pull_request:
+
+permissions:
+  contents: read
+  packages: read
 
 jobs:
   build-and-test:
@@ -16,6 +17,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
+
+      - name: Configure auth for GitHub Packages
+        run: |
+          echo "@wadeck-app:registry=https://npm.pkg.github.com/" >> .npmrc
+          echo "//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}" >> .npmrc
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - run: npm ci
 

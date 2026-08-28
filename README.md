@@ -1,47 +1,45 @@
 # violations-framework
 
-A two-package npm framework that centralises generic code-quality rules shared across TypeScript, React, and C# projects. Replaces copy-pasted `scripts/violations/` folders with versioned, published packages. Generic rules live in `@wadeck/violations-rules`; `@wadeck/violations-cli` provides the `violations` binary and compiles local rules on demand.
+A two-package npm framework that centralises generic code-quality rules shared across TypeScript, React, and C# projects. Replaces copy-pasted `scripts/violations/` folders with versioned, published packages. Generic rules live in `@wadeck-app/violations-rules`; `@wadeck-app/violations-cli` provides the `violations` binary and compiles local rules on demand.
 
 ## Installation
 
-Add the private registry to your project `.npmrc`
+Add GitHub Packages to your project `.npmrc`:
 
 ```
-registry=https://api.backup.wadeck.ch/npm
+@wadeck-app:registry=https://npm.pkg.github.com/
+//npm.pkg.github.com/:_authToken=<GitHub PAT with read:packages scope>
 ```
 
 Then install both packages:
 
 ```sh
-npm install @wadeck/violations-rules @wadeck/violations-cli
+npm install @wadeck-app/violations-rules @wadeck-app/violations-cli
 ```
 
 ## npm Registry
 
-Packages are hosted on **GitLab Packages** - source code remains on GitHub.
+Packages are hosted on **GitHub Packages** at `https://github.com/wadeck-app/violations-framework`.
 
 | Item | Value |
 |------|-------|
-| Registry URL | `https://gitlab.com/api/v4/packages/npm/` |
-| GitLab project (namespace only) | `https://gitlab.com/wadeck/npm-registry` |
-| Scope | `@wadeck` |
-| Packages published | `@wadeck/violations-rules`, `@wadeck/violations-cli` |
-| Install token | GitLab deploy token with `read_package_registry` scope |
-| Publish token | GitLab deploy token with `write_package_registry` scope |
+| Registry URL | `https://npm.pkg.github.com/` |
+| GitHub organisation | `wadeck-app` |
+| Scope | `@wadeck-app` |
+| Packages published | `@wadeck-app/violations-rules`, `@wadeck-app/violations-cli` |
+| Install token | GitHub PAT with `read:packages` scope |
+| Publish token | `GITHUB_TOKEN` (automatic in GitHub Actions) |
 
 ### Local ~/.npmrc setup
 
 ```
-@wadeck:registry=https://gitlab.com/api/v4/packages/npm/
-//gitlab.com/api/v4/packages/npm/:_authToken=<read-token>
-auth-type=legacy
+@wadeck-app:registry=https://npm.pkg.github.com/
+//npm.pkg.github.com/:_authToken=<GitHub PAT with read:packages>
 ```
 
 ### CI secrets (GitHub Actions)
 
-| Repo | Secret | Token type |
-|------|--------|------------|
-| `Wadeck/violations-framework` | `GITLAB_NPM_WRITE_TOKEN` | write deploy token |
+Publishing uses the built-in `GITHUB_TOKEN` — no repository secret needed for publish.
 
 Publishing happens automatically on every push to `main` via `.github/workflows/publish.yml`.
 

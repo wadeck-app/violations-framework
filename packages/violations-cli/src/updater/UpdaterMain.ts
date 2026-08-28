@@ -2,7 +2,7 @@
 // This module is bundled separately as violations-updater.cjs.
 // It must NOT import any violations runtime modules.
 // Allowed: node:fs, node:path, node:child_process, node:os
-import { ConfigDir } from '@wadeck/shared-cli/ConfigDir';
+import { ConfigDir } from '@wadeck-app/shared-cli/ConfigDir';
 import { execFile, execFileSync } from 'node:child_process';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
@@ -13,7 +13,7 @@ const execFileAsync = promisify(execFile);
 // Injected by esbuild at bundle time via define; falls back to a dev placeholder.
 declare const __VIOLATIONS_CLI_VERSION__: string;
 
-const PKG_NAME = process.env['UPDATER_PKG_NAME'] ?? '@wadeck/violations-cli';
+const PKG_NAME = process.env['UPDATER_PKG_NAME'] ?? '@wadeck-app/violations-cli';
 // Duplicate of VersionValidation.VERSION_RE -- kept here because this is a separate bundle
 // (violations-updater.cjs) and cannot share shared-cli at runtime without bundling it in.
 const VERSION_RE = /^\d+\.\d+\.\d+([-+][\w.-]+)?$/;
