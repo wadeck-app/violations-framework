@@ -39,7 +39,7 @@ Packages are hosted on **GitHub Packages** at `https://github.com/wadeck-app/vio
 
 ### CI secrets (GitHub Actions)
 
-Publishing uses the built-in `GITHUB_TOKEN` — no repository secret needed for publish.
+Publishing uses the built-in `GITHUB_TOKEN` - no repository secret needed for publish.
 
 Publishing happens automatically on every push to `main` via `.github/workflows/publish.yml`.
 

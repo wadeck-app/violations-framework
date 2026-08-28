@@ -43,7 +43,7 @@ describe('shared/no-workspace-shadow', () => {
       try {
         await symlink(target, join(nmDir, 'pkg-a'))
       } catch (e) {
-        // Windows requires elevated privileges or Developer Mode for symlinks — skip
+        // Windows requires elevated privileges or Developer Mode for symlinks - skip
         const code = (e as NodeJS.ErrnoException).code
         if (code === 'EPERM' || code === 'EACCES') return
         throw e

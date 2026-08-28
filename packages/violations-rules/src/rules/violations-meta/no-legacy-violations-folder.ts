@@ -1,6 +1,6 @@
 import { access } from 'node:fs/promises'
 import { join } from 'node:path'
-import type { Rule, Violation } from '../../types.js'
+import type { Rule, Violation } from '../types.js'
 
 export type Config = {
   projectRoot: string

@@ -1,5 +1,5 @@
 import { readFile } from 'node:fs/promises'
-import type { Rule, Violation } from '../../types.js'
+import type { Rule, Violation } from '../types.js'
 
 export type Config = Record<never, never>
 
@@ -26,7 +26,7 @@ export const rule: Rule<Config> = {
         violations.push({
           file,
           line: i + 1,
-          message: 'Use formatRelativeTime() or a shared formatter instead of .toLocaleString()',
+          message: 'Use formatRelativeTime() or a shared formatter instead of locale date methods',
         })
       }
     }

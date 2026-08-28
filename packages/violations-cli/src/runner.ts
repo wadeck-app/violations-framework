@@ -184,10 +184,10 @@ export async function run(options: RunOptions): Promise<RuleResult[]> {
 			}
 
 			// Build config for rule.check()
-			const ruleConfig = override !== true && override != null ? stripMetaFields(override as RuleOverride) : {}
+			const ruleConfig: Record<string, unknown> = override !== true && override != null ? stripMetaFields(override as RuleOverride) : {}
 			// Inject activeRuleIds for no-dead-suppress
 			if (rule.id === 'shared/no-dead-suppress') {
-				;(ruleConfig as Record<string, unknown>).activeRuleIds = activeRuleIds
+				ruleConfig.activeRuleIds = activeRuleIds
 			}
 
 			// Run check

@@ -1,6 +1,6 @@
 import { readFile, lstat, readdir } from 'node:fs/promises'
 import { join, dirname } from 'node:path'
-import type { Rule, Violation } from '../../types.js'
+import type { Rule, Violation } from '../types.js'
 
 export type Config = Record<never, never>
 
@@ -87,7 +87,7 @@ export const rule: Rule<Config> = {
             line: 1,
             message:
               `Workspace package '${pkgName}' is shadowed by a public npm package in ` +
-              `${shadowPath}. Delete the local copy — it overrides workspace resolution.\n` +
+              `${shadowPath}. Delete the local copy - it overrides workspace resolution.\n` +
               `  Fix: rm -rf "${shadowPath}"`,
           })
         }

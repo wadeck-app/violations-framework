@@ -1,5 +1,5 @@
 import { readFile } from 'node:fs/promises'
-import type { Rule, Violation } from '../../types.js'
+import type { Rule, Violation } from '../types.js'
 
 export type Config = Record<never, never>
 
@@ -17,7 +17,7 @@ export const rule: Rule<Config> = {
       const lines = text.split('\n')
       for (let i = 0; i < lines.length; i++) {
         if (DEEP_RELATIVE_RE.test(lines[i]!)) {
-          violations.push({ file, line: i + 1, message: "Deep relative import (../../) — use a path alias (e.g. '@/') instead" })
+          violations.push({ file, line: i + 1, message: "Deep relative import (../../) - use a path alias (e.g. '@/') instead" })
         }
       }
     }

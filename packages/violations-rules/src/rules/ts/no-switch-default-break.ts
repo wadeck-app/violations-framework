@@ -1,5 +1,5 @@
 import { readFile } from 'node:fs/promises'
-import type { Rule, Violation } from '../../types.js'
+import type { Rule, Violation } from '../types.js'
 
 export type Config = Record<never, never>
 
@@ -30,6 +30,10 @@ export const rule: Rule<Config> = {
         if (trimmed.startsWith('//') || trimmed.startsWith('*')) continue
 
         if (!DEFAULT_LABEL_RE.test(line)) continue
+
+        // Only flag standalone switch-case 'default:' labels (starts the trimmed line).
+        // Prevents false positives on TypeScript type annotations like `as { default: Type }`.
+        if (!trimmed.startsWith('default:')) continue
 
         // Skip if this line already contains a throw
         if (/\bthrow\b/.test(line)) continue

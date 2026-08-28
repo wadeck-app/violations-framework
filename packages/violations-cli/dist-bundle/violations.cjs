@@ -3492,7 +3492,6 @@ async function run(options) {
     }
     const ruleConfig = override !== true && override != null ? stripMetaFields(override) : {};
     if (rule.id === "shared/no-dead-suppress") {
-      ;
       ruleConfig.activeRuleIds = activeRuleIds;
     }
     let violations;
@@ -3607,7 +3606,7 @@ var import_node_module = require("node:module");
 var _require = (0, import_node_module.createRequire)(__importMetaUrl);
 function checkBundleVersion() {
   try {
-    const v = "2026.08.28-235348-30-f667101f";
+    const v = "2026.08.29-002952-35-229a296d";
     if (!v) {
       return { name: "bundle-version", ok: false, reason: "version string is empty" };
     }

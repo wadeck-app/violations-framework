@@ -1,6 +1,6 @@
 import { readdir } from 'node:fs/promises'
 import type { Dirent } from 'node:fs'
-import type { Rule, Violation } from '../../types.js'
+import type { Rule, Violation } from '../types.js'
 import { dirname, basename } from 'node:path'
 
 export type Config = {

@@ -19,7 +19,7 @@ export {
   noRuleWithoutTest,
   noLegacyViolationsFolder,
   allRules,
-} from './rules/index.js'
+} from './rules/all-rules.js'
 
 export type {
   NoEmDashConfig,
@@ -30,4 +30,4 @@ export type {
   NoDeadRuleScopeConfig,
   NoRuleWithoutTestConfig,
   NoLegacyViolationsFolderConfig,
-} from './rules/index.js'
+} from './rules/all-rules.js'

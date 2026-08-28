@@ -120,5 +120,5 @@ Rules receive pre-filtered `files[]` - never call `walk()` inside a rule.
 
 - `ci.yml` - runs on every push and PR (build + test)
 - `publish.yml` - runs on every push to `main` (build + test + self-check + publish both packages)
-- No repository secret needed — publishing uses the built-in `GITHUB_TOKEN`
+- No repository secret needed - publishing uses the built-in `GITHUB_TOKEN`
 - `violations-rules` is published before `violations-cli` (CLI has it as peer dep)

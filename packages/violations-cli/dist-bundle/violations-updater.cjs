@@ -85,6 +85,9 @@ var fs2 = __toESM(require("node:fs"), 1);
 var path2 = __toESM(require("node:path"), 1);
 var import_node_util = require("node:util");
 var execFileAsync = (0, import_node_util.promisify)(import_node_child_process.execFile);
+function getErrorMessage(val) {
+  return val instanceof Error ? val.message : String(val);
+}
 var PKG_NAME = process.env["UPDATER_PKG_NAME"] ?? "@wadeck-app/violations-cli";
 var VERSION_RE = /^\d+\.\d+\.\d+([-+][\w.-]+)?$/;
 function semverLte(a, b) {
@@ -142,7 +145,7 @@ function parseCheckInterval(value) {
     case "d":
       return num * 24 * 60 * 60 * 1e3;
     default:
-      return 30 * 60 * 1e3;
+      throw new Error(`Unknown interval unit: ${match[2]}`);
   }
 }
 function readConfig(configDir) {
@@ -238,7 +241,7 @@ async function main() {
       });
       latestVersion = stdout.trim();
     } catch (err) {
-      const msg = err instanceof Error ? err.message : String(err);
+      const msg = getErrorMessage(err);
       const reason = msg.includes("EUNAUTHORIZED") || msg.includes("401") ? "auth" : "network";
       writeState(statePath, { status: "update-failed", reason, timestamp });
       appendLog(logFile, `Update check failed: ${msg}`);
@@ -250,7 +253,7 @@ async function main() {
     }
     let currentVersion;
     try {
-      currentVersion = "2026.08.28-235348-30-f667101f";
+      currentVersion = "2026.08.29-002952-35-229a296d";
     } catch {
       return;
     }
@@ -266,7 +269,7 @@ async function main() {
     try {
       await execFileAsync("npm", ["install", "-g", `${PKG_NAME}@${latestVersion}`], { timeout: 12e4 });
     } catch (err) {
-      const msg = err instanceof Error ? err.message : String(err);
+      const msg = getErrorMessage(err);
       const reason = msg.includes("EUNAUTHORIZED") || msg.includes("401") ? "auth" : "install-failed";
       writeState(statePath, {
         status: "update-failed",
@@ -308,7 +311,7 @@ async function main() {
       appendLog(logFile, `Self-check failed after updating to ${latestVersion}, rolled back: ${msg}`);
     }
   } catch (err) {
-    const msg = err instanceof Error ? err.message : String(err);
+    const msg = getErrorMessage(err);
     appendLog(logFile, `Unexpected updater error: ${msg}`);
   } finally {
     if (lockAcquired) {

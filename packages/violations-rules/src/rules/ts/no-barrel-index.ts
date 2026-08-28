@@ -1,4 +1,4 @@
-import type { Rule, Violation } from '../../types.js'
+import type { Rule, Violation } from '../types.js'
 import { basename } from 'node:path'
 
 export type Config = Record<never, never>

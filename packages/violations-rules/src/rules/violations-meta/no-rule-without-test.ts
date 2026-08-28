@@ -1,6 +1,6 @@
 import { access } from 'node:fs/promises'
 import { dirname, basename, join } from 'node:path'
-import type { Rule, Violation } from '../../types.js'
+import type { Rule, Violation } from '../types.js'
 
 export type Config = Record<never, never>
 
@@ -48,7 +48,7 @@ export const rule: Rule<Config> = {
         violations.push({
           file: ruleFile,
           line: 1,
-          message: `Rule '${base}' has no corresponding test file (${base}.test.ts or ${base}.test.js) — see docs/writing-rule-tests.md`,
+          message: `Rule '${base}' has no corresponding test file (${base}.test.ts or ${base}.test.js) - see docs/writing-rule-tests.md`,
         })
       }
     }

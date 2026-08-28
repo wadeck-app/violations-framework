@@ -1,5 +1,5 @@
 import { basename } from 'node:path'
-import type { Rule, Violation } from '../../types.js'
+import type { Rule, Violation } from '../types.js'
 
 export type Config = Record<never, never>
 

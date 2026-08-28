@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises'
 import { existsSync, statSync } from 'node:fs'
 import { join } from 'node:path'
-import type { Rule, Violation } from '../../types.js'
+import type { Rule, Violation } from '../types.js'
 
 export type Config = {
   ruleFiles: string[]

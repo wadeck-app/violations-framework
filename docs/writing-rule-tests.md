@@ -1,6 +1,6 @@
 # Writing tests for violation rules
 
-Every rule file — whether a local project rule in `.violations/rules/` or a built-in framework rule — must have a sibling test file named `<rule-id>.test.ts` (or `.test.js`).
+Every rule file - whether a local project rule in `.violations/rules/` or a built-in framework rule - must have a sibling test file named `<rule-id>.test.ts` (or `.test.js`).
 
 This requirement is enforced by the `violations-meta/no-rule-without-test` rule.
 

@@ -4,7 +4,7 @@ import { readFileSync, readdirSync, existsSync, mkdtempSync, mkdirSync, copyFile
 import { join, dirname, relative, basename, sep } from 'node:path'
 import { tmpdir } from 'node:os'
 import { fileURLToPath } from 'node:url'
-import type { Rule } from '../../types.js'
+import type { Rule } from '../types.js'
 
 function collectFixtures(dir: string): string[] {
   const entries = readdirSync(dir, { withFileTypes: true })

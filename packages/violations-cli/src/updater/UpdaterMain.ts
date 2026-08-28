@@ -10,6 +10,11 @@ import { promisify } from 'node:util';
 
 const execFileAsync = promisify(execFile);
 
+/** Extracts a string message from any thrown value. */
+function getErrorMessage(val: unknown): string {
+	return val instanceof Error ? val.message : String(val);
+}
+
 // Injected by esbuild at bundle time via define; falls back to a dev placeholder.
 declare const __VIOLATIONS_CLI_VERSION__: string;
 
@@ -103,7 +108,7 @@ export function parseCheckInterval(value: string): number {
 		case 'd':
 			return num * 24 * 60 * 60 * 1000;
 		default:
-			return 30 * 60 * 1000;
+			throw new Error(`Unknown interval unit: ${match[2]}`);
 	}
 }
 
@@ -223,7 +228,7 @@ export async function main(): Promise<void> {
 			});
 			latestVersion = stdout.trim();
 		} catch (err: unknown) {
-			const msg = err instanceof Error ? err.message : String(err);
+			const msg = getErrorMessage(err);
 			const reason = msg.includes('EUNAUTHORIZED') || msg.includes('401') ? 'auth' : 'network';
 			writeState(statePath, { status: 'update-failed', reason, timestamp });
 			appendLog(logFile, `Update check failed: ${msg}`);
@@ -260,7 +265,7 @@ export async function main(): Promise<void> {
 		try {
 			await execFileAsync('npm', ['install', '-g', `${PKG_NAME}@${latestVersion}`], { timeout: 120000 });
 		} catch (err: unknown) {
-			const msg = err instanceof Error ? err.message : String(err);
+			const msg = getErrorMessage(err);
 			const reason = msg.includes('EUNAUTHORIZED') || msg.includes('401') ? 'auth' : 'install-failed';
 			writeState(statePath, {
 				status: 'update-failed',
@@ -310,7 +315,7 @@ export async function main(): Promise<void> {
 			appendLog(logFile, `Self-check failed after updating to ${latestVersion}, rolled back: ${msg}`);
 		}
 	} catch (err: unknown) {
-		const msg = err instanceof Error ? err.message : String(err);
+		const msg = getErrorMessage(err);
 		appendLog(logFile, `Unexpected updater error: ${msg}`);
 	} finally {
 		if (lockAcquired) {
