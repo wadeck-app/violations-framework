@@ -734,13 +734,16 @@ async function main(): Promise<void> {
 	}
 }
 
-const isMain =
+const isEntryPoint =
 	process.argv[1] !== undefined &&
-	resolve(process.argv[1]) === fileURLToPath(import.meta.url)
+	(process.argv[1] === fileURLToPath(import.meta.url) ||
+		process.argv[1].endsWith('cli.js') ||
+		process.argv[1].endsWith('violations'))
 
-if (isMain) {
+if (isEntryPoint) {
 	main().catch(err => {
 		process.stderr.write(`violations: ${String(err)}\n`)
 		process.exit(1)
 	})
 }
+export { main as runViolationsCommand }

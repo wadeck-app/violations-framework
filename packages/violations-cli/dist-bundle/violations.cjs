@@ -10,6 +10,10 @@ var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __commonJS = (cb, mod) => function __require() {
   return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
 };
+var __export = (target, all) => {
+  for (var name in all)
+    __defProp(target, name, { get: all[name], enumerable: true });
+};
 var __copyProps = (to, from, except, desc) => {
   if (from && typeof from === "object" || typeof from === "function") {
     for (let key of __getOwnPropNames(from))
@@ -26,6 +30,7 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
   mod
 ));
+var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
 // ../../node_modules/braces/lib/utils.js
 var require_utils = __commonJS({
@@ -3014,6 +3019,11 @@ var require_micromatch = __commonJS({
 });
 
 // dist/cli.js
+var cli_exports = {};
+__export(cli_exports, {
+  runViolationsCommand: () => main
+});
+module.exports = __toCommonJS(cli_exports);
 var import_promises5 = require("node:fs/promises");
 var import_node_fs6 = require("node:fs");
 var import_node_child_process4 = require("node:child_process");
@@ -3606,7 +3616,7 @@ var import_node_module = require("node:module");
 var _require = (0, import_node_module.createRequire)(__importMetaUrl);
 function checkBundleVersion() {
   try {
-    const v = "2026.08.29-002952-35-229a296d";
+    const v = "2026.08.29-012727-37-e3acea40";
     if (!v) {
       return { name: "bundle-version", ok: false, reason: "version string is empty" };
     }
@@ -4247,14 +4257,18 @@ Run: violations --help
     }
   }
 }
-var isMain = process.argv[1] !== void 0 && (0, import_node_path5.resolve)(process.argv[1]) === (0, import_node_url2.fileURLToPath)(__importMetaUrl);
-if (isMain) {
+var isEntryPoint = process.argv[1] !== void 0 && (process.argv[1] === (0, import_node_url2.fileURLToPath)(__importMetaUrl) || process.argv[1].endsWith("cli.js") || process.argv[1].endsWith("violations"));
+if (isEntryPoint) {
   main().catch((err) => {
     process.stderr.write(`violations: ${String(err)}
 `);
     process.exit(1);
   });
 }
+// Annotate the CommonJS export names for ESM import in node:
+0 && (module.exports = {
+  runViolationsCommand
+});
 /*! Bundled license information:
 
 is-number/index.js:
