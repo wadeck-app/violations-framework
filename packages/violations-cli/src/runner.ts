@@ -12,6 +12,7 @@ export interface RunOptions {
 	projectRoot: string
 	files?: string[]
 	staged?: boolean
+	overrideConfig?: ViolationsConfig
 }
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
@@ -94,7 +95,7 @@ function stripMetaFields(override: RuleOverride): Record<string, unknown> {
 export async function run(options: RunOptions): Promise<RuleResult[]> {
 	const { projectRoot } = options
 	const frameworkVersion = await getFrameworkVersion()
-	const config = await loadConfig(projectRoot, frameworkVersion)
+	const config = options.overrideConfig ?? await loadConfig(projectRoot, frameworkVersion)
 	const cacheDir = join(projectRoot, '.violations', '.cache')
 	const manifestPath = join(cacheDir, 'manifest.json')
 

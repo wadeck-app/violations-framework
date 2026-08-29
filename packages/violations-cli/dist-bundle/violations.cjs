@@ -3443,7 +3443,7 @@ function stripMetaFields(override) {
 async function run(options) {
   const { projectRoot } = options;
   const frameworkVersion = await getFrameworkVersion();
-  const config = await loadConfig(projectRoot, frameworkVersion);
+  const config = options.overrideConfig ?? await loadConfig(projectRoot, frameworkVersion);
   const cacheDir = (0, import_node_path3.join)(projectRoot, ".violations", ".cache");
   const manifestPath = (0, import_node_path3.join)(cacheDir, "manifest.json");
   await (0, import_promises3.mkdir)(cacheDir, { recursive: true });
@@ -3616,7 +3616,7 @@ var import_node_module = require("node:module");
 var _require = (0, import_node_module.createRequire)(__importMetaUrl);
 function checkBundleVersion() {
   try {
-    const v = "2026.08.29-012727-37-e3acea40";
+    const v = "2026.08.29-091512-39-54992eeb";
     if (!v) {
       return { name: "bundle-version", ok: false, reason: "version string is empty" };
     }
@@ -3741,15 +3741,39 @@ function formatViolations(results) {
   }
   return { lines, errors, warnings };
 }
+async function buildDefaultConfig(projectRoot) {
+  const { readdir: readdir2 } = await import("node:fs/promises");
+  const hasFileWithExt = async (dir, ext) => {
+    try {
+      const entries = await readdir2(dir, { withFileTypes: true });
+      return entries.some((e) => e.isFile() && e.name.endsWith(ext) && !e.name.endsWith(".d.ts"));
+    } catch {
+      return false;
+    }
+  };
+  const srcDir = (0, import_node_path5.join)(projectRoot, "src");
+  const [hasTsInSrc, hasTsInRoot, hasTsxInSrc, hasTsxInRoot] = await Promise.all([
+    hasFileWithExt(srcDir, ".ts"),
+    hasFileWithExt(projectRoot, ".ts"),
+    hasFileWithExt(srcDir, ".tsx"),
+    hasFileWithExt(projectRoot, ".tsx")
+  ]);
+  const projectTags = ["shared"];
+  if (hasTsInSrc || hasTsInRoot)
+    projectTags.push("ts");
+  if (hasTsxInSrc || hasTsxInRoot)
+    projectTags.push("react");
+  return {
+    projectTags,
+    globalExclude: ["node_modules/**", "dist/**", "dist-bundle/**", ".violations/**"],
+    rules: {}
+  };
+}
 async function cmdCheck(args) {
   const projectRoot = getProjectRoot();
   const dotViolationsDir = getDotViolationsDir(projectRoot);
   const configTs = (0, import_node_path5.join)(dotViolationsDir, "config.ts");
   const configJs = (0, import_node_path5.join)(dotViolationsDir, "config.js");
-  if (!(0, import_node_fs6.existsSync)(configTs) && !(0, import_node_fs6.existsSync)(configJs)) {
-    process.stderr.write("No .violations/config.ts found. Run: violations rules create\n");
-    process.exit(1);
-  }
   let staged = false;
   let files;
   for (let i = 0; i < args.length; i++) {
@@ -3762,7 +3786,12 @@ async function cmdCheck(args) {
       files = args[i].slice("--files=".length).split(",").map((f) => f.trim());
     }
   }
-  const results = await run({ projectRoot, staged, files });
+  let overrideConfig;
+  if (!(0, import_node_fs6.existsSync)(configTs) && !(0, import_node_fs6.existsSync)(configJs)) {
+    overrideConfig = await buildDefaultConfig(projectRoot);
+    process.stderr.write("[auto] No .violations/config.ts found - running with auto-detected defaults.\n");
+  }
+  const results = await run({ projectRoot, staged, files, overrideConfig });
   await writeReports(dotViolationsDir, results);
   const { lines, errors, warnings } = formatViolations(results);
   const totalViolations = results.reduce((s, r) => s + r.counts.violations, 0);
@@ -3905,11 +3934,16 @@ async function cmdRulesList(args) {
     console.log("No rules loaded yet.");
     return;
   }
-  for (const r of rules) {
-    const id = r.id.padEnd(40);
-    const tag = r.tags.padEnd(12);
-    const sev = r.defaultSeverity;
-    console.log(`${id} ${tag} ${sev}`);
+  const jsonMode = args.includes("--json") || !process.stdout.isTTY;
+  if (jsonMode) {
+    process.stdout.write(JSON.stringify(rules) + "\n");
+  } else {
+    for (const r of rules) {
+      const id = r.id.padEnd(40);
+      const tag = r.tags.padEnd(12);
+      const sev = r.defaultSeverity;
+      console.log(`${id} ${tag} ${sev}`);
+    }
   }
 }
 async function cmdRulesInfo(id) {
@@ -4153,6 +4187,7 @@ function cmdCliUpdate() {
   });
 }
 async function main() {
+  ConfigDir.migrateIfNeeded("violations");
   const argv = process.argv.slice(2);
   const updater = new UpdateManager("@wadeck-app/violations-cli");
   const updateState = updater.readAndClearState();

@@ -12,7 +12,7 @@ import { run } from './runner.js'
 import { writeReports } from './report.js'
 import { compileIfNeeded, typeCheck } from './compiler.js'
 import { runSelfChecks, printSelfChecks } from './selfCheck.js'
-import type { RuleResult } from '@wadeck-app/violations-rules'
+import type { RuleResult, ViolationsConfig } from '@wadeck-app/violations-rules'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
@@ -117,16 +117,43 @@ function formatViolations(results: RuleResult[]): { lines: string[]; errors: num
 }
 
 
+async function buildDefaultConfig(projectRoot: string): Promise<ViolationsConfig> {
+	const { readdir } = await import('node:fs/promises')
+
+	const hasFileWithExt = async (dir: string, ext: string): Promise<boolean> => {
+		try {
+			const entries = await readdir(dir, { withFileTypes: true })
+			return entries.some(e => e.isFile() && e.name.endsWith(ext) && !e.name.endsWith('.d.ts'))
+		} catch {
+			return false
+		}
+	}
+
+	const srcDir = join(projectRoot, 'src')
+	const [hasTsInSrc, hasTsInRoot, hasTsxInSrc, hasTsxInRoot] = await Promise.all([
+		hasFileWithExt(srcDir, '.ts'),
+		hasFileWithExt(projectRoot, '.ts'),
+		hasFileWithExt(srcDir, '.tsx'),
+		hasFileWithExt(projectRoot, '.tsx'),
+	])
+
+	const projectTags: string[] = ['shared']
+	if (hasTsInSrc || hasTsInRoot) projectTags.push('ts')
+	if (hasTsxInSrc || hasTsxInRoot) projectTags.push('react')
+
+	return {
+		projectTags,
+		globalExclude: ['node_modules/**', 'dist/**', 'dist-bundle/**', '.violations/**'],
+		rules: {},
+	}
+}
+
 async function cmdCheck(args: string[]): Promise<void> {
 	const projectRoot = getProjectRoot()
 	const dotViolationsDir = getDotViolationsDir(projectRoot)
 
 	const configTs = join(dotViolationsDir, 'config.ts')
 	const configJs = join(dotViolationsDir, 'config.js')
-	if (!existsSync(configTs) && !existsSync(configJs)) {
-		process.stderr.write('No .violations/config.ts found. Run: violations rules create\n')
-		process.exit(1)
-	}
 
 	let staged = false
 	let files: string[] | undefined
@@ -142,7 +169,13 @@ async function cmdCheck(args: string[]): Promise<void> {
 		}
 	}
 
-	const results = await run({ projectRoot, staged, files })
+	let overrideConfig: ViolationsConfig | undefined
+	if (!existsSync(configTs) && !existsSync(configJs)) {
+		overrideConfig = await buildDefaultConfig(projectRoot)
+		process.stderr.write('[auto] No .violations/config.ts found - running with auto-detected defaults.\n')
+	}
+
+	const results = await run({ projectRoot, staged, files, overrideConfig })
 	await writeReports(dotViolationsDir, results)
 
 	const { lines, errors, warnings } = formatViolations(results)
