@@ -20,7 +20,7 @@
     "@wadeck-app:registry": "https://npm.pkg.github.com/"
   },
   "peerDependencies": {
-    "@wadeck-app/violations-rules": "^1.0.0"
+    "@wadeck-app/violations-rules": "*"
   },
   "dependencies": {
     "@wadeck-app/shared-cli": "^2026.8.28-007-f471d994",
