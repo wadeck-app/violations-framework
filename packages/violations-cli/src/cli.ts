@@ -680,7 +680,7 @@ async function main(): Promise<void> {
 	const updater = new UpdateManager('@wadeck-app/violations-cli')
 	const updateState = updater.readAndClearState()
 	if (updateState?.status === 'success') {
-		process.stderr.write(`violations updated to ${updateState.newVersion}\n`)
+		process.stderr.write(`[violations] Updated to v${updateState.newVersion}\n`)
 	}
 	if (updateState?.status === 'rolled-back') {
 		process.stderr.write(
