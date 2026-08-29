@@ -796,6 +796,24 @@ async function main(): Promise<void> {
 			if (sub === '--help' || sub === '-h') {
 				process.stdout.write(CLI_GROUP_HELP)
 				process.exit(0)
+			} else if (sub === 'version') {
+				const pathMod = require('node:path') as typeof import('node:path')
+				const fsMod = require('node:fs') as typeof import('node:fs')
+				process.stdout.write(`violations v${VERSION} (installed)\n`)
+				try {
+					const { execFileSync } = require('node:child_process') as typeof import('node:child_process')
+					const NPM_CLI = pathMod.join(pathMod.dirname(process.execPath), 'node_modules', 'npm', 'bin', 'npm-cli.js')
+					const USE_CLI = fsMod.existsSync(NPM_CLI)
+					const winHide = process.platform === 'win32' ? { windowsHide: true } : {}
+					const result = USE_CLI
+						? execFileSync(process.execPath, [NPM_CLI, 'view', '@wadeck-app/violations-cli', 'dist-tags.latest'], { encoding: 'utf8', timeout: 15000, ...winHide })
+						: execFileSync('npm', ['view', '@wadeck-app/violations-cli', 'dist-tags.latest'], { encoding: 'utf8', timeout: 15000, ...winHide })
+					const latest = (result as string).trim()
+					process.stdout.write(`Latest (latest): v${latest}\n`)
+					if (VERSION === latest) process.stdout.write('Up to date.\n')
+				} catch (err) {
+					process.stderr.write(`Could not fetch latest version: ${String(err)}\n`)
+				}
 			} else if (sub === 'self-check') {
 				cmdCliSelfCheck()
 			} else if (sub === 'update') {
