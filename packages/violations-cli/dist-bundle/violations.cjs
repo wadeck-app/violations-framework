@@ -3026,7 +3026,7 @@ __export(cli_exports, {
 module.exports = __toCommonJS(cli_exports);
 var import_promises5 = require("node:fs/promises");
 var import_node_fs6 = require("node:fs");
-var import_node_child_process4 = require("node:child_process");
+var import_node_child_process3 = require("node:child_process");
 var import_node_path5 = require("node:path");
 var import_node_url2 = require("node:url");
 
@@ -3153,25 +3153,7 @@ function loadUserConfig(configDir) {
 }
 
 // dist/version.js
-var import_node_child_process3 = require("node:child_process");
-function readBaseVersion() {
-  const now = /* @__PURE__ */ new Date();
-  const pad2 = (n) => String(n).padStart(2, "0");
-  const date = `${now.getFullYear()}.${pad2(now.getMonth() + 1)}.${pad2(now.getDate())}`;
-  const time = `${pad2(now.getHours())}${pad2(now.getMinutes())}${pad2(now.getSeconds())}`;
-  let count = "0";
-  let hash = "DEV";
-  try {
-    count = (0, import_node_child_process3.execSync)("git rev-list --count HEAD", { encoding: "utf8" }).trim();
-  } catch {
-  }
-  try {
-    hash = (0, import_node_child_process3.execSync)("git rev-parse --short=8 HEAD", { encoding: "utf8" }).trim();
-  } catch {
-  }
-  return `${date}-${time}-${count}-${hash}`;
-}
-var VERSION = readBaseVersion();
+var VERSION = "2026.08.29-165809-51-94525d76" ? "2026.08.29-165809-51-94525d76" : readBaseVersion();
 
 // dist/runner.js
 var import_promises3 = require("node:fs/promises");
@@ -3616,7 +3598,7 @@ var import_node_module = require("node:module");
 var _require = (0, import_node_module.createRequire)(__importMetaUrl);
 function checkBundleVersion() {
   try {
-    const v = "2026.08.29-140049-47-a7f367b9";
+    const v = "2026.08.29-165809-51-94525d76";
     if (!v) {
       return { name: "bundle-version", ok: false, reason: "version string is empty" };
     }
@@ -4183,7 +4165,7 @@ function cmdCliUpdate() {
     process.exit(1);
   }
   process.stderr.write("[violations] Running foreground update...\n");
-  (0, import_node_child_process4.execFileSync)(process.execPath, [updaterPath], {
+  (0, import_node_child_process3.execFileSync)(process.execPath, [updaterPath], {
     stdio: "inherit",
     env: { ...process.env, UPDATER_FORCE: "1" }
   });
@@ -4194,7 +4176,7 @@ async function main() {
   const updater = new UpdateManager("@wadeck-app/violations-cli");
   const updateState = updater.readAndClearState();
   if (updateState?.status === "success") {
-    process.stderr.write(`violations updated to ${updateState.newVersion}
+    process.stderr.write(`[violations] Updated to v${updateState.newVersion}
 `);
   }
   if (updateState?.status === "rolled-back") {
@@ -4294,7 +4276,7 @@ Run: violations --help
     }
   }
 }
-var isEntryPoint = process.argv[1] !== void 0 && (process.argv[1] === (0, import_node_url2.fileURLToPath)(__importMetaUrl) || process.argv[1].endsWith("cli.js") || process.argv[1].endsWith("violations"));
+var isEntryPoint = process.argv[1] !== void 0 && (process.argv[1] === (0, import_node_url2.fileURLToPath)(__importMetaUrl) || process.argv[1].endsWith("cli.js") || process.argv[1].endsWith("violations") || process.argv[1].endsWith("violations.cjs"));
 if (isEntryPoint) {
   main().catch((err) => {
     process.stderr.write(`violations: ${String(err)}
