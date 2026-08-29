@@ -125,4 +125,4 @@ Rules receive pre-filtered `files[]` - never call `walk()` inside a rule.
 
 ## Knowledge base
 
-- Project lessons: `.claude/kb/lessons-learned.md` — add entries with the `kb` skill or by editing directly.
+- Project lessons: `.claude/kb/lessons-learned.md` - add entries with the `kb` skill or by editing directly.
