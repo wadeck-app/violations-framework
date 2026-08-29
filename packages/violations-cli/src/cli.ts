@@ -676,6 +676,17 @@ async function main(): Promise<void> {
 
 	const argv = process.argv.slice(2)
 
+	// Log every CLI invocation to ~/.config/violations/logs/YYYY-MM-DD.ndjson
+	try {
+		const logsDir = `${ConfigDir.get('violations')}/logs`
+		const today = new Date().toISOString().slice(0, 10)
+		const logFile = `${logsDir}/${today}.ndjson`
+		import('node:fs').then(fs => {
+			fs.mkdirSync(logsDir, { recursive: true })
+			fs.appendFileSync(logFile, JSON.stringify({ ts: new Date().toISOString(), level: 'info', msg: `cmd: violations ${argv.join(' ')}` }) + '\n')
+		}).catch(() => { /* ignore */ })
+	} catch { /* never block the CLI on logging failure */ }
+
 	// Show update notice from a previous background update run
 	const updater = new UpdateManager('@wadeck-app/violations-cli')
 	const updateState = updater.readAndClearState()
