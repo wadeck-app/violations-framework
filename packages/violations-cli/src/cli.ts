@@ -45,6 +45,7 @@ const CLI_GROUP_HELP = `violations cli - CLI tooling commands
 Usage:
   violations cli self-check
   violations cli update
+  violations cli logs [-f/--follow]
 `
 
 // ---------------------------------------------------------------------------
@@ -762,6 +763,34 @@ async function main(): Promise<void> {
 				process.stderr.write(`[fail] Unknown subcommand: cache ${sub ?? ''}\nRun: violations cache --help\n`)
 				process.exit(1)
 			}
+		} else if (command === 'logs') {
+			// Top-level alias for `violations cli logs`
+			const follow = rest.includes('--follow') || rest.includes('-f')
+			const { existsSync, readFileSync, watch } = require('node:fs') as typeof import('node:fs')
+			const pathMod = require('node:path') as typeof import('node:path')
+			const logsDir = pathMod.join(ConfigDir.get('violations'), 'logs')
+			const today = new Date().toISOString().slice(0, 10)
+			const logFile = pathMod.join(logsDir, `${today}.ndjson`)
+			if (!existsSync(logFile)) {
+				process.stderr.write(`[violations] No log file for today: ${logFile}\n`)
+			} else if (!follow) {
+				process.stdout.write(readFileSync(logFile, 'utf-8'))
+			} else {
+				process.stderr.write(`[violations] Following ${logFile}\n`)
+				let offset = 0
+				const printNew = (): void => {
+					const buf = Buffer.alloc(require('node:fs').statSync(logFile).size - offset)
+					if (buf.length === 0) return
+					const fd = require('node:fs').openSync(logFile, 'r')
+					require('node:fs').readSync(fd, buf, 0, buf.length, offset)
+					require('node:fs').closeSync(fd)
+					offset += buf.length
+					process.stdout.write(buf.toString('utf-8'))
+				}
+				printNew()
+				watch(logFile, () => { printNew() })
+				await new Promise<void>(() => {})
+			}
 		} else if (command === 'cli') {
 			const sub = rest[0]
 			if (sub === '--help' || sub === '-h') {
@@ -771,6 +800,34 @@ async function main(): Promise<void> {
 				cmdCliSelfCheck()
 			} else if (sub === 'update') {
 				cmdCliUpdate()
+			} else if (sub === 'logs') {
+				const follow = rest.includes('--follow') || rest.includes('-f')
+				const { existsSync, readFileSync, watch } = require('node:fs') as typeof import('node:fs')
+				const pathMod = require('node:path') as typeof import('node:path')
+				const logsDir = pathMod.join(ConfigDir.get('violations'), 'logs')
+				const today = new Date().toISOString().slice(0, 10)
+				const logFile = pathMod.join(logsDir, `${today}.ndjson`)
+				if (!existsSync(logFile)) {
+					process.stderr.write(`[violations] No log file for today: ${logFile}\n`)
+				} else if (!follow) {
+					process.stdout.write(readFileSync(logFile, 'utf-8'))
+				} else {
+					process.stderr.write(`[violations] Following ${logFile}\n`)
+					let offset = 0
+					const printNew = (): void => {
+						const stat = require('node:fs').statSync(logFile)
+						if (stat.size <= offset) return
+						const buf = Buffer.alloc(stat.size - offset)
+						const fd = require('node:fs').openSync(logFile, 'r')
+						require('node:fs').readSync(fd, buf, 0, buf.length, offset)
+						require('node:fs').closeSync(fd)
+						offset = stat.size
+						process.stdout.write(buf.toString('utf-8'))
+					}
+					printNew()
+					watch(logFile, () => { printNew() })
+					await new Promise<void>(() => {})
+				}
 			} else {
 				process.stderr.write(`[fail] Unknown subcommand: cli ${sub ?? ''}\nRun: violations cli --help\n`)
 				process.exit(1)
