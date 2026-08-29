@@ -9,6 +9,9 @@ import * as path from 'node:path';
 import { promisify } from 'node:util';
 
 const execFileAsync = promisify(execFile);
+// On Windows, npm is a .cmd script -- execFile without shell:true cannot find it.
+const NPM_CMD = process.platform === 'win32' ? 'npm.cmd' : 'npm';
+const NPM_SHELL = process.platform === 'win32' ? { shell: true as const } : {};
 
 /** Extracts a string message from any thrown value. */
 function getErrorMessage(val: unknown): string {
@@ -223,8 +226,8 @@ export async function main(): Promise<void> {
 		const timestamp = new Date().toISOString();
 		let latestVersion: string;
 		try {
-			const { stdout } = await execFileAsync('npm', ['view', PKG_NAME, `dist-tags.${config.channel}`], {
-				timeout: 15000,
+			const { stdout } = await execFileAsync(NPM_CMD,['view', PKG_NAME, `dist-tags.${config.channel}`], {
+				timeout: 15000, ...NPM_SHELL,
 			});
 			latestVersion = stdout.trim();
 		} catch (err: unknown) {
@@ -263,7 +266,7 @@ export async function main(): Promise<void> {
 		});
 
 		try {
-			await execFileAsync('npm', ['install', '-g', `${PKG_NAME}@${latestVersion}`], { timeout: 120000 });
+			await execFileAsync(NPM_CMD,['install', '-g', `${PKG_NAME}@${latestVersion}`], { timeout: 120000, ...NPM_SHELL });
 		} catch (err: unknown) {
 			const msg = getErrorMessage(err);
 			const reason = msg.includes('EUNAUTHORIZED') || msg.includes('401') ? 'auth' : 'install-failed';
@@ -282,7 +285,7 @@ export async function main(): Promise<void> {
 			const bundleFile = `${cliName}.cjs`; // 'violations.cjs'
 
 			// Resolve bundle path from global npm root to avoid PATH cache issues
-			const { stdout: npmRootOut } = await execFileAsync('npm', ['root', '-g'], { timeout: 10000 });
+			const { stdout: npmRootOut } = await execFileAsync(NPM_CMD,['root', '-g'], { timeout: 10000, ...NPM_SHELL });
 			const globalBundlePath = path.join(npmRootOut.trim(), PKG_NAME, bundleFile);
 
 			execFileSync(process.execPath, [globalBundlePath, '--help'], {
@@ -301,7 +304,7 @@ export async function main(): Promise<void> {
 			// Self-check failed -- roll back
 			const msg = healthErr instanceof Error ? healthErr.message : String(healthErr);
 			try {
-				await execFileAsync('npm', ['install', '-g', `${PKG_NAME}@${currentVersion}`], { timeout: 120000 });
+				await execFileAsync(NPM_CMD,['install', '-g', `${PKG_NAME}@${currentVersion}`], { timeout: 120000, ...NPM_SHELL });
 			} catch {
 				// rollback failure -- we still report the rolled-back state
 			}
