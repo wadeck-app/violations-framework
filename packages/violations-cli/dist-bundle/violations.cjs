@@ -3616,7 +3616,7 @@ var import_node_module = require("node:module");
 var _require = (0, import_node_module.createRequire)(__importMetaUrl);
 function checkBundleVersion() {
   try {
-    const v = "2026.08.29-091512-39-54992eeb";
+    const v = "2026.08.29-140049-47-a7f367b9";
     if (!v) {
       return { name: "bundle-version", ok: false, reason: "version string is empty" };
     }
@@ -3650,11 +3650,12 @@ function printSelfChecks(results) {
   const quiet = process.env["CLI_SELF_CHECK_QUIET"] === "1";
   for (const r of results) {
     if (r.ok) {
-      if (!quiet)
-        process.stdout.write(`[ok] ${r.name}
+      if (!quiet) {
+        process.stderr.write(`[ok] ${r.name}
 `);
+      }
     } else {
-      process.stdout.write(`[fail] ${r.name}: ${r.reason ?? "unknown"}
+      process.stderr.write(`[fail] ${r.name}: ${r.reason ?? "unknown"}
 `);
     }
   }
@@ -4181,6 +4182,7 @@ function cmdCliUpdate() {
     process.stderr.write("[fail] updater not found (dev mode?)\n");
     process.exit(1);
   }
+  process.stderr.write("[violations] Running foreground update...\n");
   (0, import_node_child_process4.execFileSync)(process.execPath, [updaterPath], {
     stdio: "inherit",
     env: { ...process.env, UPDATER_FORCE: "1" }

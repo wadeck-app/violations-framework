@@ -151,7 +151,7 @@ function parseCheckInterval(value) {
 function readConfig(configDir) {
   const configFile = path2.join(configDir, "config.yml");
   const defaults = {
-    channel: "edge",
+    channel: "latest",
     checkIntervalMs: 30 * 60 * 1e3,
     disabled: false
   };
@@ -253,7 +253,7 @@ async function main() {
     }
     let currentVersion;
     try {
-      currentVersion = "2026.08.29-091512-39-54992eeb";
+      currentVersion = "2026.08.29-140049-47-a7f367b9";
     } catch {
       return;
     }

@@ -660,6 +660,7 @@ function cmdCliUpdate(): void {
 		process.exit(1)
 	}
 
+	process.stderr.write('[violations] Running foreground update...\n')
 	execFileSync(process.execPath, [updaterPath], {
 		stdio: 'inherit',
 		env: { ...process.env, UPDATER_FORCE: '1' },

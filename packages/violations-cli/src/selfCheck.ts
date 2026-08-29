@@ -54,14 +54,10 @@ export function printSelfChecks(results: CheckResult[]): void {
 	for (const r of results) {
 		if (r.ok) {
 			if (!quiet) {
-				const line = `[ok] ${r.name}\n`
-				process.stderr.write(line)
-				process.stdout.write(line)
+				process.stderr.write(`[ok] ${r.name}\n`)
 			}
 		} else {
-			const line = `[fail] ${r.name}: ${r.reason ?? 'unknown'}\n`
-			process.stderr.write(line)
-			process.stdout.write(line)
+			process.stderr.write(`[fail] ${r.name}: ${r.reason ?? 'unknown'}\n`)
 		}
 	}
 }
