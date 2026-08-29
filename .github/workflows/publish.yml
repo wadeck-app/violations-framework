@@ -99,7 +99,7 @@ jobs:
           VER="${{ steps.version.outputs.version }}"
           PKG_RULES=$(node -e "process.stdout.write(require('./packages/violations-rules/package.json').name)")
           PKG_CLI=$(node -e "process.stdout.write(require('./packages/violations-cli/package.json').name)")
-          npm dist-tag add "${PKG_RULES}@${VER}" latest
-          npm dist-tag add "${PKG_CLI}@${VER}" latest
+          npm dist-tag add "${PKG_RULES}@${VER}" latest --registry https://npm.pkg.github.com/
+          npm dist-tag add "${PKG_CLI}@${VER}" latest --registry https://npm.pkg.github.com/
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
