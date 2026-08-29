@@ -93,3 +93,13 @@ jobs:
         run: npm publish --tag ${{ steps.version.outputs.npm_tag }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Tag as latest
+        run: |
+          VER="${{ steps.version.outputs.version }}"
+          PKG_RULES=$(node -e "process.stdout.write(require('./packages/violations-rules/package.json').name)")
+          PKG_CLI=$(node -e "process.stdout.write(require('./packages/violations-cli/package.json').name)")
+          npm dist-tag add "${PKG_RULES}@${VER}" latest
+          npm dist-tag add "${PKG_CLI}@${VER}" latest
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
