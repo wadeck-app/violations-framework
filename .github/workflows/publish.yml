@@ -96,11 +96,11 @@ jobs:
 
       - name: Tag as latest
         run: |
+          RAW_VER="${{ steps.version.outputs.version }}"
+          VER=$(printf '%s' "$RAW_VER" | sed 's/\.0\([0-9]\)/.\1/g')
           PKG_RULES=$(node -e "process.stdout.write(require('./packages/violations-rules/package.json').name)")
           PKG_CLI=$(node -e "process.stdout.write(require('./packages/violations-cli/package.json').name)")
-          ACTUAL_VER_RULES=$(npm view "${PKG_RULES}" dist-tags.edge --registry https://npm.pkg.github.com/ 2>/dev/null)
-          npm dist-tag add "${PKG_RULES}@${ACTUAL_VER_RULES}" latest --registry https://npm.pkg.github.com/
-          ACTUAL_VER_CLI=$(npm view "${PKG_CLI}" dist-tags.edge --registry https://npm.pkg.github.com/ 2>/dev/null)
-          npm dist-tag add "${PKG_CLI}@${ACTUAL_VER_CLI}" latest --registry https://npm.pkg.github.com/
+          npm dist-tag add "${PKG_RULES}@${VER}" latest --registry https://npm.pkg.github.com/
+          npm dist-tag add "${PKG_CLI}@${VER}" latest --registry https://npm.pkg.github.com/
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
