@@ -779,7 +779,8 @@ const isEntryPoint =
 	process.argv[1] !== undefined &&
 	(process.argv[1] === fileURLToPath(import.meta.url) ||
 		process.argv[1].endsWith('cli.js') ||
-		process.argv[1].endsWith('violations'))
+		process.argv[1].endsWith('violations') ||
+		process.argv[1].endsWith('violations.cjs'))
 
 if (isEntryPoint) {
 	main().catch(err => {
