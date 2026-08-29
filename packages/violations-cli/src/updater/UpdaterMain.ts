@@ -254,6 +254,7 @@ export async function main(): Promise<void> {
 		}
 
 		if (semverLte(latestVersion, currentVersion)) {
+			if (force) process.stdout.write(`[violations] Already up to date (v${currentVersion})\n`);
 			return;
 		}
 
