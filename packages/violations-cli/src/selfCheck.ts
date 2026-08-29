@@ -53,9 +53,15 @@ export function printSelfChecks(results: CheckResult[]): void {
 	const quiet = process.env['CLI_SELF_CHECK_QUIET'] === '1'
 	for (const r of results) {
 		if (r.ok) {
-			if (!quiet) process.stdout.write(`[ok] ${r.name}\n`)
+			if (!quiet) {
+				const line = `[ok] ${r.name}\n`
+				process.stderr.write(line)
+				process.stdout.write(line)
+			}
 		} else {
-			process.stdout.write(`[fail] ${r.name}: ${r.reason ?? 'unknown'}\n`)
+			const line = `[fail] ${r.name}: ${r.reason ?? 'unknown'}\n`
+			process.stderr.write(line)
+			process.stdout.write(line)
 		}
 	}
 }
