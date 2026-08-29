@@ -85,8 +85,8 @@ var fs2 = __toESM(require("node:fs"), 1);
 var path2 = __toESM(require("node:path"), 1);
 var import_node_util = require("node:util");
 var execFileAsync = (0, import_node_util.promisify)(import_node_child_process.execFile);
-var NPM_CMD = process.platform === "win32" ? "npm.cmd" : "npm";
-var NPM_SHELL = process.platform === "win32" ? { shell: true } : {};
+var NPM_CLI_JS = path2.join(path2.dirname(process.execPath), "node_modules", "npm", "bin", "npm-cli.js");
+var USE_NPM_CLI = fs2.existsSync(NPM_CLI_JS);
 function getErrorMessage(val) {
   return val instanceof Error ? val.message : String(val);
 }
@@ -203,6 +203,12 @@ function tryAcquireLock(lockFile) {
     return false;
   }
 }
+function execNpm(args, opts) {
+  if (USE_NPM_CLI) {
+    return execFileAsync(process.execPath, [NPM_CLI_JS, ...args], opts);
+  }
+  return execFileAsync("npm", args, opts);
+}
 async function main() {
   const cliName = PKG_NAME.replace(/^@[^/]+\//, "").replace(/-cli$/, "");
   const configDir = ConfigDir.get(cliName);
@@ -238,10 +244,7 @@ async function main() {
     const timestamp = (/* @__PURE__ */ new Date()).toISOString();
     let latestVersion;
     try {
-      const { stdout } = await execFileAsync(NPM_CMD, ["view", PKG_NAME, `dist-tags.${config.channel}`], {
-        timeout: 15e3,
-        ...NPM_SHELL
-      });
+      const { stdout } = await execNpm(["view", PKG_NAME, `dist-tags.${config.channel}`], { timeout: 15e3 });
       latestVersion = stdout.trim();
     } catch (err) {
       const msg = getErrorMessage(err);
@@ -256,11 +259,14 @@ async function main() {
     }
     let currentVersion;
     try {
-      currentVersion = "2026.08.29-165809-51-94525d76";
+      currentVersion = "2026.08.29-202707-55-563ca07d";
     } catch {
       return;
     }
     if (semverLte(latestVersion, currentVersion)) {
+      if (force)
+        process.stdout.write(`[violations] Already up to date (v${currentVersion})
+`);
       return;
     }
     writeState(statePath, {
@@ -270,7 +276,7 @@ async function main() {
       timestamp
     });
     try {
-      await execFileAsync(NPM_CMD, ["install", "-g", `${PKG_NAME}@${latestVersion}`], { timeout: 12e4, ...NPM_SHELL });
+      await execNpm(["install", "-g", `${PKG_NAME}@${latestVersion}`], { timeout: 12e4 });
     } catch (err) {
       const msg = getErrorMessage(err);
       const reason = msg.includes("EUNAUTHORIZED") || msg.includes("401") ? "auth" : "install-failed";
@@ -285,7 +291,7 @@ async function main() {
     }
     try {
       const bundleFile = `${cliName}.cjs`;
-      const { stdout: npmRootOut } = await execFileAsync(NPM_CMD, ["root", "-g"], { timeout: 1e4, ...NPM_SHELL });
+      const { stdout: npmRootOut } = await execNpm(["root", "-g"], { timeout: 1e4 });
       const globalBundlePath = path2.join(npmRootOut.trim(), PKG_NAME, bundleFile);
       (0, import_node_child_process.execFileSync)(process.execPath, [globalBundlePath, "--help"], {
         stdio: "pipe",
@@ -301,7 +307,7 @@ async function main() {
     } catch (healthErr) {
       const msg = healthErr instanceof Error ? healthErr.message : String(healthErr);
       try {
-        await execFileAsync(NPM_CMD, ["install", "-g", `${PKG_NAME}@${currentVersion}`], { timeout: 12e4, ...NPM_SHELL });
+        await execNpm(["install", "-g", `${PKG_NAME}@${currentVersion}`], { timeout: 12e4 });
       } catch {
       }
       writeState(statePath, {

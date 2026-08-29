@@ -3096,6 +3096,7 @@ var UpdateManager = class {
     const child = (0, import_node_child_process2.spawn)(process.execPath, [updaterPath], {
       detached: true,
       stdio: "ignore",
+      windowsHide: true,
       env: { ...process.env, LAUNCHER_BUNDLE_OVERRIDE: bundlePath, UPDATER_PKG_NAME: this.pkgName }
     });
     child.unref();
@@ -3153,7 +3154,7 @@ function loadUserConfig(configDir) {
 }
 
 // dist/version.js
-var VERSION = "2026.08.29-165809-51-94525d76" ? "2026.08.29-165809-51-94525d76" : readBaseVersion();
+var VERSION = "2026.08.29-202707-55-563ca07d" ? "2026.08.29-202707-55-563ca07d" : readBaseVersion();
 
 // dist/runner.js
 var import_promises3 = require("node:fs/promises");
@@ -3598,7 +3599,7 @@ var import_node_module = require("node:module");
 var _require = (0, import_node_module.createRequire)(__importMetaUrl);
 function checkBundleVersion() {
   try {
-    const v = "2026.08.29-165809-51-94525d76";
+    const v = "2026.08.29-202707-55-563ca07d";
     if (!v) {
       return { name: "bundle-version", ok: false, reason: "version string is empty" };
     }

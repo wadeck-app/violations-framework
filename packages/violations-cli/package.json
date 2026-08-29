@@ -23,7 +23,7 @@
     "@wadeck-app/violations-rules": "*"
   },
   "dependencies": {
-    "@wadeck-app/shared-cli": "^2026.8.28-007-f471d994",
+    "@wadeck-app/shared-cli": "2026.8.29-015-a451d65f",
     "micromatch": "^4.0.8",
     "typescript": "^5.5.0"
   },
