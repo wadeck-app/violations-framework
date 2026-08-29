@@ -326,12 +326,17 @@ async function cmdRulesList(args: string[]): Promise<void> {
 		return
 	}
 
-	// Table: id | tag | severity | description
-	for (const r of rules) {
-		const id = r.id.padEnd(40)
-		const tag = r.tags.padEnd(12)
-		const sev = r.defaultSeverity
-		console.log(`${id} ${tag} ${sev}`)
+	const jsonMode = args.includes('--json') || !process.stdout.isTTY
+	if (jsonMode) {
+		process.stdout.write(JSON.stringify(rules) + '\n')
+	} else {
+		// Table: id | tag | severity | description
+		for (const r of rules) {
+			const id = r.id.padEnd(40)
+			const tag = r.tags.padEnd(12)
+			const sev = r.defaultSeverity
+			console.log(`${id} ${tag} ${sev}`)
+		}
 	}
 }
 
@@ -633,6 +638,8 @@ function cmdCliUpdate(): void {
 // ---------------------------------------------------------------------------
 
 async function main(): Promise<void> {
+	ConfigDir.migrateIfNeeded('violations')
+
 	const argv = process.argv.slice(2)
 
 	// Show update notice from a previous background update run
