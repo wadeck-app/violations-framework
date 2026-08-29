@@ -7,11 +7,16 @@ function readBaseVersion(): string {
 	const time = `${pad2(now.getHours())}${pad2(now.getMinutes())}${pad2(now.getSeconds())}`;
 	let count = '0';
 	let hash = 'DEV';
-	try { count = execSync('git rev-list --count HEAD', { encoding: 'utf8' }).trim(); } catch { /* not a git repo */ }
-	try { hash = execSync('git rev-parse --short=8 HEAD', { encoding: 'utf8' }).trim(); } catch { /* not a git repo */ }
+	// stdio: pipe suppresses "fatal: not a git repository" from reaching the user's stderr
+	try { count = execSync('git rev-list --count HEAD', { encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] }).trim(); } catch { /* not a git repo */ }
+	try { hash = execSync('git rev-parse --short=8 HEAD', { encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] }).trim(); } catch { /* not a git repo */ }
 	return `${date}-${time}-${count}-${hash}`;
 }
 
-// In CI this file is replaced before bundling with generated constants:
-//   export const VERSION = '2026.08.28-356-c3418bea';
-export const VERSION: string = readBaseVersion();
+// Injected by esbuild at bundle time via define; falls back to readBaseVersion() in dev mode.
+declare const __VIOLATIONS_CLI_VERSION__: string | undefined;
+
+export const VERSION: string =
+	typeof __VIOLATIONS_CLI_VERSION__ !== 'undefined' && __VIOLATIONS_CLI_VERSION__
+		? __VIOLATIONS_CLI_VERSION__
+		: readBaseVersion();
