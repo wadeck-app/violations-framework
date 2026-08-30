@@ -48,7 +48,7 @@ await build({
 console.log('Bundle written to dist-bundle/violations.cjs');
 
 await build({
-	entryPoints: [path.join(root, 'dist/updater/UpdaterMain.js')],
+	entryPoints: [path.join(root, 'dist/updater/entry.js')],
 	bundle: true,
 	platform: 'node',
 	target: 'node24',

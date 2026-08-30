@@ -6,6 +6,9 @@ var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __esm = (fn, res) => function __init() {
+  return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
+};
 var __export = (target, all) => {
   for (var name in all)
     __defProp(target, name, { get: all[name], enumerable: true });
@@ -26,17 +29,403 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
   mod
 ));
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
-// dist/updater/UpdaterMain.js
-var UpdaterMain_exports = {};
-__export(UpdaterMain_exports, {
-  main: () => main,
-  parseCheckInterval: () => parseCheckInterval,
-  semverLte: () => semverLte,
-  tryAcquireLock: () => tryAcquireLock
+// ../../node_modules/@wadeck-app/shared-updater/dist/shared/semver.js
+function semverLte(a, b) {
+  const normalize = (v) => v.replace(/^v/, "").split(/[-.]/).map(Number);
+  const pa = normalize(a);
+  const pb = normalize(b);
+  for (let i = 0; i < Math.max(pa.length, pb.length); i++) {
+    const na = pa[i] ?? 0;
+    const nb = pb[i] ?? 0;
+    if (na < nb)
+      return true;
+    if (na > nb)
+      return false;
+  }
+  return true;
+}
+var init_semver = __esm({
+  "../../node_modules/@wadeck-app/shared-updater/dist/shared/semver.js"() {
+  }
 });
-module.exports = __toCommonJS(UpdaterMain_exports);
+
+// ../../node_modules/@wadeck-app/shared-updater/dist/shared/npm.js
+function execNpm(args, opts = {}) {
+  if (USE_NPM_CLI) {
+    return (0, import_node_child_process.execFileSync)(process.execPath, [NPM_CLI_JS, ...args], {
+      encoding: "utf8",
+      windowsHide: true,
+      ...opts
+    });
+  }
+  return (0, import_node_child_process.execSync)(["npm", ...args].join(" "), {
+    encoding: "utf8",
+    windowsHide: true,
+    ...opts
+  });
+}
+var import_node_child_process, import_node_fs, import_node_path, NPM_CLI_JS, USE_NPM_CLI;
+var init_npm = __esm({
+  "../../node_modules/@wadeck-app/shared-updater/dist/shared/npm.js"() {
+    import_node_child_process = require("node:child_process");
+    import_node_fs = require("node:fs");
+    import_node_path = require("node:path");
+    NPM_CLI_JS = (0, import_node_path.join)((0, import_node_path.dirname)(process.execPath), "node_modules", "npm", "bin", "npm-cli.js");
+    USE_NPM_CLI = (0, import_node_fs.existsSync)(NPM_CLI_JS);
+  }
+});
+
+// ../../node_modules/@wadeck-app/shared-updater/dist/shared/lock.js
+function tryAcquireLock(lockFile) {
+  (0, import_node_fs2.mkdirSync)((0, import_node_path2.dirname)(lockFile), { recursive: true });
+  if ((0, import_node_fs2.existsSync)(lockFile)) {
+    try {
+      const { pid, ts } = JSON.parse((0, import_node_fs2.readFileSync)(lockFile, "utf8"));
+      const age = Date.now() - ts;
+      if (age < LOCK_STALE_MS) {
+        try {
+          process.kill(pid, 0);
+          return false;
+        } catch {
+        }
+      }
+    } catch {
+    }
+  }
+  (0, import_node_fs2.writeFileSync)(lockFile, JSON.stringify({ pid: process.pid, ts: Date.now() }));
+  return true;
+}
+function releaseLock(lockFile) {
+  try {
+    (0, import_node_fs2.rmSync)(lockFile);
+  } catch {
+  }
+}
+var import_node_fs2, import_node_path2, LOCK_STALE_MS;
+var init_lock = __esm({
+  "../../node_modules/@wadeck-app/shared-updater/dist/shared/lock.js"() {
+    import_node_fs2 = require("node:fs");
+    import_node_path2 = require("node:path");
+    LOCK_STALE_MS = 10 * 60 * 1e3;
+  }
+});
+
+// ../../node_modules/@wadeck-app/shared-updater/dist/shared/state.js
+function writeState(stateFile, state) {
+  (0, import_node_fs3.mkdirSync)((0, import_node_path3.dirname)(stateFile), { recursive: true });
+  (0, import_node_fs3.writeFileSync)(stateFile, JSON.stringify(state, null, 2));
+}
+function readCache(cacheFile) {
+  try {
+    return JSON.parse((0, import_node_fs3.readFileSync)(cacheFile, "utf8"));
+  } catch {
+    return null;
+  }
+}
+function writeCache(cacheFile, cache) {
+  (0, import_node_fs3.mkdirSync)((0, import_node_path3.dirname)(cacheFile), { recursive: true });
+  (0, import_node_fs3.writeFileSync)(cacheFile, JSON.stringify(cache, null, 2));
+}
+function stateFilePath(configDir2) {
+  return `${configDir2}/update-state.json`;
+}
+function cacheFilePath(configDir2) {
+  return `${configDir2}/update-cache.json`;
+}
+function lockFilePath(configDir2) {
+  return `${configDir2}/update.lock`;
+}
+var import_node_fs3, import_node_path3;
+var init_state = __esm({
+  "../../node_modules/@wadeck-app/shared-updater/dist/shared/state.js"() {
+    import_node_fs3 = require("node:fs");
+    import_node_path3 = require("node:path");
+  }
+});
+
+// ../../node_modules/@wadeck-app/shared-updater/dist/shared/config.js
+function readUpdateConfig(configDir2) {
+  const configFile = (0, import_node_path4.join)(configDir2, "config.yml");
+  if (!(0, import_node_fs4.existsSync)(configFile)) {
+    return { channel: DEFAULT_CHANNEL, checkIntervalMs: DEFAULT_CHECK_INTERVAL_MS, disabled: false };
+  }
+  const raw = (0, import_node_fs4.readFileSync)(configFile, "utf8");
+  const channel = raw.match(/^channel:\s*(\S+)/m)?.[1] ?? DEFAULT_CHANNEL;
+  const intervalRaw = raw.match(/^checkInterval:\s*(\S+)/m)?.[1];
+  const disabled = /^autoUpdate:\s*false/m.test(raw);
+  return {
+    channel,
+    checkIntervalMs: intervalRaw ? parseIntervalMs(intervalRaw) : DEFAULT_CHECK_INTERVAL_MS,
+    disabled
+  };
+}
+function parseIntervalMs(s) {
+  const match = s.match(/^(\d+)(ms|s|m|h|d)?$/);
+  if (!match)
+    return DEFAULT_CHECK_INTERVAL_MS;
+  const n = parseInt(match[1], 10);
+  switch (match[2]) {
+    case "ms":
+      return n;
+    case "s":
+      return n * 1e3;
+    case "m":
+      return n * 60 * 1e3;
+    case "h":
+      return n * 60 * 60 * 1e3;
+    case "d":
+      return n * 24 * 60 * 60 * 1e3;
+    default:
+      return n;
+  }
+}
+var import_node_fs4, import_node_path4, DEFAULT_CHANNEL, DEFAULT_CHECK_INTERVAL_MS;
+var init_config = __esm({
+  "../../node_modules/@wadeck-app/shared-updater/dist/shared/config.js"() {
+    import_node_fs4 = require("node:fs");
+    import_node_path4 = require("node:path");
+    DEFAULT_CHANNEL = "latest";
+    DEFAULT_CHECK_INTERVAL_MS = 4 * 60 * 60 * 1e3;
+  }
+});
+
+// ../../node_modules/@wadeck-app/shared-updater/dist/shared/log.js
+function appendLog(configDir2, level, msg) {
+  const today = (/* @__PURE__ */ new Date()).toISOString().slice(0, 10);
+  const logFile = (0, import_node_path5.join)(configDir2, "logs", `${today}.ndjson`);
+  (0, import_node_fs5.mkdirSync)((0, import_node_path5.dirname)(logFile), { recursive: true });
+  (0, import_node_fs5.appendFileSync)(logFile, JSON.stringify({ ts: (/* @__PURE__ */ new Date()).toISOString(), level, msg }) + "\n");
+}
+var import_node_fs5, import_node_path5;
+var init_log = __esm({
+  "../../node_modules/@wadeck-app/shared-updater/dist/shared/log.js"() {
+    import_node_fs5 = require("node:fs");
+    import_node_path5 = require("node:path");
+  }
+});
+
+// ../../node_modules/@wadeck-app/shared-updater/dist/shared/fetch.js
+function fetchLatestVersion(pkgName, channel) {
+  const tag = channel === "latest" ? "latest" : channel;
+  const raw = execNpm(["view", pkgName, `dist-tags.${tag}`], { timeout: 3e4 });
+  return raw.trim();
+}
+var init_fetch = __esm({
+  "../../node_modules/@wadeck-app/shared-updater/dist/shared/fetch.js"() {
+    init_npm();
+  }
+});
+
+// ../../node_modules/@wadeck-app/shared-updater/dist/strategies/without-daemon.js
+var without_daemon_exports = {};
+__export(without_daemon_exports, {
+  runWithoutDaemon: () => runWithoutDaemon
+});
+async function runWithoutDaemon(cfg) {
+  const force = process.env["UPDATER_FORCE"] === "1";
+  const { pkgName, configDir: configDir2, currentVersion: currentVersion2 } = cfg;
+  const lockFile = lockFilePath(configDir2);
+  if (!tryAcquireLock(lockFile)) {
+    appendLog(configDir2, "info", `${pkgName} updater already running, skipping`);
+    return;
+  }
+  try {
+    const updateCfg = readUpdateConfig(configDir2);
+    if (updateCfg.disabled)
+      return;
+    const cache = readCache(cacheFilePath(configDir2));
+    const now = Date.now();
+    if (!force && cache && now - cache.lastCheckedAt < updateCfg.checkIntervalMs)
+      return;
+    appendLog(configDir2, "info", `${pkgName} checking for updates (current: ${currentVersion2})`);
+    let latestVersion;
+    try {
+      latestVersion = fetchLatestVersion(pkgName, updateCfg.channel);
+    } catch (err) {
+      appendLog(configDir2, "warn", `${pkgName} version fetch failed: ${err}`);
+      return;
+    }
+    writeCache(cacheFilePath(configDir2), { lastCheckedAt: now, latestVersion });
+    if (semverLte(latestVersion, currentVersion2)) {
+      appendLog(configDir2, "info", `${pkgName} is up to date (${currentVersion2})`);
+      return;
+    }
+    appendLog(configDir2, "info", `${pkgName} update available: ${currentVersion2} \u2192 ${latestVersion}`);
+    try {
+      execNpm(["install", "-g", `${pkgName}@${latestVersion}`], { timeout: 5 * 6e4 });
+    } catch (err) {
+      appendLog(configDir2, "error", `${pkgName} install failed: ${err}`);
+      writeState(stateFilePath(configDir2), {
+        status: "failed",
+        currentVersion: currentVersion2,
+        targetVersion: latestVersion,
+        error: String(err),
+        timestamp: Date.now()
+      });
+      return;
+    }
+    const selfCheckPassed = await selfCheck();
+    if (!selfCheckPassed) {
+      appendLog(configDir2, "warn", `${pkgName} self-check failed after update, rolling back to ${currentVersion2}`);
+      try {
+        execNpm(["install", "-g", `${pkgName}@${currentVersion2}`], { timeout: 5 * 6e4 });
+        writeState(stateFilePath(configDir2), {
+          status: "rolled-back",
+          currentVersion: currentVersion2,
+          targetVersion: latestVersion,
+          previousVersion: currentVersion2,
+          timestamp: Date.now()
+        });
+      } catch (rollbackErr) {
+        appendLog(configDir2, "error", `${pkgName} rollback failed: ${rollbackErr}`);
+      }
+      return;
+    }
+    writeState(stateFilePath(configDir2), {
+      status: "success",
+      currentVersion: currentVersion2,
+      targetVersion: latestVersion,
+      previousVersion: currentVersion2,
+      timestamp: Date.now()
+    });
+    appendLog(configDir2, "info", `${pkgName} updated to ${latestVersion}`);
+  } finally {
+    releaseLock(lockFile);
+  }
+}
+async function selfCheck() {
+  const cmd = process.env["UPDATER_SELF_CHECK_CMD"];
+  if (!cmd)
+    return true;
+  try {
+    const { execSync: execSync2 } = await import("node:child_process");
+    execSync2(cmd, { timeout: 3e4, windowsHide: true });
+    return true;
+  } catch {
+    return false;
+  }
+}
+var init_without_daemon = __esm({
+  "../../node_modules/@wadeck-app/shared-updater/dist/strategies/without-daemon.js"() {
+    init_lock();
+    init_state();
+    init_config();
+    init_fetch();
+    init_npm();
+    init_log();
+    init_semver();
+  }
+});
+
+// ../../node_modules/@wadeck-app/shared-updater/dist/strategies/with-daemon.js
+var with_daemon_exports = {};
+__export(with_daemon_exports, {
+  runWithDaemon: () => runWithDaemon
+});
+async function runWithDaemon(cfg) {
+  const force = process.env["UPDATER_FORCE"] === "1";
+  const { pkgName, configDir: configDir2, currentVersion: currentVersion2 } = cfg;
+  const lockFile = lockFilePath(configDir2);
+  if (!tryAcquireLock(lockFile)) {
+    appendLog(configDir2, "info", `${pkgName} updater already running, skipping`);
+    return;
+  }
+  try {
+    const updateCfg = readUpdateConfig(configDir2);
+    if (updateCfg.disabled)
+      return;
+    const cache = readCache(cacheFilePath(configDir2));
+    const now = Date.now();
+    if (!force && cache && now - cache.lastCheckedAt < updateCfg.checkIntervalMs)
+      return;
+    appendLog(configDir2, "info", `${pkgName} checking for updates (current: ${currentVersion2})`);
+    let latestVersion;
+    try {
+      latestVersion = fetchLatestVersion(pkgName, updateCfg.channel);
+    } catch (err) {
+      appendLog(configDir2, "warn", `${pkgName} version fetch failed: ${err}`);
+      return;
+    }
+    writeCache(cacheFilePath(configDir2), { lastCheckedAt: now, latestVersion });
+    if (semverLte(latestVersion, currentVersion2)) {
+      appendLog(configDir2, "info", `${pkgName} is up to date (${currentVersion2})`);
+      return;
+    }
+    appendLog(configDir2, "info", `${pkgName} update available: ${currentVersion2} \u2192 ${latestVersion}`);
+    writeState(stateFilePath(configDir2), {
+      status: "update-available",
+      currentVersion: currentVersion2,
+      targetVersion: latestVersion,
+      timestamp: Date.now()
+    });
+    if (force) {
+      await triggerImmediateRestart(cfg, latestVersion);
+    }
+  } finally {
+    releaseLock(lockFile);
+  }
+}
+async function triggerImmediateRestart(cfg, targetVersion) {
+  const { configDir: configDir2, pkgName } = cfg;
+  const portFilePath = `${configDir2}/config.port`;
+  const tokenFilePath = `${configDir2}/health_token`;
+  if (!(0, import_node_fs6.existsSync)(portFilePath)) {
+    appendLog(configDir2, "warn", `${pkgName} --force: daemon not running (no config.port), skipping POST /quit`);
+    return;
+  }
+  let port;
+  let token;
+  try {
+    const data = JSON.parse((0, import_node_fs6.readFileSync)(portFilePath, "utf8"));
+    port = data.port;
+    token = (0, import_node_fs6.readFileSync)(tokenFilePath, "utf8").trim();
+  } catch (err) {
+    appendLog(configDir2, "warn", `${pkgName} --force: cannot read port/token: ${err}`);
+    return;
+  }
+  try {
+    await fetch(`http://127.0.0.1:${port}/quit`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+      signal: AbortSignal.timeout(5e3)
+    });
+    appendLog(configDir2, "info", `${pkgName} --force: POST /quit sent, daemon restarting to apply ${targetVersion}`);
+  } catch (err) {
+    appendLog(configDir2, "warn", `${pkgName} --force: POST /quit failed: ${err}`);
+  }
+}
+var import_node_fs6;
+var init_with_daemon = __esm({
+  "../../node_modules/@wadeck-app/shared-updater/dist/strategies/with-daemon.js"() {
+    import_node_fs6 = require("node:fs");
+    init_lock();
+    init_state();
+    init_config();
+    init_fetch();
+    init_log();
+    init_semver();
+  }
+});
+
+// ../../node_modules/@wadeck-app/shared-updater/dist/index.js
+init_semver();
+init_npm();
+init_lock();
+init_state();
+init_config();
+init_log();
+init_fetch();
+init_without_daemon();
+init_with_daemon();
+async function runUpdater(cfg) {
+  if (cfg.strategy === "without-daemon") {
+    const { runWithoutDaemon: run2 } = await Promise.resolve().then(() => (init_without_daemon(), without_daemon_exports));
+    return run2(cfg);
+  }
+  const { runWithDaemon: run } = await Promise.resolve().then(() => (init_with_daemon(), with_daemon_exports));
+  return run(cfg);
+}
 
 // ../../node_modules/@wadeck-app/shared-cli/dist/ConfigDir.js
 var fs = __toESM(require("node:fs"), 1);
@@ -79,269 +468,24 @@ var ConfigDir = class _ConfigDir {
   }
 };
 
-// dist/updater/UpdaterMain.js
-var import_node_child_process = require("node:child_process");
-var fs2 = __toESM(require("node:fs"), 1);
-var path2 = __toESM(require("node:path"), 1);
-var import_node_util = require("node:util");
-var execFileAsync = (0, import_node_util.promisify)(import_node_child_process.execFile);
-var NPM_CLI_JS = path2.join(path2.dirname(process.execPath), "node_modules", "npm", "bin", "npm-cli.js");
-var USE_NPM_CLI = fs2.existsSync(NPM_CLI_JS);
-function getErrorMessage(val) {
-  return val instanceof Error ? val.message : String(val);
+// dist/updater/entry.js
+var import_node_path6 = require("node:path");
+var PKG_NAME = "@wadeck-app/violations-cli";
+var configDir = process.env["VIOLATIONS_CONFIG_DIR"] ?? ConfigDir.get("violations");
+var currentVersion = true ? "2026.08.30-125501-66-6468870a" : "0.0.0-dev";
+try {
+  const npmRoot = execNpm(["root", "-g"], { timeout: 1e4 }).trim();
+  const selfCheckCmd = `${process.execPath} ${(0, import_node_path6.join)(npmRoot, PKG_NAME, "violations.cjs")} cli self-check`;
+  process.env["UPDATER_SELF_CHECK_CMD"] = selfCheckCmd;
+} catch {
 }
-var PKG_NAME = process.env["UPDATER_PKG_NAME"] ?? "@wadeck-app/violations-cli";
-var VERSION_RE = /^\d+\.\d+\.\d+([-+][\w.-]+)?$/;
-function semverLte(a, b) {
-  const parse = (v) => {
-    const core = v.split(/[-+]/)[0] ?? v;
-    const [maj = "0", min = "0", pat = "0"] = core.split(".");
-    return [parseInt(maj, 10), parseInt(min, 10), parseInt(pat, 10)];
-  };
-  const [aMaj, aMin, aPat] = parse(a);
-  const [bMaj, bMin, bPat] = parse(b);
-  if (aMaj !== bMaj)
-    return aMaj < bMaj;
-  if (aMin !== bMin)
-    return aMin < bMin;
-  return aPat <= bPat;
-}
-function getLockPath(configDir) {
-  return path2.join(configDir, ".update.lock");
-}
-function getCachePath(configDir) {
-  return path2.join(configDir, ".update-cache.json");
-}
-function getStatePath(configDir) {
-  return path2.join(configDir, "update-state.json");
-}
-function getLogPath(configDir) {
-  return path2.join(configDir, "update-log.txt");
-}
-function appendLog(logFile, message) {
-  try {
-    const line = `[${(/* @__PURE__ */ new Date()).toISOString()}] ${message}
-`;
-    fs2.appendFileSync(logFile, line, "utf-8");
-  } catch {
-  }
-}
-function writeState(statePath, state) {
-  try {
-    fs2.mkdirSync(path2.dirname(statePath), { recursive: true });
-    fs2.writeFileSync(statePath, JSON.stringify(state, null, 2), "utf-8");
-  } catch {
-  }
-}
-function parseCheckInterval(value) {
-  const match = /^(\d+)([mhd])$/.exec(value.trim());
-  if (!match) {
-    return 30 * 60 * 1e3;
-  }
-  const num = parseInt(match[1], 10);
-  switch (match[2]) {
-    case "m":
-      return num * 60 * 1e3;
-    case "h":
-      return num * 60 * 60 * 1e3;
-    case "d":
-      return num * 24 * 60 * 60 * 1e3;
-    default:
-      throw new Error(`Unknown interval unit: ${match[2]}`);
-  }
-}
-function readConfig(configDir) {
-  const configFile = path2.join(configDir, "config.yml");
-  const defaults = {
-    channel: "latest",
-    checkIntervalMs: 30 * 60 * 1e3,
-    disabled: false
-  };
-  if (!fs2.existsSync(configFile))
-    return defaults;
-  try {
-    const raw = fs2.readFileSync(configFile, "utf-8");
-    const channelMatch = /^\s*channel:\s*['"]?(\S+?)['"]?\s*$/m.exec(raw);
-    const intervalMatch = /^\s*checkInterval:\s*['"]?(\S+?)['"]?\s*$/m.exec(raw);
-    const disabledMatch = /^\s*disabled:\s*(true|false)\s*$/m.exec(raw);
-    return {
-      channel: channelMatch?.[1] ?? defaults.channel,
-      checkIntervalMs: intervalMatch?.[1] ? parseCheckInterval(intervalMatch[1]) : defaults.checkIntervalMs,
-      disabled: disabledMatch?.[1] === "true"
-    };
-  } catch {
-    return defaults;
-  }
-}
-function tryAcquireLock(lockFile) {
-  try {
-    const fd = fs2.openSync(lockFile, fs2.constants.O_CREAT | fs2.constants.O_EXCL | fs2.constants.O_WRONLY);
-    fs2.writeSync(fd, String(process.pid));
-    fs2.closeSync(fd);
-    return true;
-  } catch (err) {
-    const nodeErr = err;
-    if (nodeErr.code === "EEXIST") {
-      try {
-        const existingPid = parseInt(fs2.readFileSync(lockFile, "utf-8").trim(), 10);
-        if (!isNaN(existingPid)) {
-          try {
-            process.kill(existingPid, 0);
-            return false;
-          } catch {
-          }
-        }
-        fs2.unlinkSync(lockFile);
-        const fd = fs2.openSync(lockFile, fs2.constants.O_CREAT | fs2.constants.O_EXCL | fs2.constants.O_WRONLY);
-        fs2.writeSync(fd, String(process.pid));
-        fs2.closeSync(fd);
-        return true;
-      } catch {
-        return false;
-      }
-    }
-    return false;
-  }
-}
-function execNpm(args, opts) {
-  const winHide = process.platform === "win32" ? { windowsHide: true } : {};
-  if (USE_NPM_CLI) {
-    return execFileAsync(process.execPath, [NPM_CLI_JS, ...args], { ...opts, ...winHide });
-  }
-  return execFileAsync("npm", args, { ...opts, ...winHide });
-}
-async function main() {
-  const cliName = PKG_NAME.replace(/^@[^/]+\//, "").replace(/-cli$/, "");
-  const configDir = ConfigDir.get(cliName);
-  fs2.mkdirSync(configDir, { recursive: true });
-  const lockFile = getLockPath(configDir);
-  const logFile = getLogPath(configDir);
-  let lockAcquired = false;
-  try {
-    lockAcquired = tryAcquireLock(lockFile);
-    if (!lockAcquired) {
-      return;
-    }
-    const config = readConfig(configDir);
-    if (config.disabled) {
-      return;
-    }
-    const force = process.env["UPDATER_FORCE"] === "1";
-    const cachePath = getCachePath(configDir);
-    if (!force && fs2.existsSync(cachePath)) {
-      try {
-        const cache = JSON.parse(fs2.readFileSync(cachePath, "utf-8"));
-        if (Date.now() - cache.checkedAt < config.checkIntervalMs) {
-          return;
-        }
-      } catch {
-      }
-    }
-    try {
-      fs2.writeFileSync(cachePath, JSON.stringify({ checkedAt: Date.now() }), "utf-8");
-    } catch {
-    }
-    const statePath = getStatePath(configDir);
-    const timestamp = (/* @__PURE__ */ new Date()).toISOString();
-    let latestVersion;
-    try {
-      const { stdout } = await execNpm(["view", PKG_NAME, `dist-tags.${config.channel}`], { timeout: 15e3 });
-      latestVersion = stdout.trim();
-    } catch (err) {
-      const msg = getErrorMessage(err);
-      const reason = msg.includes("EUNAUTHORIZED") || msg.includes("401") ? "auth" : "network";
-      writeState(statePath, { status: "update-failed", reason, timestamp });
-      appendLog(logFile, `Update check failed: ${msg}`);
-      return;
-    }
-    if (!VERSION_RE.test(latestVersion)) {
-      writeState(statePath, { status: "update-failed", reason: "invalid-version", timestamp });
-      return;
-    }
-    let currentVersion;
-    try {
-      currentVersion = "2026.08.30-104928-65-95a60f41";
-    } catch {
-      return;
-    }
-    if (semverLte(latestVersion, currentVersion)) {
-      if (force)
-        process.stdout.write(`[violations] Already up to date (v${currentVersion})
+runUpdater({
+  pkgName: PKG_NAME,
+  configDir,
+  currentVersion,
+  strategy: "without-daemon"
+}).catch((err) => {
+  process.stderr.write(`[violations-updater] fatal: ${err}
 `);
-      return;
-    }
-    writeState(statePath, {
-      status: "applying",
-      previousVersion: currentVersion,
-      targetVersion: latestVersion,
-      timestamp
-    });
-    try {
-      await execNpm(["install", "-g", `${PKG_NAME}@${latestVersion}`], { timeout: 12e4 });
-    } catch (err) {
-      const msg = getErrorMessage(err);
-      const reason = msg.includes("EUNAUTHORIZED") || msg.includes("401") ? "auth" : "install-failed";
-      writeState(statePath, {
-        status: "update-failed",
-        reason,
-        targetVersion: latestVersion,
-        timestamp
-      });
-      appendLog(logFile, `Install failed for ${latestVersion}: ${msg}`);
-      return;
-    }
-    try {
-      const bundleFile = `${cliName}.cjs`;
-      const { stdout: npmRootOut } = await execNpm(["root", "-g"], { timeout: 1e4 });
-      const globalBundlePath = path2.join(npmRootOut.trim(), PKG_NAME, bundleFile);
-      (0, import_node_child_process.execFileSync)(process.execPath, [globalBundlePath, "--help"], {
-        stdio: "pipe",
-        timeout: 15e3,
-        env: { ...process.env, CLI_SELF_CHECK_QUIET: "1" }
-      });
-      writeState(statePath, {
-        status: "success",
-        newVersion: latestVersion,
-        previousVersion: currentVersion,
-        timestamp
-      });
-    } catch (healthErr) {
-      const msg = healthErr instanceof Error ? healthErr.message : String(healthErr);
-      try {
-        await execNpm(["install", "-g", `${PKG_NAME}@${currentVersion}`], { timeout: 12e4 });
-      } catch {
-      }
-      writeState(statePath, {
-        status: "rolled-back",
-        reason: "self-check-failed",
-        previousVersion: currentVersion,
-        targetVersion: latestVersion,
-        timestamp
-      });
-      appendLog(logFile, `Self-check failed after updating to ${latestVersion}, rolled back: ${msg}`);
-    }
-  } catch (err) {
-    const msg = getErrorMessage(err);
-    appendLog(logFile, `Unexpected updater error: ${msg}`);
-  } finally {
-    if (lockAcquired) {
-      try {
-        fs2.unlinkSync(lockFile);
-      } catch {
-      }
-    }
-  }
-}
-var isEntryPoint = process.argv[1] !== void 0 && (process.argv[1].endsWith("UpdaterMain.js") || process.argv[1].endsWith("UpdaterMain.ts") || process.argv[1].endsWith("violations-updater.cjs"));
-if (isEntryPoint) {
-  main().catch(() => {
-    process.exit(1);
-  });
-}
-// Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  main,
-  parseCheckInterval,
-  semverLte,
-  tryAcquireLock
+  process.exit(1);
 });

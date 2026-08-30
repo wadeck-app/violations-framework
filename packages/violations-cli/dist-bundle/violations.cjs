@@ -3025,9 +3025,9 @@ __export(cli_exports, {
 });
 module.exports = __toCommonJS(cli_exports);
 var import_promises5 = require("node:fs/promises");
-var import_node_fs6 = require("node:fs");
-var import_node_child_process3 = require("node:child_process");
-var import_node_path5 = require("node:path");
+var import_node_fs10 = require("node:fs");
+var import_node_child_process5 = require("node:child_process");
+var import_node_path9 = require("node:path");
 var import_node_url3 = require("node:url");
 
 // ../../node_modules/@wadeck-app/shared-cli/dist/ConfigDir.js
@@ -3106,6 +3106,12 @@ var UpdateManager = class {
     try {
       const raw = fs2.readFileSync(stateFile, "utf-8");
       const state = JSON.parse(raw);
+      if (state.status === "update-failed")
+        state.status = "failed";
+      if (!state.targetVersion && state.newVersion)
+        state.targetVersion = state.newVersion;
+      if (!state.error && state.reason)
+        state.error = state.reason;
       if (state.status !== "applying") {
         try {
           fs2.unlinkSync(stateFile);
@@ -3118,6 +3124,131 @@ var UpdateManager = class {
     }
   }
 };
+
+// ../../node_modules/@wadeck-app/shared-cli/dist/CliLogger.js
+var import_node_fs = require("node:fs");
+var import_node_path = require("node:path");
+function logCliInvocation(configDir, cmdName, args) {
+  const today = (/* @__PURE__ */ new Date()).toISOString().slice(0, 10);
+  const logFile = (0, import_node_path.join)(configDir, "logs", `${today}.ndjson`);
+  (0, import_node_fs.mkdirSync)((0, import_node_path.dirname)(logFile), { recursive: true });
+  const line = JSON.stringify({ ts: (/* @__PURE__ */ new Date()).toISOString(), level: "info", msg: `cmd: ${cmdName} ${args.join(" ")}`.trimEnd() });
+  (0, import_node_fs.appendFileSync)(logFile, line + "\n");
+}
+
+// ../../node_modules/@wadeck-app/shared-cli/dist/CliMetaCommands.js
+var import_node_fs3 = require("node:fs");
+var import_node_path3 = require("node:path");
+var import_node_child_process4 = require("node:child_process");
+
+// ../../node_modules/@wadeck-app/shared-cli/dist/NpmRunner.js
+var import_node_child_process3 = require("node:child_process");
+var import_node_fs2 = require("node:fs");
+var import_node_path2 = require("node:path");
+var NPM_CLI_JS = (0, import_node_path2.join)((0, import_node_path2.dirname)(process.execPath), "node_modules", "npm", "bin", "npm-cli.js");
+var USE_NPM_CLI = (0, import_node_fs2.existsSync)(NPM_CLI_JS);
+function execNpm(args, opts = {}) {
+  const spawnOpts = { encoding: "utf8", windowsHide: true, ...opts };
+  if (USE_NPM_CLI) {
+    return (0, import_node_child_process3.execFileSync)(process.execPath, [NPM_CLI_JS, ...args], spawnOpts);
+  }
+  return (0, import_node_child_process3.execSync)(["npm", ...args.map((a) => JSON.stringify(a))].join(" "), spawnOpts);
+}
+
+// ../../node_modules/@wadeck-app/shared-cli/dist/CliMetaCommands.js
+function warnUnknownArgs(rawArgs, knownArgs, cmdName) {
+  const unknown = rawArgs.filter((a) => !knownArgs.includes(a));
+  for (const arg of unknown) {
+    process.stderr.write(`[warning] ${cmdName}: unknown argument '${arg}' \u2014 ignored
+`);
+  }
+}
+async function cliLogsCommand(configDir, opts = {}) {
+  const today = (/* @__PURE__ */ new Date()).toISOString().slice(0, 10);
+  const logFile = (0, import_node_path3.join)(configDir, "logs", `${today}.ndjson`);
+  if (!(0, import_node_fs3.existsSync)(logFile)) {
+    process.stdout.write(`No log file for today: ${logFile}
+`);
+    if (!opts.follow)
+      return;
+  }
+  let offset = 0;
+  if ((0, import_node_fs3.existsSync)(logFile)) {
+    const content = (0, import_node_fs3.readFileSync)(logFile, "utf8");
+    process.stdout.write(content);
+    offset = Buffer.byteLength(content, "utf8");
+  }
+  if (!opts.follow)
+    return;
+  await new Promise((resolve4) => {
+    (0, import_node_fs3.watchFile)(logFile, { interval: 250 }, () => {
+      if (!(0, import_node_fs3.existsSync)(logFile))
+        return;
+      const size = (0, import_node_fs3.statSync)(logFile).size;
+      if (size <= offset)
+        return;
+      const buf = Buffer.alloc(size - offset);
+      const fd = (0, import_node_fs3.openSync)(logFile, "r");
+      (0, import_node_fs3.readSync)(fd, buf, 0, buf.length, offset);
+      (0, import_node_fs3.closeSync)(fd);
+      offset = size;
+      process.stdout.write(buf.toString("utf8"));
+    });
+    process.on("SIGINT", () => {
+      (0, import_node_fs3.unwatchFile)(logFile);
+      resolve4();
+    });
+  });
+}
+async function cliVersionCommand(pkgName, current, channel = "latest") {
+  let latest;
+  try {
+    latest = execNpm(["view", pkgName, `dist-tags.${channel}`], { timeout: 15e3 }).trim();
+  } catch {
+    process.stderr.write(`Failed to fetch latest version for ${pkgName}
+`);
+    return;
+  }
+  if (latest === current) {
+    process.stdout.write(`${pkgName}@${current} is up to date
+`);
+  } else {
+    process.stdout.write(`${pkgName}: current=${current} latest=${latest} (channel: ${channel})
+`);
+  }
+}
+async function cliUpdateCommand(updaterPath, pkgName, opts) {
+  if (opts?.rawArgs?.includes("--force")) {
+    process.stderr.write(`[warning] --force is not needed \u2014 'cli update' always checks immediately
+`);
+  }
+  if (!(0, import_node_fs3.existsSync)(updaterPath)) {
+    process.stderr.write(`Updater not found: ${updaterPath}
+`);
+    process.exit(1);
+  }
+  process.stdout.write(`Running updater for ${pkgName}...
+`);
+  await new Promise((resolve4, reject) => {
+    const child = (0, import_node_child_process4.spawn)(process.execPath, [updaterPath], {
+      env: { ...process.env, UPDATER_FORCE: "1" },
+      stdio: "inherit",
+      windowsHide: true
+    });
+    child.on("close", (code) => code === 0 ? resolve4() : reject(new Error(`Updater exited with code ${code}`)));
+  });
+}
+
+// ../../node_modules/@wadeck-app/shared-cli/dist/ChannelConfig.js
+var import_node_fs4 = require("node:fs");
+var import_node_path4 = require("node:path");
+function readChannelFromConfig(configDir) {
+  const configFile = (0, import_node_path4.join)(configDir, "config.yml");
+  if (!(0, import_node_fs4.existsSync)(configFile))
+    return "latest";
+  const raw = (0, import_node_fs4.readFileSync)(configFile, "utf8");
+  return raw.match(/^channel:\s*(\S+)/m)?.[1] ?? "latest";
+}
 
 // dist/config.js
 var fs3 = __toESM(require("node:fs"), 1);
@@ -3154,18 +3285,18 @@ function loadUserConfig(configDir) {
 }
 
 // dist/version.js
-var VERSION = "2026.08.30-104928-65-95a60f41" ? "2026.08.30-104928-65-95a60f41" : readBaseVersion();
+var VERSION = "2026.08.30-125501-66-6468870a" ? "2026.08.30-125501-66-6468870a" : readBaseVersion();
 
 // dist/runner.js
 var import_promises3 = require("node:fs/promises");
-var import_node_path3 = require("node:path");
+var import_node_path7 = require("node:path");
 var import_node_url2 = require("node:url");
-var import_node_fs3 = require("node:fs");
+var import_node_fs7 = require("node:fs");
 var import_micromatch2 = __toESM(require_micromatch(), 1);
 
 // dist/walk.js
 var import_promises = require("node:fs/promises");
-var import_node_path = require("node:path");
+var import_node_path5 = require("node:path");
 var import_micromatch = __toESM(require_micromatch(), 1);
 var DEFAULT_EXCLUDE_GLOBS = [
   "**/node_modules/**",
@@ -3188,8 +3319,8 @@ async function walk(dir, options) {
       return;
     }
     for (const entry of entries) {
-      const full = (0, import_node_path.join)(current, entry.name);
-      const rel = (0, import_node_path.relative)(dir, full).split("\\").join("/");
+      const full = (0, import_node_path5.join)(current, entry.name);
+      const rel = (0, import_node_path5.relative)(dir, full).split("\\").join("/");
       if (import_micromatch.default.isMatch(rel, allExcludes))
         continue;
       if (entry.isDirectory()) {
@@ -3206,14 +3337,14 @@ async function walk(dir, options) {
 }
 
 // dist/suppress.js
-var import_node_fs = require("node:fs");
+var import_node_fs5 = require("node:fs");
 var CACHE = /* @__PURE__ */ new Map();
 function getLines(absPath) {
   if (CACHE.has(absPath))
     return CACHE.get(absPath);
   let lines;
   try {
-    lines = (0, import_node_fs.readFileSync)(absPath, "utf8").split(/\r?\n/);
+    lines = (0, import_node_fs5.readFileSync)(absPath, "utf8").split(/\r?\n/);
   } catch {
     lines = [];
   }
@@ -3282,9 +3413,9 @@ function getSuppressReason(absPath, lineNumber) {
 
 // dist/compiler.js
 var import_promises2 = require("node:fs/promises");
-var import_node_path2 = require("node:path");
+var import_node_path6 = require("node:path");
 var import_node_url = require("node:url");
-var import_node_fs2 = require("node:fs");
+var import_node_fs6 = require("node:fs");
 var import_node_crypto = require("node:crypto");
 var import_typescript = __toESM(require("typescript"), 1);
 async function readManifest(manifestPath) {
@@ -3314,7 +3445,7 @@ async function compileIfNeeded(sourcePath, outputPath, manifestPath, frameworkVe
   } catch {
     throw new Error(`Source file not found: ${sourcePath}`);
   }
-  const compiledExists = (0, import_node_fs2.existsSync)(outputPath);
+  const compiledExists = (0, import_node_fs6.existsSync)(outputPath);
   if (entry && entry.mtimeMs === sourceMtime && compiledExists) {
     return;
   }
@@ -3328,12 +3459,12 @@ async function compileIfNeeded(sourcePath, outputPath, manifestPath, frameworkVe
     },
     fileName: sourcePath
   });
-  const srcDir = (0, import_node_path2.dirname)(sourcePath);
-  const rewritten = result.outputText.replace(/from\s+['"](\.[^'"]+)['"]/g, (_, rel) => `from '${(0, import_node_url.pathToFileURL)((0, import_node_path2.resolve)(srcDir, rel)).href}'`);
-  await (0, import_promises2.mkdir)((0, import_node_path2.dirname)(outputPath), { recursive: true });
+  const srcDir = (0, import_node_path6.dirname)(sourcePath);
+  const rewritten = result.outputText.replace(/from\s+['"](\.[^'"]+)['"]/g, (_, rel) => `from '${(0, import_node_url.pathToFileURL)((0, import_node_path6.resolve)(srcDir, rel)).href}'`);
+  await (0, import_promises2.mkdir)((0, import_node_path6.dirname)(outputPath), { recursive: true });
   await (0, import_promises2.writeFile)(outputPath, rewritten, "utf8");
   manifest.files[sourcePath] = { mtimeMs: sourceMtime, compiledPath: outputPath };
-  await (0, import_promises2.mkdir)((0, import_node_path2.dirname)(manifestPath), { recursive: true });
+  await (0, import_promises2.mkdir)((0, import_node_path6.dirname)(manifestPath), { recursive: true });
   await writeManifest(manifestPath, manifest);
 }
 async function typeCheck(sourcePath) {
@@ -3368,10 +3499,10 @@ async function typeCheck(sourcePath) {
 }
 
 // dist/runner.js
-var __dirname = (0, import_node_path3.dirname)((0, import_node_url2.fileURLToPath)(__importMetaUrl));
+var __dirname = (0, import_node_path7.dirname)((0, import_node_url2.fileURLToPath)(__importMetaUrl));
 async function getFrameworkVersion() {
   try {
-    const pkgPath = (0, import_node_path3.join)(__dirname, "..", "package.json");
+    const pkgPath = (0, import_node_path7.join)(__dirname, "..", "package.json");
     const raw = await (0, import_promises3.readFile)(pkgPath, "utf8");
     const pkg = JSON.parse(raw);
     return pkg.version;
@@ -3380,17 +3511,17 @@ async function getFrameworkVersion() {
   }
 }
 async function loadConfig(projectRoot, frameworkVersion) {
-  const configTs = (0, import_node_path3.join)(projectRoot, ".violations", "config.ts");
-  const cacheDir = (0, import_node_path3.join)(projectRoot, ".violations", ".cache");
-  const configJs = (0, import_node_path3.join)(cacheDir, "config.js");
-  const manifestPath = (0, import_node_path3.join)(cacheDir, "manifest.json");
-  if ((0, import_node_fs3.existsSync)(configTs)) {
+  const configTs = (0, import_node_path7.join)(projectRoot, ".violations", "config.ts");
+  const cacheDir = (0, import_node_path7.join)(projectRoot, ".violations", ".cache");
+  const configJs = (0, import_node_path7.join)(cacheDir, "config.js");
+  const manifestPath = (0, import_node_path7.join)(cacheDir, "manifest.json");
+  if ((0, import_node_fs7.existsSync)(configTs)) {
     await compileIfNeeded(configTs, configJs, manifestPath, frameworkVersion);
     const mod = await import((0, import_node_url2.pathToFileURL)(configJs).href + "?t=" + Date.now());
     return mod.default;
   }
-  const configJs2 = (0, import_node_path3.join)(projectRoot, ".violations", "config.js");
-  if ((0, import_node_fs3.existsSync)(configJs2)) {
+  const configJs2 = (0, import_node_path7.join)(projectRoot, ".violations", "config.js");
+  if ((0, import_node_fs7.existsSync)(configJs2)) {
     const mod = await import((0, import_node_url2.pathToFileURL)(configJs2).href + "?t=" + Date.now());
     return mod.default;
   }
@@ -3399,10 +3530,10 @@ async function loadConfig(projectRoot, frameworkVersion) {
 async function loadRule(ruleKey, projectRoot, cacheDir, manifestPath, frameworkVersion) {
   const isLocal = ruleKey.startsWith("./") || ruleKey.startsWith("../");
   if (isLocal) {
-    const resolvedBase = (0, import_node_path3.resolve)(projectRoot, ruleKey);
+    const resolvedBase = (0, import_node_path7.resolve)(projectRoot, ruleKey);
     let importPath = resolvedBase;
-    if ((0, import_node_path3.extname)(resolvedBase) === ".ts") {
-      const compiled = (0, import_node_path3.join)(cacheDir, "rules", (0, import_node_path3.basename)(resolvedBase, ".ts") + ".js");
+    if ((0, import_node_path7.extname)(resolvedBase) === ".ts") {
+      const compiled = (0, import_node_path7.join)(cacheDir, "rules", (0, import_node_path7.basename)(resolvedBase, ".ts") + ".js");
       await compileIfNeeded(resolvedBase, compiled, manifestPath, frameworkVersion);
       importPath = compiled;
     }
@@ -3430,8 +3561,8 @@ async function run(options) {
   const { projectRoot } = options;
   const frameworkVersion = await getFrameworkVersion();
   const config = options.overrideConfig ?? await loadConfig(projectRoot, frameworkVersion);
-  const cacheDir = (0, import_node_path3.join)(projectRoot, ".violations", ".cache");
-  const manifestPath = (0, import_node_path3.join)(cacheDir, "manifest.json");
+  const cacheDir = (0, import_node_path7.join)(projectRoot, ".violations", ".cache");
+  const manifestPath = (0, import_node_path7.join)(cacheDir, "manifest.json");
   await (0, import_promises3.mkdir)(cacheDir, { recursive: true });
   const rulesConfig = config.rules ?? {};
   const results = [];
@@ -3520,16 +3651,16 @@ async function run(options) {
 
 // dist/report.js
 var import_promises4 = require("node:fs/promises");
-var import_node_path4 = require("node:path");
-var import_node_fs4 = require("node:fs");
+var import_node_path8 = require("node:path");
+var import_node_fs8 = require("node:fs");
 async function ensureGitignore(dotViolationsDir) {
-  const gitignorePath = (0, import_node_path4.join)(dotViolationsDir, ".gitignore");
-  if (!(0, import_node_fs4.existsSync)(gitignorePath)) {
+  const gitignorePath = (0, import_node_path8.join)(dotViolationsDir, ".gitignore");
+  if (!(0, import_node_fs8.existsSync)(gitignorePath)) {
     await (0, import_promises4.writeFile)(gitignorePath, ".cache/\n.reports/\n", "utf8");
   }
 }
 async function writeReports(dotViolationsDir, results) {
-  const reportsDir = (0, import_node_path4.join)(dotViolationsDir, ".reports");
+  const reportsDir = (0, import_node_path8.join)(dotViolationsDir, ".reports");
   await (0, import_promises4.mkdir)(reportsDir, { recursive: true });
   await ensureGitignore(dotViolationsDir);
   const generatedAt = (/* @__PURE__ */ new Date()).toISOString();
@@ -3544,14 +3675,14 @@ async function writeReports(dotViolationsDir, results) {
       violations: r.violations
     }))
   };
-  const reportJsonPath = (0, import_node_path4.join)(reportsDir, "report.json");
+  const reportJsonPath = (0, import_node_path8.join)(reportsDir, "report.json");
   await (0, import_promises4.writeFile)(reportJsonPath, JSON.stringify(json, null, 2), "utf8");
   const suppressedJson = {
     generatedAt,
     totalSuppressed,
     rules: results.filter((r) => r.counts.suppressed > 0).map((r) => ({ id: r.ruleId, severity: r.severity, suppressed: r.suppressed }))
   };
-  const suppressedJsonPath = (0, import_node_path4.join)(reportsDir, "suppressed.json");
+  const suppressedJsonPath = (0, import_node_path8.join)(reportsDir, "suppressed.json");
   await (0, import_promises4.writeFile)(suppressedJsonPath, JSON.stringify(suppressedJson, null, 2), "utf8");
   const mdLines = [];
   mdLines.push("# Violations report");
@@ -3572,7 +3703,7 @@ async function writeReports(dotViolationsDir, results) {
     }
     mdLines.push("");
   }
-  const reportPath = (0, import_node_path4.join)(reportsDir, "report.md");
+  const reportPath = (0, import_node_path8.join)(reportsDir, "report.md");
   await (0, import_promises4.writeFile)(reportPath, mdLines.join("\n"), "utf8");
   const supLines = [];
   supLines.push("# Suppressed violations (audit)");
@@ -3591,18 +3722,18 @@ async function writeReports(dotViolationsDir, results) {
     }
     supLines.push("");
   }
-  const suppressedPath = (0, import_node_path4.join)(reportsDir, "suppressed.md");
+  const suppressedPath = (0, import_node_path8.join)(reportsDir, "suppressed.md");
   await (0, import_promises4.writeFile)(suppressedPath, supLines.join("\n"), "utf8");
   return { reportPath, suppressedPath };
 }
 
 // dist/selfCheck.js
-var import_node_fs5 = require("node:fs");
+var import_node_fs9 = require("node:fs");
 var import_node_module = require("node:module");
 var _require = (0, import_node_module.createRequire)(__importMetaUrl);
 function checkBundleVersion() {
   try {
-    const v = "2026.08.30-104928-65-95a60f41";
+    const v = "2026.08.30-125501-66-6468870a";
     if (!v) {
       return { name: "bundle-version", ok: false, reason: "version string is empty" };
     }
@@ -3614,8 +3745,8 @@ function checkBundleVersion() {
 function checkConfigDirWritable() {
   try {
     const dir = process.env["VIOLATIONS_CONFIG_DIR"] ?? ConfigDir.get("violations");
-    (0, import_node_fs5.mkdirSync)(dir, { recursive: true });
-    (0, import_node_fs5.accessSync)(dir, import_node_fs5.constants.W_OK);
+    (0, import_node_fs9.mkdirSync)(dir, { recursive: true });
+    (0, import_node_fs9.accessSync)(dir, import_node_fs9.constants.W_OK);
     return { name: "config-dir-writable", ok: true };
   } catch (err) {
     return { name: "config-dir-writable", ok: false, reason: String(err) };
@@ -3648,7 +3779,7 @@ function printSelfChecks(results) {
 }
 
 // dist/cli.js
-var __dirname2 = (0, import_node_path5.dirname)((0, import_node_url3.fileURLToPath)(__importMetaUrl));
+var __dirname2 = (0, import_node_path9.dirname)((0, import_node_url3.fileURLToPath)(__importMetaUrl));
 var RULES_GROUP_HELP = `violations rules - manage violation rules
 
 Usage:
@@ -3701,11 +3832,11 @@ function getProjectRoot() {
   return process.cwd();
 }
 function getDotViolationsDir(projectRoot) {
-  return (0, import_node_path5.join)(projectRoot, ".violations");
+  return (0, import_node_path9.join)(projectRoot, ".violations");
 }
 async function getPackageVersion() {
   try {
-    const pkgPath = (0, import_node_path5.join)(__dirname2, "..", "package.json");
+    const pkgPath = (0, import_node_path9.join)(__dirname2, "..", "package.json");
     const raw = await (0, import_promises5.readFile)(pkgPath, "utf8");
     const pkg = JSON.parse(raw);
     return pkg.version;
@@ -3739,7 +3870,7 @@ async function buildDefaultConfig(projectRoot) {
       return false;
     }
   };
-  const srcDir = (0, import_node_path5.join)(projectRoot, "src");
+  const srcDir = (0, import_node_path9.join)(projectRoot, "src");
   const [hasTsInSrc, hasTsInRoot, hasTsxInSrc, hasTsxInRoot] = await Promise.all([
     hasFileWithExt(srcDir, ".ts"),
     hasFileWithExt(projectRoot, ".ts"),
@@ -3760,8 +3891,8 @@ async function buildDefaultConfig(projectRoot) {
 async function cmdCheck(args) {
   const projectRoot = getProjectRoot();
   const dotViolationsDir = getDotViolationsDir(projectRoot);
-  const configTs = (0, import_node_path5.join)(dotViolationsDir, "config.ts");
-  const configJs = (0, import_node_path5.join)(dotViolationsDir, "config.js");
+  const configTs = (0, import_node_path9.join)(dotViolationsDir, "config.ts");
+  const configJs = (0, import_node_path9.join)(dotViolationsDir, "config.js");
   let staged = false;
   let files;
   for (let i = 0; i < args.length; i++) {
@@ -3775,7 +3906,7 @@ async function cmdCheck(args) {
     }
   }
   let overrideConfig;
-  if (!(0, import_node_fs6.existsSync)(configTs) && !(0, import_node_fs6.existsSync)(configJs)) {
+  if (!(0, import_node_fs10.existsSync)(configTs) && !(0, import_node_fs10.existsSync)(configJs)) {
     overrideConfig = await buildDefaultConfig(projectRoot);
     process.stderr.write("[auto] No .violations/config.ts found - running with auto-detected defaults.\n");
   }
@@ -3819,26 +3950,26 @@ async function cmdTest(args) {
   }
   const testFiles = [];
   if (ruleId) {
-    const localPattern = (0, import_node_path5.join)(dotViolationsDir, "rules", `${ruleId}.test.*`);
+    const localPattern = (0, import_node_path9.join)(dotViolationsDir, "rules", `${ruleId}.test.*`);
     const localFiles = await glob(localPattern);
     testFiles.push(...localFiles);
-    const pkgTest = (0, import_node_path5.join)(__dirname2, "..", "dist", "rules", `${ruleId}.test.js`);
-    if ((0, import_node_fs6.existsSync)(pkgTest))
+    const pkgTest = (0, import_node_path9.join)(__dirname2, "..", "dist", "rules", `${ruleId}.test.js`);
+    if ((0, import_node_fs10.existsSync)(pkgTest))
       testFiles.push(pkgTest);
   } else if (localOnly) {
-    const localDir = (0, import_node_path5.join)(dotViolationsDir, "rules");
-    if ((0, import_node_fs6.existsSync)(localDir)) {
+    const localDir = (0, import_node_path9.join)(dotViolationsDir, "rules");
+    if ((0, import_node_fs10.existsSync)(localDir)) {
       const found = await globDir(localDir, /\.test\.[jt]s$/);
       testFiles.push(...found);
     }
   } else {
-    const pkgTestDir = (0, import_node_path5.join)(__dirname2, "..", "dist", "rules");
-    if ((0, import_node_fs6.existsSync)(pkgTestDir)) {
+    const pkgTestDir = (0, import_node_path9.join)(__dirname2, "..", "dist", "rules");
+    if ((0, import_node_fs10.existsSync)(pkgTestDir)) {
       const found = await globDir(pkgTestDir, /\.test\.js$/);
       testFiles.push(...found);
     }
-    const localDir = (0, import_node_path5.join)(dotViolationsDir, "rules");
-    if ((0, import_node_fs6.existsSync)(localDir)) {
+    const localDir = (0, import_node_path9.join)(dotViolationsDir, "rules");
+    if ((0, import_node_fs10.existsSync)(localDir)) {
       const found = await globDir(localDir, /\.test\.[jt]s$/);
       testFiles.push(...found);
     }
@@ -3847,13 +3978,13 @@ async function cmdTest(args) {
     console.log("No test files found.");
     process.exit(0);
   }
-  const cacheDir = (0, import_node_path5.join)(dotViolationsDir, ".cache");
-  const manifestPath = (0, import_node_path5.join)(cacheDir, "manifest.json");
+  const cacheDir = (0, import_node_path9.join)(dotViolationsDir, ".cache");
+  const manifestPath = (0, import_node_path9.join)(cacheDir, "manifest.json");
   const frameworkVersion = await getPackageVersion();
   const runnable = [];
   for (const f of testFiles) {
     if (f.endsWith(".ts")) {
-      const compiled = (0, import_node_path5.join)(cacheDir, "rules", (0, import_node_path5.basename)(f, ".ts") + ".test.js");
+      const compiled = (0, import_node_path9.join)(cacheDir, "rules", (0, import_node_path9.basename)(f, ".ts") + ".test.js");
       await compileIfNeeded(f, compiled, manifestPath, frameworkVersion);
       runnable.push(compiled);
     } else {
@@ -3863,7 +3994,7 @@ async function cmdTest(args) {
   let failed = false;
   for (const file of runnable) {
     const code = await new Promise((resolveP) => {
-      const child = (0, import_node_child_process3.spawn)(process.execPath, ["--test", file], { stdio: "inherit" });
+      const child = (0, import_node_child_process5.spawn)(process.execPath, ["--test", file], { stdio: "inherit" });
       child.on("close", (c) => resolveP(c ?? 1));
     });
     if (code !== 0)
@@ -3878,17 +4009,17 @@ async function globDir(dir, pattern) {
   for (const entry of entries) {
     if (entry.isFile() && pattern.test(entry.name)) {
       const parent = entry.parentPath ?? dir;
-      results.push((0, import_node_path5.join)(parent, entry.name));
+      results.push((0, import_node_path9.join)(parent, entry.name));
     }
   }
   return results;
 }
 async function glob(pattern) {
-  if ((0, import_node_fs6.existsSync)(pattern))
+  if ((0, import_node_fs10.existsSync)(pattern))
     return [pattern];
   for (const ext of [".ts", ".js"]) {
     const candidate = pattern.replace(/\.\*$/, ext);
-    if ((0, import_node_fs6.existsSync)(candidate))
+    if ((0, import_node_fs10.existsSync)(candidate))
       return [candidate];
   }
   return [];
@@ -4064,11 +4195,11 @@ async function cmdRulesCreate(name, args) {
     }
   }
   const projectRoot = getProjectRoot();
-  const rulesDir = (0, import_node_path5.join)(projectRoot, ".violations", "rules");
+  const rulesDir = (0, import_node_path9.join)(projectRoot, ".violations", "rules");
   await (0, import_promises5.mkdir)(rulesDir, { recursive: true });
-  const ruleFile = (0, import_node_path5.join)(rulesDir, `${name}.${lang}`);
-  const testFile = (0, import_node_path5.join)(rulesDir, `${name}.test.${lang}`);
-  if ((0, import_node_fs6.existsSync)(ruleFile)) {
+  const ruleFile = (0, import_node_path9.join)(rulesDir, `${name}.${lang}`);
+  const testFile = (0, import_node_path9.join)(rulesDir, `${name}.test.${lang}`);
+  if ((0, import_node_fs10.existsSync)(ruleFile)) {
     process.stderr.write(`Rule already exists: ${ruleFile}
 `);
     process.exit(1);
@@ -4081,8 +4212,8 @@ async function cmdRulesCreate(name, args) {
 async function cmdConfigValidate() {
   const projectRoot = getProjectRoot();
   const dotViolationsDir = getDotViolationsDir(projectRoot);
-  const configTs = (0, import_node_path5.join)(dotViolationsDir, "config.ts");
-  if (!(0, import_node_fs6.existsSync)(configTs)) {
+  const configTs = (0, import_node_path9.join)(dotViolationsDir, "config.ts");
+  if (!(0, import_node_fs10.existsSync)(configTs)) {
     process.stderr.write("[fail] No .violations/config.ts found. Run: violations rules create\n");
     process.exit(1);
   }
@@ -4096,9 +4227,9 @@ async function cmdConfigValidate() {
 `);
     }
   }
-  const cacheDir = (0, import_node_path5.join)(dotViolationsDir, ".cache");
-  const manifestPath = (0, import_node_path5.join)(cacheDir, "manifest.json");
-  const configJs = (0, import_node_path5.join)(cacheDir, "config.js");
+  const cacheDir = (0, import_node_path9.join)(dotViolationsDir, ".cache");
+  const manifestPath = (0, import_node_path9.join)(cacheDir, "manifest.json");
+  const configJs = (0, import_node_path9.join)(cacheDir, "config.js");
   const frameworkVersion = await getPackageVersion();
   try {
     await compileIfNeeded(configTs, configJs, manifestPath, frameworkVersion);
@@ -4109,10 +4240,10 @@ async function cmdConfigValidate() {
     for (const ruleKey of Object.keys(rulesConfig)) {
       const isLocal = ruleKey.startsWith("./") || ruleKey.startsWith("../");
       if (isLocal) {
-        const resolvedBase = (0, import_node_path5.resolve)(projectRoot, ruleKey);
-        const resolvedTs = (0, import_node_path5.extname)(resolvedBase) === "" ? resolvedBase + ".ts" : resolvedBase;
-        const resolvedJs = (0, import_node_path5.extname)(resolvedBase) === "" ? resolvedBase + ".js" : resolvedBase.replace(/\.ts$/, ".js");
-        if (!(0, import_node_fs6.existsSync)(resolvedBase) && !(0, import_node_fs6.existsSync)(resolvedTs) && !(0, import_node_fs6.existsSync)(resolvedJs)) {
+        const resolvedBase = (0, import_node_path9.resolve)(projectRoot, ruleKey);
+        const resolvedTs = (0, import_node_path9.extname)(resolvedBase) === "" ? resolvedBase + ".ts" : resolvedBase;
+        const resolvedJs = (0, import_node_path9.extname)(resolvedBase) === "" ? resolvedBase + ".js" : resolvedBase.replace(/\.ts$/, ".js");
+        if (!(0, import_node_fs10.existsSync)(resolvedBase) && !(0, import_node_fs10.existsSync)(resolvedTs) && !(0, import_node_fs10.existsSync)(resolvedJs)) {
           ruleErrors.push(`Rule not found: ${ruleKey} (resolved to ${resolvedBase})`);
         }
       } else {
@@ -4145,8 +4276,8 @@ async function cmdConfigValidate() {
 }
 async function cmdCacheClear() {
   const projectRoot = getProjectRoot();
-  const cacheDir = (0, import_node_path5.join)(projectRoot, ".violations", ".cache");
-  if ((0, import_node_fs6.existsSync)(cacheDir)) {
+  const cacheDir = (0, import_node_path9.join)(projectRoot, ".violations", ".cache");
+  if ((0, import_node_fs10.existsSync)(cacheDir)) {
     await (0, import_promises5.rm)(cacheDir, { recursive: true, force: true });
   }
   process.stdout.write("[ok] cache cleared.\n");
@@ -4157,46 +4288,25 @@ function cmdCliSelfCheck() {
   const allPassed = results.every((r) => r.ok);
   process.exit(allPassed ? 0 : 1);
 }
-function cmdCliUpdate() {
-  const bundlePath = process.env["LAUNCHER_BUNDLE_OVERRIDE"] ?? (0, import_node_url3.fileURLToPath)(__importMetaUrl);
-  const bundleDir = (0, import_node_path5.dirname)(bundlePath);
-  const updaterPath = (0, import_node_path5.join)(bundleDir, "violations-updater.cjs");
-  if (!(0, import_node_fs6.existsSync)(updaterPath)) {
-    process.stderr.write("[fail] updater not found (dev mode?)\n");
-    process.exit(1);
-  }
-  process.stderr.write("[violations] Running foreground update...\n");
-  (0, import_node_child_process3.execFileSync)(process.execPath, [updaterPath], {
-    stdio: "inherit",
-    env: { ...process.env, UPDATER_FORCE: "1" }
-  });
-}
 async function main() {
   ConfigDir.migrateIfNeeded("violations");
   const argv = process.argv.slice(2);
   try {
-    const logsDir = `${ConfigDir.get("violations")}/logs`;
-    const today = (/* @__PURE__ */ new Date()).toISOString().slice(0, 10);
-    const logFile = `${logsDir}/${today}.ndjson`;
-    import("node:fs").then((fs4) => {
-      fs4.mkdirSync(logsDir, { recursive: true });
-      fs4.appendFileSync(logFile, JSON.stringify({ ts: (/* @__PURE__ */ new Date()).toISOString(), level: "info", msg: `cmd: violations ${argv.join(" ")}` }) + "\n");
-    }).catch(() => {
-    });
+    logCliInvocation(ConfigDir.get("violations"), "violations", argv);
   } catch {
   }
   const updater = new UpdateManager("@wadeck-app/violations-cli");
   const updateState = updater.readAndClearState();
   if (updateState?.status === "success") {
-    process.stderr.write(`[violations] Updated to v${updateState.newVersion}
+    process.stderr.write(`[violations] Updated to v${updateState.targetVersion ?? "?"}
 `);
   }
   if (updateState?.status === "rolled-back") {
-    process.stderr.write(`[violations] Update to v${updateState.targetVersion} failed (self-check failed). Rolled back to v${updateState.previousVersion}.
+    process.stderr.write(`[violations] Update to v${updateState.targetVersion ?? "?"} failed (self-check failed). Rolled back to v${updateState.previousVersion ?? "?"}.
 `);
   }
-  if (updateState?.status === "update-failed") {
-    process.stderr.write(`[violations] Update check failed (${updateState.reason}).
+  if (updateState?.status === "failed") {
+    process.stderr.write(`[violations] Update failed: ${updateState.error ?? "unknown"}.
 `);
   }
   const configDir = process.env["VIOLATIONS_CONFIG_DIR"] ?? ConfigDir.get("violations");
@@ -4262,101 +4372,31 @@ Run: violations cache --help
         process.exit(1);
       }
     } else if (command === "logs") {
-      const follow = rest.includes("--follow") || rest.includes("-f");
-      const { existsSync: existsSync8, readFileSync: readFileSync4, watch } = require("node:fs");
-      const pathMod = require("node:path");
-      const logsDir = pathMod.join(ConfigDir.get("violations"), "logs");
-      const today = (/* @__PURE__ */ new Date()).toISOString().slice(0, 10);
-      const logFile = pathMod.join(logsDir, `${today}.ndjson`);
-      if (!existsSync8(logFile)) {
-        process.stderr.write(`[violations] No log file for today: ${logFile}
-`);
-      } else if (!follow) {
-        process.stdout.write(readFileSync4(logFile, "utf-8"));
-      } else {
-        process.stderr.write(`[violations] Following ${logFile}
-`);
-        let offset = 0;
-        const printNew = () => {
-          const buf = Buffer.alloc(require("node:fs").statSync(logFile).size - offset);
-          if (buf.length === 0)
-            return;
-          const fd = require("node:fs").openSync(logFile, "r");
-          require("node:fs").readSync(fd, buf, 0, buf.length, offset);
-          require("node:fs").closeSync(fd);
-          offset += buf.length;
-          process.stdout.write(buf.toString("utf-8"));
-        };
-        printNew();
-        watch(logFile, () => {
-          printNew();
-        });
-        await new Promise(() => {
-        });
-      }
+      warnUnknownArgs(rest, ["--follow", "-f"], "violations logs");
+      await cliLogsCommand(ConfigDir.get("violations"), { follow: rest.includes("--follow") || rest.includes("-f") });
     } else if (command === "cli") {
       const sub = rest[0];
       if (sub === "--help" || sub === "-h") {
         process.stdout.write(CLI_GROUP_HELP);
         process.exit(0);
       } else if (sub === "version") {
-        const pathMod = require("node:path");
-        const fsMod = require("node:fs");
-        process.stdout.write(`violations v${VERSION} (installed)
-`);
-        try {
-          const { execFileSync: execFileSync2 } = require("node:child_process");
-          const NPM_CLI = pathMod.join(pathMod.dirname(process.execPath), "node_modules", "npm", "bin", "npm-cli.js");
-          const USE_CLI = fsMod.existsSync(NPM_CLI);
-          const winHide = process.platform === "win32" ? { windowsHide: true } : {};
-          const result = USE_CLI ? execFileSync2(process.execPath, [NPM_CLI, "view", "@wadeck-app/violations-cli", "dist-tags.latest"], { encoding: "utf8", timeout: 15e3, ...winHide }) : execFileSync2("npm", ["view", "@wadeck-app/violations-cli", "dist-tags.latest"], { encoding: "utf8", timeout: 15e3, ...winHide });
-          const latest = result.trim();
-          process.stdout.write(`Latest (latest): v${latest}
-`);
-          if (VERSION === latest)
-            process.stdout.write("Up to date.\n");
-        } catch (err) {
-          process.stderr.write(`Could not fetch latest version: ${String(err)}
-`);
-        }
+        warnUnknownArgs(rest.slice(1), [], "violations cli version");
+        const channel = readChannelFromConfig(ConfigDir.get("violations"));
+        await cliVersionCommand("@wadeck-app/violations-cli", VERSION, channel);
       } else if (sub === "self-check") {
+        warnUnknownArgs(rest.slice(1), [], "violations cli self-check");
         cmdCliSelfCheck();
       } else if (sub === "update") {
-        cmdCliUpdate();
-      } else if (sub === "logs") {
-        const follow = rest.includes("--follow") || rest.includes("-f");
-        const { existsSync: existsSync8, readFileSync: readFileSync4, watch } = require("node:fs");
-        const pathMod = require("node:path");
-        const logsDir = pathMod.join(ConfigDir.get("violations"), "logs");
-        const today = (/* @__PURE__ */ new Date()).toISOString().slice(0, 10);
-        const logFile = pathMod.join(logsDir, `${today}.ndjson`);
-        if (!existsSync8(logFile)) {
-          process.stderr.write(`[violations] No log file for today: ${logFile}
-`);
-        } else if (!follow) {
-          process.stdout.write(readFileSync4(logFile, "utf-8"));
-        } else {
-          process.stderr.write(`[violations] Following ${logFile}
-`);
-          let offset = 0;
-          const printNew = () => {
-            const stat2 = require("node:fs").statSync(logFile);
-            if (stat2.size <= offset)
-              return;
-            const buf = Buffer.alloc(stat2.size - offset);
-            const fd = require("node:fs").openSync(logFile, "r");
-            require("node:fs").readSync(fd, buf, 0, buf.length, offset);
-            require("node:fs").closeSync(fd);
-            offset = stat2.size;
-            process.stdout.write(buf.toString("utf-8"));
-          };
-          printNew();
-          watch(logFile, () => {
-            printNew();
-          });
-          await new Promise(() => {
-          });
+        const updaterPath = (0, import_node_path9.join)((0, import_node_path9.dirname)(bundlePath), "violations-updater.cjs");
+        if (!(0, import_node_fs10.existsSync)(updaterPath)) {
+          process.stderr.write("[fail] updater not found (dev mode?)\n");
+          process.exit(1);
         }
+        await cliUpdateCommand(updaterPath, "@wadeck-app/violations-cli", { rawArgs: rest.slice(1) });
+      } else if (sub === "logs") {
+        const subArgs = rest.slice(1);
+        warnUnknownArgs(subArgs, ["--follow", "-f"], "violations cli logs");
+        await cliLogsCommand(ConfigDir.get("violations"), { follow: subArgs.includes("--follow") || subArgs.includes("-f") });
       } else {
         process.stderr.write(`[fail] Unknown subcommand: cli ${sub ?? ""}
 Run: violations cli --help

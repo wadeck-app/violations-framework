@@ -1,11 +1,14 @@
 #!/usr/bin/env node
 import { readFile, writeFile, mkdir, rm } from 'node:fs/promises'
 import { existsSync } from 'node:fs'
-import { execFileSync, spawn } from 'node:child_process'
+import { spawn } from 'node:child_process'
 import { join, dirname, resolve, extname, basename } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { UpdateManager } from '@wadeck-app/shared-cli'
 import { ConfigDir } from '@wadeck-app/shared-cli/ConfigDir'
+import { logCliInvocation } from '@wadeck-app/shared-cli/CliLogger'
+import { cliLogsCommand, cliVersionCommand, cliUpdateCommand, warnUnknownArgs } from '@wadeck-app/shared-cli/CliMetaCommands'
+import { readChannelFromConfig } from '@wadeck-app/shared-cli/ChannelConfig'
 import { loadUserConfig } from './config.js'
 import { VERSION } from './version.js'
 import { run } from './runner.js'
@@ -642,27 +645,6 @@ function cmdCliSelfCheck(): void {
 }
 
 // ---------------------------------------------------------------------------
-// `violations cli update`
-// ---------------------------------------------------------------------------
-
-function cmdCliUpdate(): void {
-	const bundlePath = process.env['LAUNCHER_BUNDLE_OVERRIDE'] ?? fileURLToPath(import.meta.url)
-	const bundleDir = dirname(bundlePath)
-	const updaterPath = join(bundleDir, 'violations-updater.cjs')
-
-	if (!existsSync(updaterPath)) {
-		process.stderr.write('[fail] updater not found (dev mode?)\n')
-		process.exit(1)
-	}
-
-	process.stderr.write('[violations] Running foreground update...\n')
-	execFileSync(process.execPath, [updaterPath], {
-		stdio: 'inherit',
-		env: { ...process.env, UPDATER_FORCE: '1' },
-	})
-}
-
-// ---------------------------------------------------------------------------
 // Entry point
 // ---------------------------------------------------------------------------
 
@@ -672,29 +654,21 @@ async function main(): Promise<void> {
 	const argv = process.argv.slice(2)
 
 	// Log every CLI invocation to ~/.config/violations/logs/YYYY-MM-DD.ndjson
-	try {
-		const logsDir = `${ConfigDir.get('violations')}/logs`
-		const today = new Date().toISOString().slice(0, 10)
-		const logFile = `${logsDir}/${today}.ndjson`
-		import('node:fs').then(fs => {
-			fs.mkdirSync(logsDir, { recursive: true })
-			fs.appendFileSync(logFile, JSON.stringify({ ts: new Date().toISOString(), level: 'info', msg: `cmd: violations ${argv.join(' ')}` }) + '\n')
-		}).catch(() => { /* ignore */ })
-	} catch { /* never block the CLI on logging failure */ }
+	try { logCliInvocation(ConfigDir.get('violations'), 'violations', argv) } catch { /* never block */ }
 
 	// Show update notice from a previous background update run
 	const updater = new UpdateManager('@wadeck-app/violations-cli')
 	const updateState = updater.readAndClearState()
 	if (updateState?.status === 'success') {
-		process.stderr.write(`[violations] Updated to v${updateState.newVersion}\n`)
+		process.stderr.write(`[violations] Updated to v${updateState.targetVersion ?? '?'}\n`)
 	}
 	if (updateState?.status === 'rolled-back') {
 		process.stderr.write(
-			`[violations] Update to v${updateState.targetVersion} failed (self-check failed). Rolled back to v${updateState.previousVersion}.\n`
+			`[violations] Update to v${updateState.targetVersion ?? '?'} failed (self-check failed). Rolled back to v${updateState.previousVersion ?? '?'}.\n`
 		)
 	}
-	if (updateState?.status === 'update-failed') {
-		process.stderr.write(`[violations] Update check failed (${updateState.reason}).\n`)
+	if (updateState?.status === 'failed') {
+		process.stderr.write(`[violations] Update failed: ${updateState.error ?? 'unknown'}.\n`)
 	}
 
 	const configDir = process.env['VIOLATIONS_CONFIG_DIR'] ?? ConfigDir.get('violations')
@@ -759,87 +733,31 @@ async function main(): Promise<void> {
 			}
 		} else if (command === 'logs') {
 			// Top-level alias for `violations cli logs`
-			const follow = rest.includes('--follow') || rest.includes('-f')
-			const { existsSync, readFileSync, watch } = require('node:fs') as typeof import('node:fs')
-			const pathMod = require('node:path') as typeof import('node:path')
-			const logsDir = pathMod.join(ConfigDir.get('violations'), 'logs')
-			const today = new Date().toISOString().slice(0, 10)
-			const logFile = pathMod.join(logsDir, `${today}.ndjson`)
-			if (!existsSync(logFile)) {
-				process.stderr.write(`[violations] No log file for today: ${logFile}\n`)
-			} else if (!follow) {
-				process.stdout.write(readFileSync(logFile, 'utf-8'))
-			} else {
-				process.stderr.write(`[violations] Following ${logFile}\n`)
-				let offset = 0
-				const printNew = (): void => {
-					const buf = Buffer.alloc(require('node:fs').statSync(logFile).size - offset)
-					if (buf.length === 0) return
-					const fd = require('node:fs').openSync(logFile, 'r')
-					require('node:fs').readSync(fd, buf, 0, buf.length, offset)
-					require('node:fs').closeSync(fd)
-					offset += buf.length
-					process.stdout.write(buf.toString('utf-8'))
-				}
-				printNew()
-				watch(logFile, () => { printNew() })
-				await new Promise<void>(() => {})
-			}
+			warnUnknownArgs(rest, ['--follow', '-f'], 'violations logs')
+			await cliLogsCommand(ConfigDir.get('violations'), { follow: rest.includes('--follow') || rest.includes('-f') })
 		} else if (command === 'cli') {
 			const sub = rest[0]
 			if (sub === '--help' || sub === '-h') {
 				process.stdout.write(CLI_GROUP_HELP)
 				process.exit(0)
 			} else if (sub === 'version') {
-				const pathMod = require('node:path') as typeof import('node:path')
-				const fsMod = require('node:fs') as typeof import('node:fs')
-				process.stdout.write(`violations v${VERSION} (installed)\n`)
-				try {
-					const { execFileSync } = require('node:child_process') as typeof import('node:child_process')
-					const NPM_CLI = pathMod.join(pathMod.dirname(process.execPath), 'node_modules', 'npm', 'bin', 'npm-cli.js')
-					const USE_CLI = fsMod.existsSync(NPM_CLI)
-					const winHide = process.platform === 'win32' ? { windowsHide: true } : {}
-					const result = USE_CLI
-						? execFileSync(process.execPath, [NPM_CLI, 'view', '@wadeck-app/violations-cli', 'dist-tags.latest'], { encoding: 'utf8', timeout: 15000, ...winHide })
-						: execFileSync('npm', ['view', '@wadeck-app/violations-cli', 'dist-tags.latest'], { encoding: 'utf8', timeout: 15000, ...winHide })
-					const latest = (result as string).trim()
-					process.stdout.write(`Latest (latest): v${latest}\n`)
-					if (VERSION === latest) process.stdout.write('Up to date.\n')
-				} catch (err) {
-					process.stderr.write(`Could not fetch latest version: ${String(err)}\n`)
-				}
+				warnUnknownArgs(rest.slice(1), [], 'violations cli version')
+				const channel = readChannelFromConfig(ConfigDir.get('violations'))
+				await cliVersionCommand('@wadeck-app/violations-cli', VERSION, channel)
 			} else if (sub === 'self-check') {
+				warnUnknownArgs(rest.slice(1), [], 'violations cli self-check')
 				cmdCliSelfCheck()
 			} else if (sub === 'update') {
-				cmdCliUpdate()
-			} else if (sub === 'logs') {
-				const follow = rest.includes('--follow') || rest.includes('-f')
-				const { existsSync, readFileSync, watch } = require('node:fs') as typeof import('node:fs')
-				const pathMod = require('node:path') as typeof import('node:path')
-				const logsDir = pathMod.join(ConfigDir.get('violations'), 'logs')
-				const today = new Date().toISOString().slice(0, 10)
-				const logFile = pathMod.join(logsDir, `${today}.ndjson`)
-				if (!existsSync(logFile)) {
-					process.stderr.write(`[violations] No log file for today: ${logFile}\n`)
-				} else if (!follow) {
-					process.stdout.write(readFileSync(logFile, 'utf-8'))
-				} else {
-					process.stderr.write(`[violations] Following ${logFile}\n`)
-					let offset = 0
-					const printNew = (): void => {
-						const stat = require('node:fs').statSync(logFile)
-						if (stat.size <= offset) return
-						const buf = Buffer.alloc(stat.size - offset)
-						const fd = require('node:fs').openSync(logFile, 'r')
-						require('node:fs').readSync(fd, buf, 0, buf.length, offset)
-						require('node:fs').closeSync(fd)
-						offset = stat.size
-						process.stdout.write(buf.toString('utf-8'))
-					}
-					printNew()
-					watch(logFile, () => { printNew() })
-					await new Promise<void>(() => {})
+				const updaterPath = join(dirname(bundlePath), 'violations-updater.cjs')
+				if (!existsSync(updaterPath)) {
+					process.stderr.write('[fail] updater not found (dev mode?)\n')
+					process.exit(1)
 				}
+				await cliUpdateCommand(updaterPath, '@wadeck-app/violations-cli', { rawArgs: rest.slice(1) })
+			} else if (sub === 'logs') {
+				const subArgs = rest.slice(1)
+				warnUnknownArgs(subArgs, ['--follow', '-f'], 'violations cli logs')
+				await cliLogsCommand(ConfigDir.get('violations'), { follow: subArgs.includes('--follow') || subArgs.includes('-f') })
 			} else {
 				process.stderr.write(`[fail] Unknown subcommand: cli ${sub ?? ''}\nRun: violations cli --help\n`)
 				process.exit(1)
