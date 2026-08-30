@@ -84,12 +84,12 @@ jobs:
 
       - name: Publish violations-rules first (CLI has it as peer dep)
         working-directory: packages/violations-rules
-        run: npm publish --tag ${{ steps.version.outputs.npm_tag }}
+        run: npm publish --tag ${{ steps.version.outputs.dist_tag }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish violations-cli
         working-directory: packages/violations-cli
-        run: npm publish --tag ${{ steps.version.outputs.npm_tag }}
+        run: npm publish --tag ${{ steps.version.outputs.dist_tag }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
