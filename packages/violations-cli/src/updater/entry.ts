@@ -13,7 +13,7 @@ const currentVersion = typeof __VIOLATIONS_CLI_VERSION__ !== 'undefined' ? __VIO
 // Compute self-check command so shared-updater can verify the install after upgrade.
 try {
 	const npmRoot = execNpm(['root', '-g'], { timeout: 10_000 }).trim();
-	const selfCheckCmd = `${process.execPath} ${join(npmRoot, PKG_NAME, 'violations.cjs')} cli self-check`;
+	const selfCheckCmd = `${process.execPath} ${join(npmRoot, PKG_NAME, 'dist-bundle', 'violations.cjs')} cli self-check`;
 	process.env['UPDATER_SELF_CHECK_CMD'] = selfCheckCmd;
 } catch {
 	// Skip self-check if npm root is unavailable - update proceeds without verification.
