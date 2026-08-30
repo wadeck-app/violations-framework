@@ -8,7 +8,11 @@ declare const __VIOLATIONS_CLI_VERSION__: string;
 
 const PKG_NAME = '@wadeck-app/violations-cli';
 const configDir = process.env['VIOLATIONS_CONFIG_DIR'] ?? ConfigDir.get('violations');
-const currentVersion = typeof __VIOLATIONS_CLI_VERSION__ !== 'undefined' ? __VIOLATIONS_CLI_VERSION__ : '0.0.0-dev';
+const rawVersion = typeof __VIOLATIONS_CLI_VERSION__ !== 'undefined' ? __VIOLATIONS_CLI_VERSION__ : '0.0.0-dev';
+// One-time migration: old HHMMSS format (e.g. 2026.08.30-193645-78-sha) has a 6-digit
+// time segment that semverLte misreads as newer than the current CalVer build numbers.
+// Force it to 0.0.0 so any CalVer version triggers the update.
+const currentVersion = /^\d{4}\.\d{2}\.\d{2}-\d{6}/.test(rawVersion) ? '0.0.0' : rawVersion;
 
 // Compute self-check command so shared-updater can verify the install after upgrade.
 try {
