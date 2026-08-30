@@ -1,4 +1,4 @@
-// violations-updater entry point — bundled separately as violations-updater.cjs
+// violations-updater entry point - bundled separately as violations-updater.cjs
 // Must NOT import any violations runtime modules.
 import { runUpdater, execNpm } from '@wadeck-app/shared-updater';
 import { ConfigDir } from '@wadeck-app/shared-cli/ConfigDir';
@@ -16,7 +16,7 @@ try {
 	const selfCheckCmd = `${process.execPath} ${join(npmRoot, PKG_NAME, 'violations.cjs')} cli self-check`;
 	process.env['UPDATER_SELF_CHECK_CMD'] = selfCheckCmd;
 } catch {
-	// Skip self-check if npm root is unavailable — update proceeds without verification.
+	// Skip self-check if npm root is unavailable - update proceeds without verification.
 }
 
 runUpdater({

@@ -3285,7 +3285,7 @@ function loadUserConfig(configDir) {
 }
 
 // dist/version.js
-var VERSION = "2026.08.30-125501-66-6468870a" ? "2026.08.30-125501-66-6468870a" : readBaseVersion();
+var VERSION = "2026.08.30-125813-68-8dbb5035" ? "2026.08.30-125813-68-8dbb5035" : readBaseVersion();
 
 // dist/runner.js
 var import_promises3 = require("node:fs/promises");
@@ -3733,7 +3733,7 @@ var import_node_module = require("node:module");
 var _require = (0, import_node_module.createRequire)(__importMetaUrl);
 function checkBundleVersion() {
   try {
-    const v = "2026.08.30-125501-66-6468870a";
+    const v = "2026.08.30-125813-68-8dbb5035";
     if (!v) {
       return { name: "bundle-version", ok: false, reason: "version string is empty" };
     }
