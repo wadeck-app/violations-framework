@@ -78,6 +78,11 @@ jobs:
 
       - run: npm run build
 
+      - name: Bundle violations-cli
+        run: npm run bundle --workspace packages/violations-cli
+        env:
+          BUNDLE_VERSION: ${{ steps.version.outputs.version }}
+
       - name: Self-check violations
         run: node packages/violations-cli/dist/cli.js check
 
