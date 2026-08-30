@@ -269,10 +269,24 @@ async function cmdTest(args: string[]): Promise<void> {
 	const frameworkVersion = await getPackageVersion()
 	const runnable: string[] = []
 
+	// Build redirect map: absolute file:// URL of .js in rules dir → file:// URL of compiled .js in cache
+	// This lets compiled tests that import './foo.js' resolve to the cache-compiled rule, not the source .js.
+	const importRedirects = new Map<string, string>()
+	for (const f of testFiles) {
+		if (!f.endsWith('.ts')) continue
+		const ruleSourceTs = f.replace(/\.test\.ts$/, '.ts')
+		if (ruleSourceTs === f || !existsSync(ruleSourceTs)) continue
+		const compiledRule = join(cacheDir, 'rules', basename(ruleSourceTs, '.ts') + '.js')
+		await compileIfNeeded(ruleSourceTs, compiledRule, manifestPath, frameworkVersion)
+		// Map the .js file in the rules dir → compiled .js in cache
+		const ruleJsInRulesDir = ruleSourceTs.replace(/\.ts$/, '.js')
+		importRedirects.set(pathToFileURL(ruleJsInRulesDir).href, pathToFileURL(compiledRule).href)
+	}
+
 	for (const f of testFiles) {
 		if (f.endsWith('.ts')) {
 			const compiled = join(cacheDir, 'rules', basename(f, '.ts') + '.test.js')
-			await compileIfNeeded(f, compiled, manifestPath, frameworkVersion)
+			await compileIfNeeded(f, compiled, manifestPath, frameworkVersion, importRedirects)
 			runnable.push(compiled)
 		} else {
 			runnable.push(f)

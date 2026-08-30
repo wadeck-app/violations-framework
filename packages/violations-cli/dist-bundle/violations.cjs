@@ -3285,7 +3285,7 @@ function loadUserConfig(configDir) {
 }
 
 // dist/version.js
-var VERSION = "2026.08.30-140329-70-9a89eaff" ? "2026.08.30-140329-70-9a89eaff" : readBaseVersion();
+var VERSION = "2026.08.30-140718-71-929876bd" ? "2026.08.30-140718-71-929876bd" : readBaseVersion();
 
 // dist/runner.js
 var import_promises3 = require("node:fs/promises");
@@ -3465,7 +3465,7 @@ async function compileIfNeeded(sourcePath, outputPath, manifestPath, frameworkVe
     const absUrl = (0, import_node_url.pathToFileURL)(absPath).href;
     const redirect = importRedirects?.get(absUrl);
     return `from '${redirect ?? absUrl}'`;
-  });
+  }).replace(/\bimport\.meta\.dirname\b/g, JSON.stringify(srcDir.replace(/\\/g, "/")));
   await (0, import_promises2.mkdir)((0, import_node_path6.dirname)(outputPath), { recursive: true });
   await (0, import_promises2.writeFile)(outputPath, rewritten, "utf8");
   manifest.files[sourcePath] = { mtimeMs: sourceMtime, compiledPath: outputPath };
@@ -3738,7 +3738,7 @@ var import_node_module = require("node:module");
 var _require = (0, import_node_module.createRequire)(__importMetaUrl);
 function checkBundleVersion() {
   try {
-    const v = "2026.08.30-140329-70-9a89eaff";
+    const v = "2026.08.30-140718-71-929876bd";
     if (!v) {
       return { name: "bundle-version", ok: false, reason: "version string is empty" };
     }

@@ -25,7 +25,9 @@ export async function compileIfNeeded(
 	sourcePath: string,
 	outputPath: string,
 	manifestPath: string,
-	frameworkVersion: string
+	frameworkVersion: string,
+	/** Optional map from absolute .js path → compiled cache .js path for redirecting rule imports */
+	importRedirects?: Map<string, string>
 ): Promise<void> {
 	const manifest = await readManifest(manifestPath)
 
@@ -64,11 +66,21 @@ export async function compileIfNeeded(
 
 	// Rewrite relative imports to absolute file:// URLs so the compiled file
 	// resolves correctly from the cache directory (not the source directory).
+	// If importRedirects is provided, redirect rule imports to their cache paths.
+	// Also rewrite import.meta.dirname to the source directory so fixture paths
+	// (e.g. resolve(import.meta.dirname, 'fixtures/...')) resolve correctly.
 	const srcDir = dirname(sourcePath)
-	const rewritten = result.outputText.replace(
-		/from\s+['"](\.[^'"]+)['"]/g,
-		(_, rel) => `from '${pathToFileURL(resolve(srcDir, rel)).href}'`
-	)
+	const rewritten = result.outputText
+		.replace(
+			/from\s+['"](\.[^'"]+)['"]/g,
+			(_, rel) => {
+				const absPath = resolve(srcDir, rel)
+				const absUrl = pathToFileURL(absPath).href
+				const redirect = importRedirects?.get(absUrl)
+				return `from '${redirect ?? absUrl}'`
+			}
+		)
+		.replace(/\bimport\.meta\.dirname\b/g, JSON.stringify(srcDir.replace(/\\/g, '/')))
 
 	await mkdir(dirname(outputPath), { recursive: true })
 	await writeFile(outputPath, rewritten, 'utf8')
