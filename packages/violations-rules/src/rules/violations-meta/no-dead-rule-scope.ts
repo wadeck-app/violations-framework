@@ -4,7 +4,8 @@ import { join } from 'node:path'
 import type { Rule, Violation } from '../types.js'
 
 export type Config = {
-  ruleFiles: string[]
+  /** Explicit list of rule files to check. Falls back to the pre-filtered files[] from the runner. */
+  ruleFiles?: string[]
   /** Project root used for glob resolution. Defaults to process.cwd(). */
   projectRoot?: string
 }
@@ -58,11 +59,12 @@ export const rule: Rule<Config> = {
   defaultScope: ['.violations/rules/**/*.ts', '.violations/rules/**/*.js'],
   defaultSeverity: 'error',
 
-  async check(_files: string[], config: Config): Promise<Violation[]> {
+  async check(files: string[], config: Config): Promise<Violation[]> {
     const violations: Violation[] = []
     const projectRoot = config.projectRoot ?? process.cwd()
+    const targets = files.length > 0 ? files : (config.ruleFiles ?? [])
 
-    for (const ruleFile of config.ruleFiles) {
+    for (const ruleFile of targets) {
       let source: string
       try {
         source = await readFile(ruleFile, 'utf8')

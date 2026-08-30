@@ -260,7 +260,7 @@ async function main() {
     }
     let currentVersion;
     try {
-      currentVersion = "2026.08.30-102043-63-00774e0f";
+      currentVersion = "2026.08.30-102810-64-d5cdda08";
     } catch {
       return;
     }
