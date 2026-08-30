@@ -3154,7 +3154,7 @@ function loadUserConfig(configDir) {
 }
 
 // dist/version.js
-var VERSION = "2026.08.30-093523-61-f5d94663" ? "2026.08.30-093523-61-f5d94663" : readBaseVersion();
+var VERSION = "2026.08.30-100923-62-bc3e8b9e" ? "2026.08.30-100923-62-bc3e8b9e" : readBaseVersion();
 
 // dist/runner.js
 var import_promises3 = require("node:fs/promises");
@@ -3599,7 +3599,7 @@ var import_node_module = require("node:module");
 var _require = (0, import_node_module.createRequire)(__importMetaUrl);
 function checkBundleVersion() {
   try {
-    const v = "2026.08.30-093523-61-f5d94663";
+    const v = "2026.08.30-100923-62-bc3e8b9e";
     if (!v) {
       return { name: "bundle-version", ok: false, reason: "version string is empty" };
     }
@@ -3814,7 +3814,6 @@ async function cmdTest(args) {
       ruleId = args[i].slice("--rule=".length);
     }
   }
-  const { run: nodeTestRun, describe: _d } = await import("node:test");
   const testFiles = [];
   if (ruleId) {
     const localPattern = (0, import_node_path5.join)(dotViolationsDir, "rules", `${ruleId}.test.*`);
@@ -3860,18 +3859,12 @@ async function cmdTest(args) {
   }
   let failed = false;
   for (const file of runnable) {
-    const stream = nodeTestRun({ files: [file] });
-    await new Promise((resolveP) => {
-      stream.on("error", () => {
-        failed = true;
-        resolveP();
-      });
-      stream.on("test:fail", () => {
-        failed = true;
-      });
-      stream.on("close", resolveP);
-      stream.pipe(process.stdout, { end: false });
+    const code = await new Promise((resolveP) => {
+      const child = (0, import_node_child_process3.spawn)(process.execPath, ["--test", file], { stdio: "inherit" });
+      child.on("close", (c) => resolveP(c ?? 1));
     });
+    if (code !== 0)
+      failed = true;
   }
   process.exit(failed ? 1 : 0);
 }

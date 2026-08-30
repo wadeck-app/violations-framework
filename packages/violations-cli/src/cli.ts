@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { readFile, writeFile, mkdir, rm } from 'node:fs/promises'
 import { existsSync } from 'node:fs'
-import { execFileSync } from 'node:child_process'
+import { execFileSync, spawn } from 'node:child_process'
 import { join, dirname, resolve, extname, basename } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { UpdateManager } from '@wadeck-app/shared-cli'
@@ -223,8 +223,6 @@ async function cmdTest(args: string[]): Promise<void> {
 		}
 	}
 
-	const { run: nodeTestRun, describe: _d } = await import('node:test')
-
 	// Collect test files
 	const testFiles: string[] = []
 
@@ -278,24 +276,16 @@ async function cmdTest(args: string[]): Promise<void> {
 		}
 	}
 
-	// Use node:test programmatic runner
+	// Run each test file via 'node --test' subprocess so stdio is inherited and
+	// exit code is reliable. The programmatic run() API emits object chunks that
+	// cannot be piped to stdout directly.
 	let failed = false
 	for (const file of runnable) {
-		const stream = nodeTestRun({ files: [file] })
-		// TestsStream is a readable stream - consume it
-		await new Promise<void>((resolveP) => {
-			// 'error' catches stream-level I/O errors; 'test:fail' catches actual test failures
-			stream.on('error', () => {
-				failed = true
-				resolveP()
-			})
-			stream.on('test:fail', () => {
-				failed = true
-			})
-			stream.on('close', resolveP)
-			// Pipe to process.stdout for output
-			stream.pipe(process.stdout, { end: false })
+		const code = await new Promise<number>((resolveP) => {
+			const child = spawn(process.execPath, ['--test', file], { stdio: 'inherit' })
+			child.on('close', (c) => resolveP(c ?? 1))
 		})
+		if (code !== 0) failed = true
 	}
 
 	process.exit(failed ? 1 : 0)
