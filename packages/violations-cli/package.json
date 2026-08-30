@@ -17,7 +17,8 @@
     "dist-bundle/"
   ],
   "publishConfig": {
-    "@wadeck-app:registry": "https://npm.pkg.github.com/"
+    "@wadeck-app:registry": "https://npm.pkg.github.com/",
+    "access": "public"
   },
   "peerDependencies": {
     "@wadeck-app/violations-rules": "*"

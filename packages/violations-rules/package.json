@@ -20,7 +20,8 @@
   },
   "files": ["dist/"],
   "publishConfig": {
-    "@wadeck-app:registry": "https://npm.pkg.github.com/"
+    "@wadeck-app:registry": "https://npm.pkg.github.com/",
+    "access": "public"
   },
   "devDependencies": {
     "typescript": "^5.5.0",
