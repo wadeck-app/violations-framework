@@ -1,5 +1,6 @@
 import { readFile, writeFile, mkdir, rename, stat } from 'node:fs/promises'
-import { dirname, join } from 'node:path'
+import { dirname, join, resolve } from 'node:path'
+import { pathToFileURL } from 'node:url'
 import { existsSync } from 'node:fs'
 import { randomBytes } from 'node:crypto'
 import ts from 'typescript'
@@ -61,8 +62,16 @@ export async function compileIfNeeded(
 		fileName: sourcePath,
 	})
 
+	// Rewrite relative imports to absolute file:// URLs so the compiled file
+	// resolves correctly from the cache directory (not the source directory).
+	const srcDir = dirname(sourcePath)
+	const rewritten = result.outputText.replace(
+		/from\s+['"](\.[^'"]+)['"]/g,
+		(_, rel) => `from '${pathToFileURL(resolve(srcDir, rel)).href}'`
+	)
+
 	await mkdir(dirname(outputPath), { recursive: true })
-	await writeFile(outputPath, result.outputText, 'utf8')
+	await writeFile(outputPath, rewritten, 'utf8')
 
 	// Update manifest
 	manifest.files[sourcePath] = { mtimeMs: sourceMtime, compiledPath: outputPath }

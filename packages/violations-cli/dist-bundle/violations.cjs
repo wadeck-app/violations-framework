@@ -3028,7 +3028,7 @@ var import_promises5 = require("node:fs/promises");
 var import_node_fs6 = require("node:fs");
 var import_node_child_process3 = require("node:child_process");
 var import_node_path5 = require("node:path");
-var import_node_url2 = require("node:url");
+var import_node_url3 = require("node:url");
 
 // ../../node_modules/@wadeck-app/shared-cli/dist/ConfigDir.js
 var fs = __toESM(require("node:fs"), 1);
@@ -3154,12 +3154,12 @@ function loadUserConfig(configDir) {
 }
 
 // dist/version.js
-var VERSION = "2026.08.30-100923-62-bc3e8b9e" ? "2026.08.30-100923-62-bc3e8b9e" : readBaseVersion();
+var VERSION = "2026.08.30-102043-63-00774e0f" ? "2026.08.30-102043-63-00774e0f" : readBaseVersion();
 
 // dist/runner.js
 var import_promises3 = require("node:fs/promises");
 var import_node_path3 = require("node:path");
-var import_node_url = require("node:url");
+var import_node_url2 = require("node:url");
 var import_node_fs3 = require("node:fs");
 var import_micromatch2 = __toESM(require_micromatch(), 1);
 
@@ -3283,6 +3283,7 @@ function getSuppressReason(absPath, lineNumber) {
 // dist/compiler.js
 var import_promises2 = require("node:fs/promises");
 var import_node_path2 = require("node:path");
+var import_node_url = require("node:url");
 var import_node_fs2 = require("node:fs");
 var import_node_crypto = require("node:crypto");
 var import_typescript = __toESM(require("typescript"), 1);
@@ -3327,8 +3328,10 @@ async function compileIfNeeded(sourcePath, outputPath, manifestPath, frameworkVe
     },
     fileName: sourcePath
   });
+  const srcDir = (0, import_node_path2.dirname)(sourcePath);
+  const rewritten = result.outputText.replace(/from\s+['"](\.[^'"]+)['"]/g, (_, rel) => `from '${(0, import_node_url.pathToFileURL)((0, import_node_path2.resolve)(srcDir, rel)).href}'`);
   await (0, import_promises2.mkdir)((0, import_node_path2.dirname)(outputPath), { recursive: true });
-  await (0, import_promises2.writeFile)(outputPath, result.outputText, "utf8");
+  await (0, import_promises2.writeFile)(outputPath, rewritten, "utf8");
   manifest.files[sourcePath] = { mtimeMs: sourceMtime, compiledPath: outputPath };
   await (0, import_promises2.mkdir)((0, import_node_path2.dirname)(manifestPath), { recursive: true });
   await writeManifest(manifestPath, manifest);
@@ -3365,7 +3368,7 @@ async function typeCheck(sourcePath) {
 }
 
 // dist/runner.js
-var __dirname = (0, import_node_path3.dirname)((0, import_node_url.fileURLToPath)(__importMetaUrl));
+var __dirname = (0, import_node_path3.dirname)((0, import_node_url2.fileURLToPath)(__importMetaUrl));
 async function getFrameworkVersion() {
   try {
     const pkgPath = (0, import_node_path3.join)(__dirname, "..", "package.json");
@@ -3383,12 +3386,12 @@ async function loadConfig(projectRoot, frameworkVersion) {
   const manifestPath = (0, import_node_path3.join)(cacheDir, "manifest.json");
   if ((0, import_node_fs3.existsSync)(configTs)) {
     await compileIfNeeded(configTs, configJs, manifestPath, frameworkVersion);
-    const mod = await import((0, import_node_url.pathToFileURL)(configJs).href + "?t=" + Date.now());
+    const mod = await import((0, import_node_url2.pathToFileURL)(configJs).href + "?t=" + Date.now());
     return mod.default;
   }
   const configJs2 = (0, import_node_path3.join)(projectRoot, ".violations", "config.js");
   if ((0, import_node_fs3.existsSync)(configJs2)) {
-    const mod = await import((0, import_node_url.pathToFileURL)(configJs2).href + "?t=" + Date.now());
+    const mod = await import((0, import_node_url2.pathToFileURL)(configJs2).href + "?t=" + Date.now());
     return mod.default;
   }
   throw new Error(`No .violations/config.ts or config.js found in ${projectRoot}`);
@@ -3404,7 +3407,7 @@ async function loadRule(ruleKey, projectRoot, cacheDir, manifestPath, frameworkV
       importPath = compiled;
     }
     try {
-      const mod = await import((0, import_node_url.pathToFileURL)(importPath).href + "?t=" + Date.now());
+      const mod = await import((0, import_node_url2.pathToFileURL)(importPath).href + "?t=" + Date.now());
       return mod.default ?? mod.rule ?? null;
     } catch (err) {
       console.warn(`[violations] Failed to load local rule ${ruleKey}: ${String(err)}`);
@@ -3599,7 +3602,7 @@ var import_node_module = require("node:module");
 var _require = (0, import_node_module.createRequire)(__importMetaUrl);
 function checkBundleVersion() {
   try {
-    const v = "2026.08.30-100923-62-bc3e8b9e";
+    const v = "2026.08.30-102043-63-00774e0f";
     if (!v) {
       return { name: "bundle-version", ok: false, reason: "version string is empty" };
     }
@@ -3645,7 +3648,7 @@ function printSelfChecks(results) {
 }
 
 // dist/cli.js
-var __dirname2 = (0, import_node_path5.dirname)((0, import_node_url2.fileURLToPath)(__importMetaUrl));
+var __dirname2 = (0, import_node_path5.dirname)((0, import_node_url3.fileURLToPath)(__importMetaUrl));
 var RULES_GROUP_HELP = `violations rules - manage violation rules
 
 Usage:
@@ -4099,7 +4102,7 @@ async function cmdConfigValidate() {
   const frameworkVersion = await getPackageVersion();
   try {
     await compileIfNeeded(configTs, configJs, manifestPath, frameworkVersion);
-    const mod = await import((0, import_node_url2.pathToFileURL)(configJs).href + "?t=" + Date.now());
+    const mod = await import((0, import_node_url3.pathToFileURL)(configJs).href + "?t=" + Date.now());
     const config = mod.default;
     const rulesConfig = config.rules ?? {};
     const ruleErrors = [];
@@ -4155,7 +4158,7 @@ function cmdCliSelfCheck() {
   process.exit(allPassed ? 0 : 1);
 }
 function cmdCliUpdate() {
-  const bundlePath = process.env["LAUNCHER_BUNDLE_OVERRIDE"] ?? (0, import_node_url2.fileURLToPath)(__importMetaUrl);
+  const bundlePath = process.env["LAUNCHER_BUNDLE_OVERRIDE"] ?? (0, import_node_url3.fileURLToPath)(__importMetaUrl);
   const bundleDir = (0, import_node_path5.dirname)(bundlePath);
   const updaterPath = (0, import_node_path5.join)(bundleDir, "violations-updater.cjs");
   if (!(0, import_node_fs6.existsSync)(updaterPath)) {
@@ -4198,7 +4201,7 @@ async function main() {
   }
   const configDir = process.env["VIOLATIONS_CONFIG_DIR"] ?? ConfigDir.get("violations");
   const userConfig = loadUserConfig(configDir);
-  const bundlePath = process.env["LAUNCHER_BUNDLE_OVERRIDE"] ?? (0, import_node_url2.fileURLToPath)(__importMetaUrl);
+  const bundlePath = process.env["LAUNCHER_BUNDLE_OVERRIDE"] ?? (0, import_node_url3.fileURLToPath)(__importMetaUrl);
   if (argv[0] === "--version" || argv[0] === "-V") {
     console.log(VERSION);
     process.exit(0);
@@ -4372,7 +4375,7 @@ Run: violations --help
     }
   }
 }
-var isEntryPoint = process.argv[1] !== void 0 && (process.argv[1] === (0, import_node_url2.fileURLToPath)(__importMetaUrl) || process.argv[1].endsWith("cli.js") || process.argv[1].endsWith("violations") || process.argv[1].endsWith("violations.cjs"));
+var isEntryPoint = process.argv[1] !== void 0 && (process.argv[1] === (0, import_node_url3.fileURLToPath)(__importMetaUrl) || process.argv[1].endsWith("cli.js") || process.argv[1].endsWith("violations") || process.argv[1].endsWith("violations.cjs"));
 if (isEntryPoint) {
   main().catch((err) => {
     process.stderr.write(`violations: ${String(err)}
