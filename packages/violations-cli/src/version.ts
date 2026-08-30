@@ -8,8 +8,8 @@ function readBaseVersion(): string {
 	let count = '0';
 	let hash = 'DEV';
 	// stdio: pipe suppresses "fatal: not a git repository" from reaching the user's stderr
-	try { count = execSync('git rev-list --count HEAD', { encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] }).trim(); } catch { /* not a git repo */ }
-	try { hash = execSync('git rev-parse --short=8 HEAD', { encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] }).trim(); } catch { /* not a git repo */ }
+	try { count = execSync('git rev-list --count HEAD', { encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'], windowsHide: true }).trim(); } catch { /* not a git repo */ }
+	try { hash = execSync('git rev-parse --short=8 HEAD', { encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'], windowsHide: true }).trim(); } catch { /* not a git repo */ }
 	return `${date}-${time}-${count}-${hash}`;
 }
 
