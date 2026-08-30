@@ -3285,7 +3285,7 @@ function loadUserConfig(configDir) {
 }
 
 // dist/version.js
-var VERSION = "2026.08.30-125813-68-8dbb5035" ? "2026.08.30-125813-68-8dbb5035" : readBaseVersion();
+var VERSION = "2026.08.30-140329-70-9a89eaff" ? "2026.08.30-140329-70-9a89eaff" : readBaseVersion();
 
 // dist/runner.js
 var import_promises3 = require("node:fs/promises");
@@ -3431,7 +3431,7 @@ async function writeManifest(manifestPath, manifest) {
   await (0, import_promises2.writeFile)(tmp, JSON.stringify(manifest, null, 2), "utf8");
   await (0, import_promises2.rename)(tmp, manifestPath);
 }
-async function compileIfNeeded(sourcePath, outputPath, manifestPath, frameworkVersion) {
+async function compileIfNeeded(sourcePath, outputPath, manifestPath, frameworkVersion, importRedirects) {
   const manifest = await readManifest(manifestPath);
   if (manifest.frameworkVersion !== frameworkVersion) {
     manifest.files = {};
@@ -3460,7 +3460,12 @@ async function compileIfNeeded(sourcePath, outputPath, manifestPath, frameworkVe
     fileName: sourcePath
   });
   const srcDir = (0, import_node_path6.dirname)(sourcePath);
-  const rewritten = result.outputText.replace(/from\s+['"](\.[^'"]+)['"]/g, (_, rel) => `from '${(0, import_node_url.pathToFileURL)((0, import_node_path6.resolve)(srcDir, rel)).href}'`);
+  const rewritten = result.outputText.replace(/from\s+['"](\.[^'"]+)['"]/g, (_, rel) => {
+    const absPath = (0, import_node_path6.resolve)(srcDir, rel);
+    const absUrl = (0, import_node_url.pathToFileURL)(absPath).href;
+    const redirect = importRedirects?.get(absUrl);
+    return `from '${redirect ?? absUrl}'`;
+  });
   await (0, import_promises2.mkdir)((0, import_node_path6.dirname)(outputPath), { recursive: true });
   await (0, import_promises2.writeFile)(outputPath, rewritten, "utf8");
   manifest.files[sourcePath] = { mtimeMs: sourceMtime, compiledPath: outputPath };
@@ -3733,7 +3738,7 @@ var import_node_module = require("node:module");
 var _require = (0, import_node_module.createRequire)(__importMetaUrl);
 function checkBundleVersion() {
   try {
-    const v = "2026.08.30-125813-68-8dbb5035";
+    const v = "2026.08.30-140329-70-9a89eaff";
     if (!v) {
       return { name: "bundle-version", ok: false, reason: "version string is empty" };
     }
@@ -3982,10 +3987,22 @@ async function cmdTest(args) {
   const manifestPath = (0, import_node_path9.join)(cacheDir, "manifest.json");
   const frameworkVersion = await getPackageVersion();
   const runnable = [];
+  const importRedirects = /* @__PURE__ */ new Map();
+  for (const f of testFiles) {
+    if (!f.endsWith(".ts"))
+      continue;
+    const ruleSourceTs = f.replace(/\.test\.ts$/, ".ts");
+    if (ruleSourceTs === f || !(0, import_node_fs10.existsSync)(ruleSourceTs))
+      continue;
+    const compiledRule = (0, import_node_path9.join)(cacheDir, "rules", (0, import_node_path9.basename)(ruleSourceTs, ".ts") + ".js");
+    await compileIfNeeded(ruleSourceTs, compiledRule, manifestPath, frameworkVersion);
+    const ruleJsInRulesDir = ruleSourceTs.replace(/\.ts$/, ".js");
+    importRedirects.set((0, import_node_url3.pathToFileURL)(ruleJsInRulesDir).href, (0, import_node_url3.pathToFileURL)(compiledRule).href);
+  }
   for (const f of testFiles) {
     if (f.endsWith(".ts")) {
       const compiled = (0, import_node_path9.join)(cacheDir, "rules", (0, import_node_path9.basename)(f, ".ts") + ".test.js");
-      await compileIfNeeded(f, compiled, manifestPath, frameworkVersion);
+      await compileIfNeeded(f, compiled, manifestPath, frameworkVersion, importRedirects);
       runnable.push(compiled);
     } else {
       runnable.push(f);

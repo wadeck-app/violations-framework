@@ -11,7 +11,16 @@ import { fileURLToPath } from 'node:url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, '..');
 
-function getCalVer(): string {
+// Read version from package.json so the bundle matches the npm registry version.
+// In CI, `npm pkg set version=...` runs before bundling - package.json has the correct value.
+// In local dev, falls back to a calver dev string so self-check passes version validation.
+function getVersion(): string {
+	try {
+		const pkgPath = path.join(root, 'package.json');
+		const { version } = JSON.parse(require('node:fs').readFileSync(pkgPath, 'utf8'));
+		if (version && version !== '0.0.0') return version;
+	} catch { /* ignore */ }
+	// Dev fallback: same format as CI but with HHMMSS so it's clearly local
 	const now = new Date();
 	const pad2 = (n: number) => String(n).padStart(2, '0');
 	const date = `${now.getFullYear()}.${pad2(now.getMonth() + 1)}.${pad2(now.getDate())}`;
@@ -22,7 +31,7 @@ function getCalVer(): string {
 	try { hash = execSync('git rev-parse --short=8 HEAD', { encoding: 'utf8' }).trim(); } catch { /* not a git repo */ }
 	return `${date}-${time}-${count}-${hash}`;
 }
-const version = getCalVer();
+const version = getVersion();
 
 await build({
 	entryPoints: [path.join(root, 'dist/cli.js')],

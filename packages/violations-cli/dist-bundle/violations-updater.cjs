@@ -472,7 +472,7 @@ var ConfigDir = class _ConfigDir {
 var import_node_path6 = require("node:path");
 var PKG_NAME = "@wadeck-app/violations-cli";
 var configDir = process.env["VIOLATIONS_CONFIG_DIR"] ?? ConfigDir.get("violations");
-var currentVersion = true ? "2026.08.30-125813-68-8dbb5035" : "0.0.0-dev";
+var currentVersion = true ? "2026.08.30-140329-70-9a89eaff" : "0.0.0-dev";
 try {
   const npmRoot = execNpm(["root", "-g"], { timeout: 1e4 }).trim();
   const selfCheckCmd = `${process.execPath} ${(0, import_node_path6.join)(npmRoot, PKG_NAME, "violations.cjs")} cli self-check`;
