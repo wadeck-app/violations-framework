@@ -40,7 +40,7 @@ await build({
 		__VIOLATIONS_CLI_VERSION__: JSON.stringify(version),
 	},
 	banner: {
-		js: `const __importMetaUrl = require('url').pathToFileURL(__filename).href;`,
+		js: `const __importMetaUrl = require('node:url').pathToFileURL(__filename).href;`,
 	},
 	logLevel: 'warning',
 });
@@ -61,7 +61,7 @@ await build({
 		__VIOLATIONS_CLI_VERSION__: JSON.stringify(version),
 	},
 	banner: {
-		js: `const __importMetaUrl = require('url').pathToFileURL(__filename).href;`,
+		js: `const __importMetaUrl = require('node:url').pathToFileURL(__filename).href;`,
 	},
 	logLevel: 'warning',
 });

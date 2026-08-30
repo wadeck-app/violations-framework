@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-const __importMetaUrl = require('url').pathToFileURL(__filename).href;
+const __importMetaUrl = require('node:url').pathToFileURL(__filename).href;
 "use strict";
 var __create = Object.create;
 var __defProp = Object.defineProperty;
@@ -3154,7 +3154,7 @@ function loadUserConfig(configDir) {
 }
 
 // dist/version.js
-var VERSION = "2026.08.30-102810-64-d5cdda08" ? "2026.08.30-102810-64-d5cdda08" : readBaseVersion();
+var VERSION = "2026.08.30-104928-65-95a60f41" ? "2026.08.30-104928-65-95a60f41" : readBaseVersion();
 
 // dist/runner.js
 var import_promises3 = require("node:fs/promises");
@@ -3602,7 +3602,7 @@ var import_node_module = require("node:module");
 var _require = (0, import_node_module.createRequire)(__importMetaUrl);
 function checkBundleVersion() {
   try {
-    const v = "2026.08.30-102810-64-d5cdda08";
+    const v = "2026.08.30-104928-65-95a60f41";
     if (!v) {
       return { name: "bundle-version", ok: false, reason: "version string is empty" };
     }

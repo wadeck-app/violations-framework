@@ -60,6 +60,11 @@ export default {
         'packages/violations-rules/src/rules/ts/no-cross-package-relative.test.ts',
       ],
     },
+    'ts/node-builtin-prefix': {
+      $exclude: [
+        'packages/violations-rules/src/rules/ts/node-builtin-prefix.test.ts',
+      ],
+    },
 
     // violations-meta rules: auto-active via 'violations-meta' projectTag
 

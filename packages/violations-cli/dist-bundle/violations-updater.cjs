@@ -1,4 +1,4 @@
-const __importMetaUrl = require('url').pathToFileURL(__filename).href;
+const __importMetaUrl = require('node:url').pathToFileURL(__filename).href;
 "use strict";
 var __create = Object.create;
 var __defProp = Object.defineProperty;
@@ -260,7 +260,7 @@ async function main() {
     }
     let currentVersion;
     try {
-      currentVersion = "2026.08.30-102810-64-d5cdda08";
+      currentVersion = "2026.08.30-104928-65-95a60f41";
     } catch {
       return;
     }
