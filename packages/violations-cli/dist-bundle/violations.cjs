@@ -3154,7 +3154,7 @@ function loadUserConfig(configDir) {
 }
 
 // dist/version.js
-var VERSION = "2026.08.29-202707-55-563ca07d" ? "2026.08.29-202707-55-563ca07d" : readBaseVersion();
+var VERSION = "2026.08.30-093523-61-f5d94663" ? "2026.08.30-093523-61-f5d94663" : readBaseVersion();
 
 // dist/runner.js
 var import_promises3 = require("node:fs/promises");
@@ -3599,7 +3599,7 @@ var import_node_module = require("node:module");
 var _require = (0, import_node_module.createRequire)(__importMetaUrl);
 function checkBundleVersion() {
   try {
-    const v = "2026.08.29-202707-55-563ca07d";
+    const v = "2026.08.30-093523-61-f5d94663";
     if (!v) {
       return { name: "bundle-version", ok: false, reason: "version string is empty" };
     }
@@ -3668,6 +3668,7 @@ var CLI_GROUP_HELP = `violations cli - CLI tooling commands
 Usage:
   violations cli self-check
   violations cli update
+  violations cli logs [-f/--follow]
 `;
 function printUsage() {
   console.log(`violations - code quality rule runner
@@ -3864,6 +3865,9 @@ async function cmdTest(args) {
       stream.on("error", () => {
         failed = true;
         resolveP();
+      });
+      stream.on("test:fail", () => {
+        failed = true;
       });
       stream.on("close", resolveP);
       stream.pipe(process.stdout, { end: false });
@@ -4174,6 +4178,17 @@ function cmdCliUpdate() {
 async function main() {
   ConfigDir.migrateIfNeeded("violations");
   const argv = process.argv.slice(2);
+  try {
+    const logsDir = `${ConfigDir.get("violations")}/logs`;
+    const today = (/* @__PURE__ */ new Date()).toISOString().slice(0, 10);
+    const logFile = `${logsDir}/${today}.ndjson`;
+    import("node:fs").then((fs4) => {
+      fs4.mkdirSync(logsDir, { recursive: true });
+      fs4.appendFileSync(logFile, JSON.stringify({ ts: (/* @__PURE__ */ new Date()).toISOString(), level: "info", msg: `cmd: violations ${argv.join(" ")}` }) + "\n");
+    }).catch(() => {
+    });
+  } catch {
+  }
   const updater = new UpdateManager("@wadeck-app/violations-cli");
   const updateState = updater.readAndClearState();
   if (updateState?.status === "success") {
@@ -4250,15 +4265,102 @@ Run: violations cache --help
 `);
         process.exit(1);
       }
+    } else if (command === "logs") {
+      const follow = rest.includes("--follow") || rest.includes("-f");
+      const { existsSync: existsSync8, readFileSync: readFileSync4, watch } = require("node:fs");
+      const pathMod = require("node:path");
+      const logsDir = pathMod.join(ConfigDir.get("violations"), "logs");
+      const today = (/* @__PURE__ */ new Date()).toISOString().slice(0, 10);
+      const logFile = pathMod.join(logsDir, `${today}.ndjson`);
+      if (!existsSync8(logFile)) {
+        process.stderr.write(`[violations] No log file for today: ${logFile}
+`);
+      } else if (!follow) {
+        process.stdout.write(readFileSync4(logFile, "utf-8"));
+      } else {
+        process.stderr.write(`[violations] Following ${logFile}
+`);
+        let offset = 0;
+        const printNew = () => {
+          const buf = Buffer.alloc(require("node:fs").statSync(logFile).size - offset);
+          if (buf.length === 0)
+            return;
+          const fd = require("node:fs").openSync(logFile, "r");
+          require("node:fs").readSync(fd, buf, 0, buf.length, offset);
+          require("node:fs").closeSync(fd);
+          offset += buf.length;
+          process.stdout.write(buf.toString("utf-8"));
+        };
+        printNew();
+        watch(logFile, () => {
+          printNew();
+        });
+        await new Promise(() => {
+        });
+      }
     } else if (command === "cli") {
       const sub = rest[0];
       if (sub === "--help" || sub === "-h") {
         process.stdout.write(CLI_GROUP_HELP);
         process.exit(0);
+      } else if (sub === "version") {
+        const pathMod = require("node:path");
+        const fsMod = require("node:fs");
+        process.stdout.write(`violations v${VERSION} (installed)
+`);
+        try {
+          const { execFileSync: execFileSync2 } = require("node:child_process");
+          const NPM_CLI = pathMod.join(pathMod.dirname(process.execPath), "node_modules", "npm", "bin", "npm-cli.js");
+          const USE_CLI = fsMod.existsSync(NPM_CLI);
+          const winHide = process.platform === "win32" ? { windowsHide: true } : {};
+          const result = USE_CLI ? execFileSync2(process.execPath, [NPM_CLI, "view", "@wadeck-app/violations-cli", "dist-tags.latest"], { encoding: "utf8", timeout: 15e3, ...winHide }) : execFileSync2("npm", ["view", "@wadeck-app/violations-cli", "dist-tags.latest"], { encoding: "utf8", timeout: 15e3, ...winHide });
+          const latest = result.trim();
+          process.stdout.write(`Latest (latest): v${latest}
+`);
+          if (VERSION === latest)
+            process.stdout.write("Up to date.\n");
+        } catch (err) {
+          process.stderr.write(`Could not fetch latest version: ${String(err)}
+`);
+        }
       } else if (sub === "self-check") {
         cmdCliSelfCheck();
       } else if (sub === "update") {
         cmdCliUpdate();
+      } else if (sub === "logs") {
+        const follow = rest.includes("--follow") || rest.includes("-f");
+        const { existsSync: existsSync8, readFileSync: readFileSync4, watch } = require("node:fs");
+        const pathMod = require("node:path");
+        const logsDir = pathMod.join(ConfigDir.get("violations"), "logs");
+        const today = (/* @__PURE__ */ new Date()).toISOString().slice(0, 10);
+        const logFile = pathMod.join(logsDir, `${today}.ndjson`);
+        if (!existsSync8(logFile)) {
+          process.stderr.write(`[violations] No log file for today: ${logFile}
+`);
+        } else if (!follow) {
+          process.stdout.write(readFileSync4(logFile, "utf-8"));
+        } else {
+          process.stderr.write(`[violations] Following ${logFile}
+`);
+          let offset = 0;
+          const printNew = () => {
+            const stat2 = require("node:fs").statSync(logFile);
+            if (stat2.size <= offset)
+              return;
+            const buf = Buffer.alloc(stat2.size - offset);
+            const fd = require("node:fs").openSync(logFile, "r");
+            require("node:fs").readSync(fd, buf, 0, buf.length, offset);
+            require("node:fs").closeSync(fd);
+            offset = stat2.size;
+            process.stdout.write(buf.toString("utf-8"));
+          };
+          printNew();
+          watch(logFile, () => {
+            printNew();
+          });
+          await new Promise(() => {
+          });
+        }
       } else {
         process.stderr.write(`[fail] Unknown subcommand: cli ${sub ?? ""}
 Run: violations cli --help

@@ -204,10 +204,11 @@ function tryAcquireLock(lockFile) {
   }
 }
 function execNpm(args, opts) {
+  const winHide = process.platform === "win32" ? { windowsHide: true } : {};
   if (USE_NPM_CLI) {
-    return execFileAsync(process.execPath, [NPM_CLI_JS, ...args], opts);
+    return execFileAsync(process.execPath, [NPM_CLI_JS, ...args], { ...opts, ...winHide });
   }
-  return execFileAsync("npm", args, opts);
+  return execFileAsync("npm", args, { ...opts, ...winHide });
 }
 async function main() {
   const cliName = PKG_NAME.replace(/^@[^/]+\//, "").replace(/-cli$/, "");
@@ -259,7 +260,7 @@ async function main() {
     }
     let currentVersion;
     try {
-      currentVersion = "2026.08.29-202707-55-563ca07d";
+      currentVersion = "2026.08.30-093523-61-f5d94663";
     } catch {
       return;
     }

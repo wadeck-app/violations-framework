@@ -284,9 +284,13 @@ async function cmdTest(args: string[]): Promise<void> {
 		const stream = nodeTestRun({ files: [file] })
 		// TestsStream is a readable stream - consume it
 		await new Promise<void>((resolveP) => {
+			// 'error' catches stream-level I/O errors; 'test:fail' catches actual test failures
 			stream.on('error', () => {
 				failed = true
 				resolveP()
+			})
+			stream.on('test:fail', () => {
+				failed = true
 			})
 			stream.on('close', resolveP)
 			// Pipe to process.stdout for output
