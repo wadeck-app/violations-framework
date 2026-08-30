@@ -21,12 +21,30 @@ async function writeManifest(manifestPath: string, manifest: CacheManifest): Pro
 	await rename(tmp, manifestPath)
 }
 
-export async function compileIfNeeded(
+// Per-manifest serializer: prevents concurrent read-modify-write races on Windows NTFS
+// (Promise.all in runner.ts fires multiple compileIfNeeded calls for the same manifest)
+const compileLocks = new Map<string, Promise<void>>()
+
+export function compileIfNeeded(
 	sourcePath: string,
 	outputPath: string,
 	manifestPath: string,
 	frameworkVersion: string,
 	/** Optional map from absolute .js path → compiled cache .js path for redirecting rule imports */
+	importRedirects?: Map<string, string>
+): Promise<void> {
+	const pending = compileLocks.get(manifestPath) ?? Promise.resolve()
+	const current = pending.then(() => _doCompile(sourcePath, outputPath, manifestPath, frameworkVersion, importRedirects))
+	// Suppress the error on the lock so subsequent callers always chain correctly
+	compileLocks.set(manifestPath, current.then(() => {}, () => {}))
+	return current
+}
+
+async function _doCompile(
+	sourcePath: string,
+	outputPath: string,
+	manifestPath: string,
+	frameworkVersion: string,
 	importRedirects?: Map<string, string>
 ): Promise<void> {
 	const manifest = await readManifest(manifestPath)
