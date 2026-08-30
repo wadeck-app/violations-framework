@@ -3285,7 +3285,7 @@ function loadUserConfig(configDir) {
 }
 
 // dist/version.js
-var VERSION = "2026.08.30-140718-71-929876bd" ? "2026.08.30-140718-71-929876bd" : readBaseVersion();
+var VERSION = "2026.08.30-164254-73-e56d2586" ? "2026.08.30-164254-73-e56d2586" : readBaseVersion();
 
 // dist/runner.js
 var import_promises3 = require("node:fs/promises");
@@ -3431,7 +3431,16 @@ async function writeManifest(manifestPath, manifest) {
   await (0, import_promises2.writeFile)(tmp, JSON.stringify(manifest, null, 2), "utf8");
   await (0, import_promises2.rename)(tmp, manifestPath);
 }
-async function compileIfNeeded(sourcePath, outputPath, manifestPath, frameworkVersion, importRedirects) {
+var compileLocks = /* @__PURE__ */ new Map();
+function compileIfNeeded(sourcePath, outputPath, manifestPath, frameworkVersion, importRedirects) {
+  const pending = compileLocks.get(manifestPath) ?? Promise.resolve();
+  const current = pending.then(() => _doCompile(sourcePath, outputPath, manifestPath, frameworkVersion, importRedirects));
+  compileLocks.set(manifestPath, current.then(() => {
+  }, () => {
+  }));
+  return current;
+}
+async function _doCompile(sourcePath, outputPath, manifestPath, frameworkVersion, importRedirects) {
   const manifest = await readManifest(manifestPath);
   if (manifest.frameworkVersion !== frameworkVersion) {
     manifest.files = {};
@@ -3738,7 +3747,7 @@ var import_node_module = require("node:module");
 var _require = (0, import_node_module.createRequire)(__importMetaUrl);
 function checkBundleVersion() {
   try {
-    const v = "2026.08.30-140718-71-929876bd";
+    const v = "2026.08.30-164254-73-e56d2586";
     if (!v) {
       return { name: "bundle-version", ok: false, reason: "version string is empty" };
     }

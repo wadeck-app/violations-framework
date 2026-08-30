@@ -52,6 +52,8 @@ export { rule as unityEditorPrefixGuard } from './unity/editor-prefix-guard.js'
 export { rule as unityUnitTestPrefixGuard } from './unity/unit-test-prefix-guard.js'
 export { rule as unityNoInstantiateWorldRotation } from './unity/no-instantiate-world-rotation.js'
 export { rule as unityNoRawGuiLayoutInTypedEditor } from './unity/no-raw-gui-layout-in-typed-editor.js'
+export { rule as cliDaemonSpawnNoWindowsHide } from './cli/daemon-spawn-no-windows-hide.js'
+export { rule as cliPublishconfigMissingAccessPublic } from './cli/publishconfig-missing-access-public.js'
 
 export type { Config as NoEmDashConfig } from './shared/no-em-dash.js'
 export type { Config as NoFrenchConfig } from './shared/no-french.js'
@@ -107,6 +109,8 @@ export type { Config as UnityEditorPrefixGuardConfig } from './unity/editor-pref
 export type { Config as UnityUnitTestPrefixGuardConfig } from './unity/unit-test-prefix-guard.js'
 export type { Config as UnityNoInstantiateWorldRotationConfig } from './unity/no-instantiate-world-rotation.js'
 export type { Config as UnityNoRawGuiLayoutInTypedEditorConfig } from './unity/no-raw-gui-layout-in-typed-editor.js'
+export type { Config as CliDaemonSpawnNoWindowsHideConfig } from './cli/daemon-spawn-no-windows-hide.js'
+export type { Config as CliPublishconfigMissingAccessPublicConfig } from './cli/publishconfig-missing-access-public.js'
 
 import { rule as noEmDash } from './shared/no-em-dash.js'
 import { rule as noFrench } from './shared/no-french.js'
@@ -162,6 +166,8 @@ import { rule as unityEditorPrefixGuard } from './unity/editor-prefix-guard.js'
 import { rule as unityUnitTestPrefixGuard } from './unity/unit-test-prefix-guard.js'
 import { rule as unityNoInstantiateWorldRotation } from './unity/no-instantiate-world-rotation.js'
 import { rule as unityNoRawGuiLayoutInTypedEditor } from './unity/no-raw-gui-layout-in-typed-editor.js'
+import { rule as cliDaemonSpawnNoWindowsHide } from './cli/daemon-spawn-no-windows-hide.js'
+import { rule as cliPublishconfigMissingAccessPublic } from './cli/publishconfig-missing-access-public.js'
 import type { Rule } from '../types.js'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -220,4 +226,6 @@ export const allRules: Rule<any>[] = [
   unityUnitTestPrefixGuard,
   unityNoInstantiateWorldRotation,
   unityNoRawGuiLayoutInTypedEditor,
+  cliDaemonSpawnNoWindowsHide,
+  cliPublishconfigMissingAccessPublic,
 ]
