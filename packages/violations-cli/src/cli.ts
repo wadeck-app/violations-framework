@@ -14,7 +14,7 @@ import { VERSION } from './version.js'
 import { run } from './runner.js'
 import { writeReports } from './report.js'
 import { compileIfNeeded, typeCheck } from './compiler.js'
-import { runSelfChecks, printSelfChecks } from './selfCheck.js'
+import { selfCheck } from './selfCheck.js'
 import type { RuleResult, ViolationsConfig } from '@wadeck-app/violations-rules'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
@@ -651,11 +651,8 @@ async function cmdCacheClear(): Promise<void> {
 // `violations cli self-check`
 // ---------------------------------------------------------------------------
 
-function cmdCliSelfCheck(): void {
-	const results = runSelfChecks()
-	printSelfChecks(results)
-	const allPassed = results.every(r => r.ok)
-	process.exit(allPassed ? 0 : 1)
+async function cmdCliSelfCheck(): Promise<void> {
+	await selfCheck()
 }
 
 // ---------------------------------------------------------------------------
@@ -760,7 +757,7 @@ async function main(): Promise<void> {
 				await cliVersionCommand('@wadeck-app/violations-cli', VERSION, channel)
 			} else if (sub === 'self-check') {
 				warnUnknownArgs(rest.slice(1), [], 'violations cli self-check')
-				cmdCliSelfCheck()
+				await cmdCliSelfCheck()
 			} else if (sub === 'update') {
 				const updaterPath = join(dirname(bundlePath), 'violations-updater.cjs')
 				if (!existsSync(updaterPath)) {
