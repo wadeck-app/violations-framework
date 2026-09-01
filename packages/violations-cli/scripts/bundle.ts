@@ -5,6 +5,7 @@
  */
 import { build } from 'esbuild';
 import { execSync } from 'node:child_process';
+import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -17,7 +18,7 @@ const root = path.join(__dirname, '..');
 function getVersion(): string {
 	try {
 		const pkgPath = path.join(root, 'package.json');
-		const { version } = JSON.parse(require('node:fs').readFileSync(pkgPath, 'utf8'));
+		const { version } = JSON.parse(readFileSync(pkgPath, 'utf8'));
 		if (version && version !== '0.0.0') return version;
 	} catch { /* ignore */ }
 	// Dev fallback: same format as CI but with HHMMSS so it's clearly local
