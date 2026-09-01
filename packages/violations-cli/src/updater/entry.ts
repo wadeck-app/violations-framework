@@ -18,7 +18,9 @@ const currentVersion = /^\d{4}\.\d{2}\.\d{2}-\d{6}/.test(rawVersion) ? '0.0.0' :
 try {
 	const npmRoot = execNpm(['root', '-g'], { timeout: 10_000 }).trim();
 	const selfCheckCmd = `${process.execPath} ${join(npmRoot, PKG_NAME, 'dist-bundle', 'violations.cjs')} cli self-check`;
-	process.env['UPDATER_SELF_CHECK_CMD'] = selfCheckCmd;
+	if (!process.env['UPDATER_SELF_CHECK_CMD']) {
+		process.env['UPDATER_SELF_CHECK_CMD'] = selfCheckCmd;
+	}
 } catch {
 	// Skip self-check if npm root is unavailable - update proceeds without verification.
 }
