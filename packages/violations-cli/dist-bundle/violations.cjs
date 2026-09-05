@@ -3601,6 +3601,9 @@ async function run(options) {
   const results = [];
   const { allRules } = await import("@wadeck-app/violations-rules");
   const projectTags = new Set(config.projectTags ?? []);
+  if (projectTags.size === 0) {
+    process.stderr.write("[warn] projectTags is empty \u2014 no tag-based library rules will activate.\n       Add tags to your .violations/config.ts (e.g. projectTags: ['ts', 'shared']).\n       Run: violations rules list  to see available tags.\n");
+  }
   const mergedRules = {};
   for (const libRule of allRules) {
     const ruleTags = Array.isArray(libRule.tags) ? libRule.tags : [libRule.tags];
@@ -3927,7 +3930,7 @@ async function cmdCheck(args) {
   let overrideConfig;
   if (!(0, import_node_fs10.existsSync)(configTs) && !(0, import_node_fs10.existsSync)(configJs)) {
     overrideConfig = await buildDefaultConfig(projectRoot);
-    process.stderr.write("[auto] No .violations/config.ts found - running with auto-detected defaults.\n");
+    process.stderr.write("[warn] No .violations/config.ts found \u2014 running with auto-detected defaults.\n       Create .violations/config.ts to configure rules explicitly.\n");
   }
   const results = await run({ projectRoot, staged, files, overrideConfig });
   await writeReports(dotViolationsDir, results);
