@@ -56,27 +56,53 @@ Usage:
 // ---------------------------------------------------------------------------
 
 function printUsage(): void {
-	console.log(`violations - code quality rule runner
+	console.log(`violations v${VERSION} — code quality rule runner
+
+Concepts:
+  rule      A named check (TypeScript or JS) that scans source files for issues
+            Rules come from @wadeck-app/violations-rules or local .violations/rules/
+  config    .violations/config.ts in cwd — defines which rules are enabled and their options
+            If absent, check runs with auto-detected defaults (warns on stderr)
+  check     Runs enabled rules; exit code equals the number of violations found
 
 Usage:
-  violations check [--staged] [--files a,b,c]
-  violations test [--local] [--rule <id>]
-  violations rules list [--tag <tag>]
-  violations rules info <id>
+  violations check [--staged] [--files <path,...>]
+                              Scan files against all enabled rules
+                              --staged: only git-staged files (git diff --cached)
+                              --files:  comma-separated file paths to check
+
+  violations test [--rule <id>] [--local]
+                              Run rule unit tests
+                              --rule:  run tests for a single rule by id
+                              --local: only run tests in .violations/rules/ (skip package rules)
+
+  violations rules list [--tag <tag>] [--json]
+                              List available rules from the registry
+  violations rules info <id>  Show rule id, tag, severity, and default scope
   violations rules create <name> --lang ts|js
-  violations config validate
-  violations cache clear
-  violations cli self-check
-  violations cli update
+                              Scaffold .violations/rules/<name>.{ts,js} + test file
+
+  violations config validate  Type-check and validate .violations/config.ts
+  violations cache clear      Delete .violations/.cache/ (forces recompile on next run)
+
+  violations cli self-check   Validate installation and bundle integrity
+  violations cli update       Run a foreground update to the latest published version
+  violations cli logs [--follow]
+                              Print (or tail) today's invocation log
+
+Check output format (one line per violation):
+  <file>:<line>  <message>  [<ruleId>]
+  e.g.  src/foo.ts:12  Unsafe cast  [no-unsafe-type-cast]
+  Summary: "N violations (X errors, Y warnings)" or "[ok] 0 violations"
 
 Exit codes:
-  0  ok
-  1  error
-  N  violation count (check)
+  0   ok (no violations)
+  1   error (config/runtime failure)
+  N   number of violations found by check (min 1, max 254)
 
-Env vars:
-  VIOLATIONS_CONFIG_DIR   override the config directory
-  CLI_SELF_CHECK_QUIET    set to 1 to suppress [ok] lines in self-check
+Environment variables:
+  VIOLATIONS_CONFIG_DIR   Override config directory (default: ~/.config/violations)
+  CLI_SELF_CHECK_QUIET    Set to 1 to suppress [ok] lines in cli self-check
 `)
 }
 
@@ -119,6 +145,7 @@ function formatViolations(results: RuleResult[]): { lines: string[]; errors: num
 
 	return { lines, errors, warnings }
 }
+
 
 
 async function buildDefaultConfig(projectRoot: string): Promise<ViolationsConfig> {
@@ -176,7 +203,10 @@ async function cmdCheck(args: string[]): Promise<void> {
 	let overrideConfig: ViolationsConfig | undefined
 	if (!existsSync(configTs) && !existsSync(configJs)) {
 		overrideConfig = await buildDefaultConfig(projectRoot)
-		process.stderr.write('[auto] No .violations/config.ts found - running with auto-detected defaults.\n')
+		process.stderr.write(
+			'[warn] No .violations/config.ts found — running with auto-detected defaults.\n' +
+			'       Create .violations/config.ts to configure rules explicitly.\n'
+		)
 	}
 
 	const results = await run({ projectRoot, staged, files, overrideConfig })
