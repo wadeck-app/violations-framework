@@ -56,12 +56,12 @@ Usage:
 // ---------------------------------------------------------------------------
 
 function printUsage(): void {
-	console.log(`violations v${VERSION} — code quality rule runner
+	console.log(`violations v${VERSION} - code quality rule runner
 
 Concepts:
   rule      A named check (TypeScript or JS) that scans source files for issues
             Rules come from @wadeck-app/violations-rules or local .violations/rules/
-  config    .violations/config.ts in cwd — defines which rules are enabled and their options
+  config    .violations/config.ts in cwd - defines which rules are enabled and their options
             If absent, check runs with auto-detected defaults (warns on stderr)
   check     Runs enabled rules; exit code equals the number of violations found
 
@@ -204,7 +204,7 @@ async function cmdCheck(args: string[]): Promise<void> {
 	if (!existsSync(configTs) && !existsSync(configJs)) {
 		overrideConfig = await buildDefaultConfig(projectRoot)
 		process.stderr.write(
-			'[warn] No .violations/config.ts found — running with auto-detected defaults.\n' +
+			'[warn] No .violations/config.ts found - running with auto-detected defaults.\n' +
 			'       Create .violations/config.ts to configure rules explicitly.\n'
 		)
 	}
