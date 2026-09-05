@@ -33,7 +33,7 @@ export const rule: Rule<Config> = {
               violations.push({
                 file,
                 line: li + 1,
-                message: `Emoji/symbol '${ch}' (U+${cp.toString(16).toUpperCase().padStart(4, '0')}) not allowed — use a text alternative or a Lucide icon component`,
+                message: `Emoji/symbol '${ch}' (U+${cp.toString(16).toUpperCase().padStart(4, '0')}) not allowed - use a text alternative or a Lucide icon component`,
               })
             }
           }

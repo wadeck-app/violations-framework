@@ -68,6 +68,20 @@ export default {
 
     // violations-meta rules: auto-active via 'violations-meta' projectTag
 
+    // no-inline-suppress: exclude files where 'violations-suppress:' appears in string/regex
+    // literals as part of rule implementations or test fixtures (false positives).
+    'violations-meta/no-inline-suppress': {
+      $exclude: [
+        'packages/violations-cli/src/runner.test.ts',
+        'packages/violations-cli/src/suppress.ts',
+        'packages/violations-rules/src/rules/cs/no-redundant-fqn.ts',
+        'packages/violations-rules/src/rules/shared/no-dead-suppress.ts',
+        'packages/violations-rules/src/rules/shared/no-dead-suppress.test.ts',
+        'packages/violations-rules/src/rules/violations-meta/no-inline-suppress.ts',
+        'packages/violations-rules/src/rules/violations-meta/no-inline-suppress.test.ts',
+      ],
+    },
+
     // no-legacy-violations-folder: suppress in this repo (we host migration tooling)
     'violations-meta/no-legacy-violations-folder': { $severity: false },
 

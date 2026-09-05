@@ -108,6 +108,13 @@ export async function run(options: RunOptions): Promise<RuleResult[]> {
 	// Explicit config.rules entries take priority (override or disable with $severity: false).
 	const { allRules } = await import('@wadeck-app/violations-rules')
 	const projectTags = new Set(config.projectTags ?? [])
+	if (projectTags.size === 0) {
+		process.stderr.write(
+			'[warn] projectTags is empty - no tag-based library rules will activate.\n' +
+			'       Add tags to your .violations/config.ts (e.g. projectTags: [\'ts\', \'shared\']).\n' +
+			'       Run: violations rules list  to see available tags.\n'
+		)
+	}
 	const mergedRules: Record<string, RuleOverride | true> = {}
 	for (const libRule of allRules) {
 		const ruleTags = Array.isArray(libRule.tags) ? libRule.tags : [libRule.tags]
