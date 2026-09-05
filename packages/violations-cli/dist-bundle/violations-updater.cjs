@@ -236,7 +236,19 @@ async function runWithoutDaemon(cfg) {
       return;
     const cache = readCache(cacheFilePath(configDir2));
     const now = Date.now();
-    if (!force && cache && now - cache.lastCheckedAt < updateCfg.checkIntervalMs)
+    const stateFile = stateFilePath(configDir2);
+    let deferredRetryDue = false;
+    if ((0, import_node_fs6.existsSync)(stateFile)) {
+      try {
+        const state = JSON.parse((0, import_node_fs6.readFileSync)(stateFile, "utf8"));
+        if (state.status === "deferred" && typeof state.retryAt === "number" && state.retryAt <= now) {
+          deferredRetryDue = true;
+          appendLog(configDir2, "info", `${pkgName} deferred update retry due`);
+        }
+      } catch {
+      }
+    }
+    if (!force && !deferredRetryDue && cache && now - cache.lastCheckedAt < updateCfg.checkIntervalMs)
       return;
     appendLog(configDir2, "info", `${pkgName} checking for updates (current: ${currentVersion2})`);
     let latestVersion;
@@ -252,6 +264,21 @@ async function runWithoutDaemon(cfg) {
       return;
     }
     appendLog(configDir2, "info", `${pkgName} update available: ${currentVersion2} \u2192 ${latestVersion}`);
+    if (cfg.onUpdateAvailable) {
+      const decision = await cfg.onUpdateAvailable(latestVersion);
+      if (typeof decision === "object" && decision.defer) {
+        const retryIn = decision.retryIn ?? updateCfg.checkIntervalMs;
+        writeState(stateFilePath(configDir2), {
+          status: "deferred",
+          currentVersion: currentVersion2,
+          targetVersion: latestVersion,
+          retryAt: Date.now() + retryIn,
+          timestamp: Date.now()
+        });
+        appendLog(configDir2, "info", `${pkgName} update deferred to ${latestVersion} (retry in ${retryIn}ms)`);
+        return;
+      }
+    }
     try {
       execNpm(["install", "-g", `${pkgName}@${latestVersion}`], { timeout: 5 * 6e4 });
     } catch (err) {
@@ -290,8 +317,47 @@ async function runWithoutDaemon(cfg) {
       timestamp: Date.now()
     });
     appendLog(configDir2, "info", `${pkgName} updated to ${latestVersion}`);
+    if (cfg.restartDaemon) {
+      await restartDaemon(cfg, latestVersion);
+    }
   } finally {
     releaseLock(lockFile);
+  }
+}
+async function restartDaemon(cfg, latestVersion) {
+  const { configDir: configDir2, pkgName, restartDaemon: rd } = cfg;
+  if (!rd)
+    return;
+  try {
+    (0, import_node_fs6.writeFileSync)((0, import_node_path6.join)(configDir2, "config.restart"), "1", "utf-8");
+    appendLog(configDir2, "info", `${pkgName} restart sentinel written`);
+  } catch (err) {
+    appendLog(configDir2, "warn", `${pkgName} failed to write restart sentinel: ${err}`);
+    return;
+  }
+  if (!(0, import_node_fs6.existsSync)(rd.portFile)) {
+    appendLog(configDir2, "info", `${pkgName} daemon not running (no port file), restart will happen on next start`);
+    return;
+  }
+  let port;
+  let token;
+  try {
+    const data = JSON.parse((0, import_node_fs6.readFileSync)(rd.portFile, "utf8"));
+    port = data.port;
+    token = (0, import_node_fs6.readFileSync)(rd.healthTokenFile, "utf8").trim();
+  } catch (err) {
+    appendLog(configDir2, "warn", `${pkgName} cannot read port/token for restart: ${err}`);
+    return;
+  }
+  try {
+    await fetch(`http://127.0.0.1:${port}/quit`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+      signal: AbortSignal.timeout(5e3)
+    });
+    appendLog(configDir2, "info", `${pkgName} POST /quit sent on port ${port} \u2014 daemon will restart with ${latestVersion}`);
+  } catch (err) {
+    appendLog(configDir2, "warn", `${pkgName} POST /quit failed: ${err}`);
   }
 }
 async function selfCheck() {
@@ -306,8 +372,11 @@ async function selfCheck() {
     return false;
   }
 }
+var import_node_fs6, import_node_path6;
 var init_without_daemon = __esm({
   "../../node_modules/@wadeck-app/shared-updater/dist/strategies/without-daemon.js"() {
+    import_node_fs6 = require("node:fs");
+    import_node_path6 = require("node:path");
     init_lock();
     init_state();
     init_config();
@@ -370,16 +439,16 @@ async function triggerImmediateRestart(cfg, targetVersion) {
   const { configDir: configDir2, pkgName } = cfg;
   const portFilePath = `${configDir2}/config.port`;
   const tokenFilePath = `${configDir2}/health_token`;
-  if (!(0, import_node_fs6.existsSync)(portFilePath)) {
+  if (!(0, import_node_fs7.existsSync)(portFilePath)) {
     appendLog(configDir2, "warn", `${pkgName} --force: daemon not running (no config.port), skipping POST /quit`);
     return;
   }
   let port;
   let token;
   try {
-    const data = JSON.parse((0, import_node_fs6.readFileSync)(portFilePath, "utf8"));
+    const data = JSON.parse((0, import_node_fs7.readFileSync)(portFilePath, "utf8"));
     port = data.port;
-    token = (0, import_node_fs6.readFileSync)(tokenFilePath, "utf8").trim();
+    token = (0, import_node_fs7.readFileSync)(tokenFilePath, "utf8").trim();
   } catch (err) {
     appendLog(configDir2, "warn", `${pkgName} --force: cannot read port/token: ${err}`);
     return;
@@ -395,10 +464,10 @@ async function triggerImmediateRestart(cfg, targetVersion) {
     appendLog(configDir2, "warn", `${pkgName} --force: POST /quit failed: ${err}`);
   }
 }
-var import_node_fs6;
+var import_node_fs7;
 var init_with_daemon = __esm({
   "../../node_modules/@wadeck-app/shared-updater/dist/strategies/with-daemon.js"() {
-    import_node_fs6 = require("node:fs");
+    import_node_fs7 = require("node:fs");
     init_lock();
     init_state();
     init_config();
@@ -469,21 +538,25 @@ var ConfigDir = class _ConfigDir {
 };
 
 // dist/updater/entry.js
-var import_node_path6 = require("node:path");
+var import_node_path7 = require("node:path");
 var PKG_NAME = "@wadeck-app/violations-cli";
 var configDir = process.env["VIOLATIONS_CONFIG_DIR"] ?? ConfigDir.get("violations");
-var currentVersion = true ? "2026.08.30-164254-73-e56d2586" : "0.0.0-dev";
+var rawVersion = true ? "0.1.0" : "0.0.0-dev";
+var currentVersion = /^\d{4}\.\d{2}\.\d{2}-\d{6}/.test(rawVersion) ? "0.0.0" : rawVersion;
 try {
   const npmRoot = execNpm(["root", "-g"], { timeout: 1e4 }).trim();
-  const selfCheckCmd = `${process.execPath} ${(0, import_node_path6.join)(npmRoot, PKG_NAME, "violations.cjs")} cli self-check`;
-  process.env["UPDATER_SELF_CHECK_CMD"] = selfCheckCmd;
+  const selfCheckCmd = `${process.execPath} ${(0, import_node_path7.join)(npmRoot, PKG_NAME, "dist-bundle", "violations.cjs")} cli self-check`;
+  if (!process.env["UPDATER_SELF_CHECK_CMD"]) {
+    process.env["UPDATER_SELF_CHECK_CMD"] = selfCheckCmd;
+  }
 } catch {
 }
 runUpdater({
   pkgName: PKG_NAME,
   configDir,
   currentVersion,
-  strategy: "without-daemon"
+  strategy: "without-daemon",
+  onUpdateAvailable: async (_newVersion) => "apply-now"
 }).catch((err) => {
   process.stderr.write(`[violations-updater] fatal: ${err}
 `);

@@ -3071,6 +3071,25 @@ var ConfigDir = class _ConfigDir {
   }
 };
 
+// ../../node_modules/@wadeck-app/shared-cli/dist/SelfCheck.js
+async function runSelfCheck(checks, opts = {}) {
+  const quiet = opts.quiet ?? process.env["CLI_SELF_CHECK_QUIET"] === "1";
+  let allOk = true;
+  for (const check of checks) {
+    const result = await check();
+    if (!result.ok)
+      allOk = false;
+    if (!quiet || !result.ok) {
+      const prefix = result.ok ? "[ok] " : "[fail]";
+      const detail = !result.ok && result.detail ? ` \u2014 ${result.detail}` : "";
+      process.stderr.write(`${prefix} ${result.name}${detail}
+`);
+    }
+  }
+  if (!allOk)
+    process.exit(1);
+}
+
 // ../../node_modules/@wadeck-app/shared-cli/dist/HookDispatcher.js
 var import_node_child_process = require("node:child_process");
 var import_node_util = require("node:util");
@@ -3285,7 +3304,7 @@ function loadUserConfig(configDir) {
 }
 
 // dist/version.js
-var VERSION = "2026.08.30-164254-73-e56d2586" ? "2026.08.30-164254-73-e56d2586" : readBaseVersion();
+var VERSION = "0.1.0" ? "0.1.0" : readBaseVersion();
 
 // dist/runner.js
 var import_promises3 = require("node:fs/promises");
@@ -3745,51 +3764,37 @@ async function writeReports(dotViolationsDir, results) {
 var import_node_fs9 = require("node:fs");
 var import_node_module = require("node:module");
 var _require = (0, import_node_module.createRequire)(__importMetaUrl);
-function checkBundleVersion() {
-  try {
-    const v = "2026.08.30-164254-73-e56d2586";
-    if (!v) {
-      return { name: "bundle-version", ok: false, reason: "version string is empty" };
-    }
-    return { name: "bundle-version", ok: true };
-  } catch {
-    return { name: "bundle-version", ok: false, reason: "not bundled (dev build)" };
-  }
-}
-function checkConfigDirWritable() {
-  try {
-    const dir = process.env["VIOLATIONS_CONFIG_DIR"] ?? ConfigDir.get("violations");
-    (0, import_node_fs9.mkdirSync)(dir, { recursive: true });
-    (0, import_node_fs9.accessSync)(dir, import_node_fs9.constants.W_OK);
-    return { name: "config-dir-writable", ok: true };
-  } catch (err) {
-    return { name: "config-dir-writable", ok: false, reason: String(err) };
-  }
-}
-function checkTypeScriptApi() {
-  try {
-    _require.resolve("typescript");
-    return { name: "typescript-api", ok: true };
-  } catch (err) {
-    return { name: "typescript-api", ok: false, reason: String(err) };
-  }
-}
-function runSelfChecks() {
-  return [checkBundleVersion(), checkConfigDirWritable(), checkTypeScriptApi()];
-}
-function printSelfChecks(results) {
-  const quiet = process.env["CLI_SELF_CHECK_QUIET"] === "1";
-  for (const r of results) {
-    if (r.ok) {
-      if (!quiet) {
-        process.stderr.write(`[ok] ${r.name}
-`);
+async function selfCheck() {
+  await runSelfCheck([
+    async () => {
+      try {
+        const v = "0.1.0";
+        if (!v)
+          return { name: "bundle-version", ok: false, detail: "version string is empty" };
+        return { name: "bundle-version", ok: true };
+      } catch {
+        return { name: "bundle-version", ok: false, detail: "not bundled (dev build)" };
       }
-    } else {
-      process.stderr.write(`[fail] ${r.name}: ${r.reason ?? "unknown"}
-`);
+    },
+    async () => {
+      try {
+        const dir = process.env["VIOLATIONS_CONFIG_DIR"] ?? ConfigDir.get("violations");
+        (0, import_node_fs9.mkdirSync)(dir, { recursive: true });
+        (0, import_node_fs9.accessSync)(dir, import_node_fs9.constants.W_OK);
+        return { name: "config-dir-writable", ok: true };
+      } catch (err) {
+        return { name: "config-dir-writable", ok: false, detail: String(err) };
+      }
+    },
+    async () => {
+      try {
+        _require.resolve("typescript");
+        return { name: "typescript-api", ok: true };
+      } catch (err) {
+        return { name: "typescript-api", ok: false, detail: String(err) };
+      }
     }
-  }
+  ]);
 }
 
 // dist/cli.js
@@ -4308,11 +4313,8 @@ async function cmdCacheClear() {
   }
   process.stdout.write("[ok] cache cleared.\n");
 }
-function cmdCliSelfCheck() {
-  const results = runSelfChecks();
-  printSelfChecks(results);
-  const allPassed = results.every((r) => r.ok);
-  process.exit(allPassed ? 0 : 1);
+async function cmdCliSelfCheck() {
+  await selfCheck();
 }
 async function main() {
   ConfigDir.migrateIfNeeded("violations");
@@ -4411,7 +4413,7 @@ Run: violations cache --help
         await cliVersionCommand("@wadeck-app/violations-cli", VERSION, channel);
       } else if (sub === "self-check") {
         warnUnknownArgs(rest.slice(1), [], "violations cli self-check");
-        cmdCliSelfCheck();
+        await cmdCliSelfCheck();
       } else if (sub === "update") {
         const updaterPath = (0, import_node_path9.join)((0, import_node_path9.dirname)(bundlePath), "violations-updater.cjs");
         if (!(0, import_node_fs10.existsSync)(updaterPath)) {

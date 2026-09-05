@@ -18,13 +18,15 @@
     "build": "tsc",
     "test": "node --test dist/**/*.test.js"
   },
-  "files": ["dist/"],
+  "files": [
+    "dist/"
+  ],
   "publishConfig": {
     "@wadeck-app:registry": "https://npm.pkg.github.com/",
     "access": "public"
   },
   "devDependencies": {
-    "typescript": "^5.5.0",
-    "@types/node": "^22.0.0"
+    "@types/node": "^22.0.0",
+    "typescript": "^5.5.0"
   }
 }

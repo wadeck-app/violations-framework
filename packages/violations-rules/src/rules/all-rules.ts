@@ -8,6 +8,7 @@ export { rule as noEmoji } from './shared/no-emoji.js'
 export { rule as noDeadRuleScope } from './violations-meta/no-dead-rule-scope.js'
 export { rule as noRuleWithoutTest } from './violations-meta/no-rule-without-test.js'
 export { rule as noLegacyViolationsFolder } from './violations-meta/no-legacy-violations-folder.js'
+export { rule as noInlineSuppress } from './violations-meta/no-inline-suppress.js'
 export { rule as noExportStar } from './ts/no-export-star.js'
 export { rule as noErrMessageDirect } from './ts/no-err-message-direct.js'
 export { rule as noUnionWithString } from './ts/no-union-with-string.js'
@@ -54,6 +55,7 @@ export { rule as unityNoInstantiateWorldRotation } from './unity/no-instantiate-
 export { rule as unityNoRawGuiLayoutInTypedEditor } from './unity/no-raw-gui-layout-in-typed-editor.js'
 export { rule as cliDaemonSpawnNoWindowsHide } from './cli/daemon-spawn-no-windows-hide.js'
 export { rule as cliPublishconfigMissingAccessPublic } from './cli/publishconfig-missing-access-public.js'
+export { rule as cliNoSpawnWithoutWindowsHide } from './cli/no-spawn-without-windows-hide.js'
 
 export type { Config as NoEmDashConfig } from './shared/no-em-dash.js'
 export type { Config as NoFrenchConfig } from './shared/no-french.js'
@@ -65,6 +67,7 @@ export type { Config as NoEmojiConfig } from './shared/no-emoji.js'
 export type { Config as NoDeadRuleScopeConfig } from './violations-meta/no-dead-rule-scope.js'
 export type { Config as NoRuleWithoutTestConfig } from './violations-meta/no-rule-without-test.js'
 export type { Config as NoLegacyViolationsFolderConfig } from './violations-meta/no-legacy-violations-folder.js'
+export type { Config as NoInlineSuppressConfig } from './violations-meta/no-inline-suppress.js'
 export type { Config as NoExportStarConfig } from './ts/no-export-star.js'
 export type { Config as NoErrMessageDirectConfig } from './ts/no-err-message-direct.js'
 export type { Config as NoUnionWithStringConfig } from './ts/no-union-with-string.js'
@@ -111,6 +114,7 @@ export type { Config as UnityNoInstantiateWorldRotationConfig } from './unity/no
 export type { Config as UnityNoRawGuiLayoutInTypedEditorConfig } from './unity/no-raw-gui-layout-in-typed-editor.js'
 export type { Config as CliDaemonSpawnNoWindowsHideConfig } from './cli/daemon-spawn-no-windows-hide.js'
 export type { Config as CliPublishconfigMissingAccessPublicConfig } from './cli/publishconfig-missing-access-public.js'
+export type { Config as CliNoSpawnWithoutWindowsHideConfig } from './cli/no-spawn-without-windows-hide.js'
 
 import { rule as noEmDash } from './shared/no-em-dash.js'
 import { rule as noFrench } from './shared/no-french.js'
@@ -122,6 +126,7 @@ import { rule as noEmoji } from './shared/no-emoji.js'
 import { rule as noDeadRuleScope } from './violations-meta/no-dead-rule-scope.js'
 import { rule as noRuleWithoutTest } from './violations-meta/no-rule-without-test.js'
 import { rule as noLegacyViolationsFolder } from './violations-meta/no-legacy-violations-folder.js'
+import { rule as noInlineSuppress } from './violations-meta/no-inline-suppress.js'
 import { rule as noExportStar } from './ts/no-export-star.js'
 import { rule as noErrMessageDirect } from './ts/no-err-message-direct.js'
 import { rule as noUnionWithString } from './ts/no-union-with-string.js'
@@ -168,6 +173,7 @@ import { rule as unityNoInstantiateWorldRotation } from './unity/no-instantiate-
 import { rule as unityNoRawGuiLayoutInTypedEditor } from './unity/no-raw-gui-layout-in-typed-editor.js'
 import { rule as cliDaemonSpawnNoWindowsHide } from './cli/daemon-spawn-no-windows-hide.js'
 import { rule as cliPublishconfigMissingAccessPublic } from './cli/publishconfig-missing-access-public.js'
+import { rule as cliNoSpawnWithoutWindowsHide } from './cli/no-spawn-without-windows-hide.js'
 import type { Rule } from '../types.js'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -182,6 +188,7 @@ export const allRules: Rule<any>[] = [
   noDeadRuleScope,
   noRuleWithoutTest,
   noLegacyViolationsFolder,
+  noInlineSuppress,
   noExportStar,
   noErrMessageDirect,
   noUnionWithString,
@@ -228,4 +235,5 @@ export const allRules: Rule<any>[] = [
   unityNoRawGuiLayoutInTypedEditor,
   cliDaemonSpawnNoWindowsHide,
   cliPublishconfigMissingAccessPublic,
+  cliNoSpawnWithoutWindowsHide,
 ]
