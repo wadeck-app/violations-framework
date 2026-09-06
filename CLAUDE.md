@@ -15,7 +15,7 @@ Add to `~/.npmrc` to consume `@wadeck-app` packages from GitHub Packages:
 @wadeck-app/violations-cli     <- `violations` binary + runner + compiler
 ```
 
-Published to GitHub Packages (`https://npm.pkg.github.com/`) on every push to `main`. Version format: `1.0.YYYYMMDD-HHMMSS-BUILD-SHA` (see `ci/scripts/compute-version.sh`).
+Published to GitHub Packages (`https://npm.pkg.github.com/`) on every push to `main`. For version format see `ci/scripts/compute-version.sh`.
 
 ---
 
@@ -126,3 +126,12 @@ Rules receive pre-filtered `files[]` - never call `walk()` inside a rule.
 ## Knowledge base
 
 - Project lessons: `.claude/kb/lessons-learned.md` - add entries with the `kb` skill or by editing directly.
+
+## Agent reference docs
+
+| Doc | Description |
+|---|---|
+| `.claude/guiding-principles.md` | Rule authoring, tag/scope contracts, compiler constraints + session lessons |
+| `.claude/out-of-scope.md` | What this project explicitly does not cover |
+| `.claude/product-vision.md` | Phase 4 sub-path imports, injectable CLI export |
+| `.claude/threat-model.md` | NTFS concurrency, cache integrity, rollback risks |
