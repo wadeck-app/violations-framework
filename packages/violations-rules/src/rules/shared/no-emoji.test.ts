@@ -146,7 +146,7 @@ describe('shared/no-emoji', () => {
     })
   })
 
-  it('does not flag em-dash — (Pd, not Symbol — handled by shared/no-em-dash)', async () => {
+  it('does not flag em-dash (Pd, not Symbol - handled by shared/no-em-dash)', async () => {
     await withTmp('em-dash', async (dir) => {
       const file = join(dir, 'test.ts')
       await writeFile(file, 'const x = "foo \u{2014} bar"\n')
