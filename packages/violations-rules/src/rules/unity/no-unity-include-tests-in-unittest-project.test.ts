@@ -1,0 +1,4 @@
+import { rule } from './no-unity-include-tests-in-unittest-project.js'
+import { runFixtureSuite } from '../test-utils/fixture-runner.js'
+
+runFixtureSuite(rule, import.meta.url, 'no-unity-include-tests-in-unittest-project')

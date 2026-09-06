@@ -38,6 +38,10 @@ export { rule as csNoTaskWait } from './cs/no-task-wait.js'
 export { rule as csNoArrowBody } from './cs/no-arrow-body.js'
 export { rule as csNoMultilineCommentBeforeClass } from './cs/no-multiline-comment-before-class.js'
 export { rule as csTestFileLocation } from './cs/test-file-location.js'
+export { rule as csNoInlineIfBody } from './cs/no-inline-if-body.js'
+export { rule as csNoInlineIfBodyNoBraces } from './cs/no-inline-if-body-no-braces.js'
+export { rule as csNoAllmanIfBrace } from './cs/no-allman-if-brace.js'
+export { rule as csNoInlineTryBody } from './cs/no-inline-try-body.js'
 export { rule as unityLogicNoUnityUsing } from './unity/logic-no-unity-using.js'
 export { rule as unityNoMissingUnityApi } from './unity/no-missing-unity-api.js'
 export { rule as unityNoDebugLog } from './unity/no-debug-log.js'
@@ -53,9 +57,13 @@ export { rule as unityEditorPrefixGuard } from './unity/editor-prefix-guard.js'
 export { rule as unityUnitTestPrefixGuard } from './unity/unit-test-prefix-guard.js'
 export { rule as unityNoInstantiateWorldRotation } from './unity/no-instantiate-world-rotation.js'
 export { rule as unityNoRawGuiLayoutInTypedEditor } from './unity/no-raw-gui-layout-in-typed-editor.js'
+export { rule as unityNoTestClassOutsideTestsFolder } from './unity/no-test-class-outside-tests-folder.js'
+export { rule as unityNoUnityIncludeTestsInUnittestProject } from './unity/no-unity-include-tests-in-unittest-project.js'
 export { rule as cliDaemonSpawnNoWindowsHide } from './cli/daemon-spawn-no-windows-hide.js'
 export { rule as cliPublishconfigMissingAccessPublic } from './cli/publishconfig-missing-access-public.js'
 export { rule as cliNoSpawnWithoutWindowsHide } from './cli/no-spawn-without-windows-hide.js'
+export { rule as dslNoAppHook } from './dsl/no-app-hook.js'
+export { rule as dslNoAppComponents } from './dsl/no-app-components.js'
 
 export type { Config as NoEmDashConfig } from './shared/no-em-dash.js'
 export type { Config as NoFrenchConfig } from './shared/no-french.js'
@@ -97,6 +105,10 @@ export type { Config as CsNoTaskWaitConfig } from './cs/no-task-wait.js'
 export type { Config as CsNoArrowBodyConfig } from './cs/no-arrow-body.js'
 export type { Config as CsNoMultilineCommentBeforeClassConfig } from './cs/no-multiline-comment-before-class.js'
 export type { Config as CsTestFileLocationConfig } from './cs/test-file-location.js'
+export type { Config as CsNoInlineIfBodyConfig } from './cs/no-inline-if-body.js'
+export type { Config as CsNoInlineIfBodyNoBracesConfig } from './cs/no-inline-if-body-no-braces.js'
+export type { Config as CsNoAllmanIfBraceConfig } from './cs/no-allman-if-brace.js'
+export type { Config as CsNoInlineTryBodyConfig } from './cs/no-inline-try-body.js'
 export type { Config as UnityLogicNoUnityUsingConfig } from './unity/logic-no-unity-using.js'
 export type { Config as UnityNoMissingUnityApiConfig } from './unity/no-missing-unity-api.js'
 export type { Config as UnityNoDebugLogConfig } from './unity/no-debug-log.js'
@@ -112,9 +124,13 @@ export type { Config as UnityEditorPrefixGuardConfig } from './unity/editor-pref
 export type { Config as UnityUnitTestPrefixGuardConfig } from './unity/unit-test-prefix-guard.js'
 export type { Config as UnityNoInstantiateWorldRotationConfig } from './unity/no-instantiate-world-rotation.js'
 export type { Config as UnityNoRawGuiLayoutInTypedEditorConfig } from './unity/no-raw-gui-layout-in-typed-editor.js'
+export type { Config as UnityNoTestClassOutsideTestsFolderConfig } from './unity/no-test-class-outside-tests-folder.js'
+export type { Config as UnityNoUnityIncludeTestsInUnittestProjectConfig } from './unity/no-unity-include-tests-in-unittest-project.js'
 export type { Config as CliDaemonSpawnNoWindowsHideConfig } from './cli/daemon-spawn-no-windows-hide.js'
 export type { Config as CliPublishconfigMissingAccessPublicConfig } from './cli/publishconfig-missing-access-public.js'
 export type { Config as CliNoSpawnWithoutWindowsHideConfig } from './cli/no-spawn-without-windows-hide.js'
+export type { Config as DslNoAppHookConfig } from './dsl/no-app-hook.js'
+export type { Config as DslNoAppComponentsConfig } from './dsl/no-app-components.js'
 
 import { rule as noEmDash } from './shared/no-em-dash.js'
 import { rule as noFrench } from './shared/no-french.js'
@@ -156,6 +172,10 @@ import { rule as csNoTaskWait } from './cs/no-task-wait.js'
 import { rule as csNoArrowBody } from './cs/no-arrow-body.js'
 import { rule as csNoMultilineCommentBeforeClass } from './cs/no-multiline-comment-before-class.js'
 import { rule as csTestFileLocation } from './cs/test-file-location.js'
+import { rule as csNoInlineIfBody } from './cs/no-inline-if-body.js'
+import { rule as csNoInlineIfBodyNoBraces } from './cs/no-inline-if-body-no-braces.js'
+import { rule as csNoAllmanIfBrace } from './cs/no-allman-if-brace.js'
+import { rule as csNoInlineTryBody } from './cs/no-inline-try-body.js'
 import { rule as unityLogicNoUnityUsing } from './unity/logic-no-unity-using.js'
 import { rule as unityNoMissingUnityApi } from './unity/no-missing-unity-api.js'
 import { rule as unityNoDebugLog } from './unity/no-debug-log.js'
@@ -171,9 +191,13 @@ import { rule as unityEditorPrefixGuard } from './unity/editor-prefix-guard.js'
 import { rule as unityUnitTestPrefixGuard } from './unity/unit-test-prefix-guard.js'
 import { rule as unityNoInstantiateWorldRotation } from './unity/no-instantiate-world-rotation.js'
 import { rule as unityNoRawGuiLayoutInTypedEditor } from './unity/no-raw-gui-layout-in-typed-editor.js'
+import { rule as unityNoTestClassOutsideTestsFolder } from './unity/no-test-class-outside-tests-folder.js'
+import { rule as unityNoUnityIncludeTestsInUnittestProject } from './unity/no-unity-include-tests-in-unittest-project.js'
 import { rule as cliDaemonSpawnNoWindowsHide } from './cli/daemon-spawn-no-windows-hide.js'
 import { rule as cliPublishconfigMissingAccessPublic } from './cli/publishconfig-missing-access-public.js'
 import { rule as cliNoSpawnWithoutWindowsHide } from './cli/no-spawn-without-windows-hide.js'
+import { rule as dslNoAppHook } from './dsl/no-app-hook.js'
+import { rule as dslNoAppComponents } from './dsl/no-app-components.js'
 import type { Rule } from '../types.js'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -218,6 +242,10 @@ export const allRules: Rule<any>[] = [
   csNoArrowBody,
   csNoMultilineCommentBeforeClass,
   csTestFileLocation,
+  csNoInlineIfBody,
+  csNoInlineIfBodyNoBraces,
+  csNoAllmanIfBrace,
+  csNoInlineTryBody,
   unityLogicNoUnityUsing,
   unityNoMissingUnityApi,
   unityNoDebugLog,
@@ -233,7 +261,11 @@ export const allRules: Rule<any>[] = [
   unityUnitTestPrefixGuard,
   unityNoInstantiateWorldRotation,
   unityNoRawGuiLayoutInTypedEditor,
+  unityNoTestClassOutsideTestsFolder,
+  unityNoUnityIncludeTestsInUnittestProject,
   cliDaemonSpawnNoWindowsHide,
   cliPublishconfigMissingAccessPublic,
   cliNoSpawnWithoutWindowsHide,
+  dslNoAppHook,
+  dslNoAppComponents,
 ]
