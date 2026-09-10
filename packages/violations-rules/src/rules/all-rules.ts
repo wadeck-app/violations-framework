@@ -4,6 +4,7 @@ export { rule as partialImplFlag } from './shared/partial-impl-flag.js'
 export { rule as readmeSystemLength } from './shared/readme-system-length.js'
 export { rule as noDeadSuppress } from './shared/no-dead-suppress.js'
 export { rule as noWorkspaceShadow } from './shared/no-workspace-shadow.js'
+export { rule as noOutOfRepoPath } from './shared/no-out-of-repo-path.js'
 export { rule as noEmoji } from './shared/no-emoji.js'
 export { rule as noDeadRuleScope } from './violations-meta/no-dead-rule-scope.js'
 export { rule as noRuleWithoutTest } from './violations-meta/no-rule-without-test.js'
@@ -71,6 +72,7 @@ export type { Config as PartialImplFlagConfig } from './shared/partial-impl-flag
 export type { Config as ReadmeSystemLengthConfig } from './shared/readme-system-length.js'
 export type { Config as NoDeadSuppressConfig } from './shared/no-dead-suppress.js'
 export type { Config as NoWorkspaceShadowConfig } from './shared/no-workspace-shadow.js'
+export type { Config as NoOutOfRepoPathConfig } from './shared/no-out-of-repo-path.js'
 export type { Config as NoEmojiConfig } from './shared/no-emoji.js'
 export type { Config as NoDeadRuleScopeConfig } from './violations-meta/no-dead-rule-scope.js'
 export type { Config as NoRuleWithoutTestConfig } from './violations-meta/no-rule-without-test.js'
@@ -138,6 +140,7 @@ import { rule as partialImplFlag } from './shared/partial-impl-flag.js'
 import { rule as readmeSystemLength } from './shared/readme-system-length.js'
 import { rule as noDeadSuppress } from './shared/no-dead-suppress.js'
 import { rule as noWorkspaceShadow } from './shared/no-workspace-shadow.js'
+import { rule as noOutOfRepoPath } from './shared/no-out-of-repo-path.js'
 import { rule as noEmoji } from './shared/no-emoji.js'
 import { rule as noDeadRuleScope } from './violations-meta/no-dead-rule-scope.js'
 import { rule as noRuleWithoutTest } from './violations-meta/no-rule-without-test.js'
@@ -208,6 +211,7 @@ export const allRules: Rule<any>[] = [
   readmeSystemLength,
   noDeadSuppress,
   noWorkspaceShadow,
+  noOutOfRepoPath,
   noEmoji,
   noDeadRuleScope,
   noRuleWithoutTest,
