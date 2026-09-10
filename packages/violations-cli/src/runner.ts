@@ -110,15 +110,16 @@ export async function run(options: RunOptions): Promise<RuleResult[]> {
 	const projectTags = new Set(config.projectTags ?? [])
 	if (projectTags.size === 0) {
 		process.stderr.write(
-			'[warn] projectTags is empty - no tag-based library rules will activate.\n' +
-			'       Add tags to your .violations/config.ts (e.g. projectTags: [\'ts\', \'shared\']).\n' +
+			'[warn] projectTags is empty - only shared rules will activate automatically.\n' +
+			'       Add tags to your .violations/config.ts (e.g. projectTags: [\'ts\', \'react\']).\n' +
 			'       Run: violations rules list  to see available tags.\n'
 		)
 	}
 	const mergedRules: Record<string, RuleOverride | true> = {}
 	for (const libRule of allRules) {
 		const ruleTags = Array.isArray(libRule.tags) ? libRule.tags : [libRule.tags]
-		if (libRule.alwaysActive || ruleTags.some(t => projectTags.has(t))) {
+		// shared rules are always active regardless of projectTags
+		if (libRule.alwaysActive || libRule.tags === 'shared' || ruleTags.some(t => projectTags.has(t))) {
 			mergedRules[libRule.id] = true
 		}
 	}

@@ -3602,12 +3602,12 @@ async function run(options) {
   const { allRules } = await import("@wadeck-app/violations-rules");
   const projectTags = new Set(config.projectTags ?? []);
   if (projectTags.size === 0) {
-    process.stderr.write("[warn] projectTags is empty - no tag-based library rules will activate.\n       Add tags to your .violations/config.ts (e.g. projectTags: ['ts', 'shared']).\n       Run: violations rules list  to see available tags.\n");
+    process.stderr.write("[warn] projectTags is empty - only shared rules will activate automatically.\n       Add tags to your .violations/config.ts (e.g. projectTags: ['ts', 'react']).\n       Run: violations rules list  to see available tags.\n");
   }
   const mergedRules = {};
   for (const libRule of allRules) {
     const ruleTags = Array.isArray(libRule.tags) ? libRule.tags : [libRule.tags];
-    if (libRule.alwaysActive || ruleTags.some((t) => projectTags.has(t))) {
+    if (libRule.alwaysActive || libRule.tags === "shared" || ruleTags.some((t) => projectTags.has(t))) {
       mergedRules[libRule.id] = true;
     }
   }

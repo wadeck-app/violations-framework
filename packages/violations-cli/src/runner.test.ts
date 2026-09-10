@@ -41,23 +41,45 @@ export default {
 `
 
 describe('auto-activation via projectTags', () => {
-	it('auto-activates shared/no-em-dash when projectTags includes shared, without explicit config.rules entry', async () => {
+	it('auto-activates shared/no-em-dash even without shared in projectTags', async () => {
 		const dir = await mkdtemp(join(tmpdir(), 'violations-auto-test-'))
 		try {
 			await mkdir(join(dir, '.violations'), { recursive: true })
 			await mkdir(join(dir, 'src'), { recursive: true })
-			// File containing an em dash - should be caught by auto-activated shared/no-em-dash
+			// violations-suppress: shared/no-em-dash intentional test fixture
 			await writeFile(join(dir, 'src', 'bad.ts'), 'const msg = "Save this token — it will not be shown again."\n')
-			// Config declares projectTags but NO explicit config.rules entry for no-em-dash
+			// Config has NO 'shared' tag and NO explicit config.rules entry for no-em-dash
 			await writeFile(join(dir, '.violations', 'config.ts'), `
 export default {
-  projectTags: ['shared'],
+  projectTags: ['ts'],
   rules: {}
 }
 `)
 			const results = await run({ projectRoot: dir })
 			const emDashResult = results.find(r => r.ruleId === 'shared/no-em-dash')
-			assert.ok(emDashResult, 'shared/no-em-dash should be auto-activated via projectTags')
+			assert.ok(emDashResult, 'shared/no-em-dash should auto-activate without shared in projectTags')
+			assert.equal(emDashResult.counts.violations, 1, 'expected 1 em-dash violation')
+		} finally {
+			await rm(dir, { recursive: true, force: true })
+		}
+	})
+
+	it('auto-activates shared/no-em-dash even with empty projectTags', async () => {
+		const dir = await mkdtemp(join(tmpdir(), 'violations-auto-empty-'))
+		try {
+			await mkdir(join(dir, '.violations'), { recursive: true })
+			await mkdir(join(dir, 'src'), { recursive: true })
+			// violations-suppress: shared/no-em-dash intentional test fixture
+			await writeFile(join(dir, 'src', 'bad.ts'), 'const x = "hello — world"\n')
+			await writeFile(join(dir, '.violations', 'config.ts'), `
+export default {
+  projectTags: [],
+  rules: {}
+}
+`)
+			const results = await run({ projectRoot: dir })
+			const emDashResult = results.find(r => r.ruleId === 'shared/no-em-dash')
+			assert.ok(emDashResult, 'shared/no-em-dash should auto-activate with empty projectTags')
 			assert.equal(emDashResult.counts.violations, 1, 'expected 1 em-dash violation')
 		} finally {
 			await rm(dir, { recursive: true, force: true })
@@ -96,11 +118,10 @@ describe('runner integration', () => {
 		await rm(tempDir, { recursive: true, force: true })
 	})
 
-	it('returns 1 violation and 1 suppressed', async () => {
+	it('returns 1 violation and 1 suppressed for the local test-rule', async () => {
 		const results = await run({ projectRoot: tempDir })
-		assert.equal(results.length, 1, 'expected exactly 1 rule result')
-		const [result] = results
-		assert.equal(result.ruleId, 'test-rule')
+		const result = results.find(r => r.ruleId === 'test-rule')
+		assert.ok(result, 'expected test-rule result')
 		assert.equal(result.counts.violations, 1, 'expected 1 active violation')
 		assert.equal(result.counts.suppressed, 1, 'expected 1 suppressed violation')
 		assert.equal(result.violations[0].message, 'found VIOLATE keyword')

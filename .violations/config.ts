@@ -5,24 +5,58 @@ export default {
   globalExclude: [
     '**/node_modules/**',
     '**/dist/**',
+    '**/dist-bundle/**',
     '**/*.tsbuildinfo',
   ],
   rules: {
-    // Shared rules: not auto-active via projectTags (tag is 'shared', not in projectTags)
-    // Opt in explicitly:
+    // shared rules are now always active automatically.
+    // Rules that need $exclude or $severity overrides are listed explicitly below.
     'shared/no-em-dash': {
       // runner.test.ts writes a file containing an em-dash to test the no-em-dash rule
       $exclude: [
         'packages/violations-cli/src/runner.test.ts',
       ],
     },
-    'shared/partial-impl-flag': true,
     'shared/no-french': {
       // test fixtures contain French/accented strings intentionally
       $exclude: [
         'packages/violations-rules/src/rules/shared/no-french.test.ts',
         'packages/violations-rules/src/rules/shared/no-emoji.test.ts',
       ],
+    },
+    'shared/no-emoji': {
+      // test fixtures contain emoji/symbols intentionally
+      $exclude: [
+        'packages/violations-rules/src/rules/shared/no-emoji.test.ts',
+        'packages/violations-rules/src/rules/shared/no-french.test.ts',
+      ],
+    },
+    'shared/no-dead-suppress': {
+      $exclude: [
+        'packages/violations-rules/src/rules/shared/no-dead-suppress.test.ts',
+        'packages/violations-cli/src/runner.test.ts',
+        'packages/violations-rules/src/rules/violations-meta/no-inline-suppress.test.ts',
+      ],
+    },
+    'shared/no-out-of-repo-path': {
+      // test fixtures and rule source itself contain the patterns it detects
+      $exclude: [
+        'packages/violations-rules/src/rules/shared/no-out-of-repo-path.test.ts',
+        'packages/violations-rules/src/rules/shared/no-out-of-repo-path.ts',
+      ],
+    },
+    'shared/no-emoji': {
+      $exclude: [
+        'packages/violations-rules/src/rules/shared/no-emoji.test.ts',
+        'packages/violations-rules/src/rules/shared/no-french.test.ts',
+        'docs/**',
+        'packages/violations-cli/src/cli.ts',
+        'packages/violations-cli/src/compiler.ts',
+      ],
+    },
+    'shared/readme-system-length': {
+      // Framework README is documentation, not a system prompt
+      $severity: false,
     },
 
     // ts rules: auto-active via 'ts' projectTag
