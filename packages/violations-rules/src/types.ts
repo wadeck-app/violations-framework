@@ -38,6 +38,7 @@ type RuleConfigMap = {
   'shared/partial-impl-flag':                   Record<never, never>
   'shared/readme-system-length':                { maxLines?: number }
   'shared/no-dead-suppress':                    { activeRuleIds: string[] }
+  'shared/no-out-of-repo-path':                 Record<never, never>
   'shared/no-workspace-shadow':                 Record<never, never>
   'ts/no-export-star':                          Record<never, never>
   'ts/no-err-message-direct':                   Record<never, never>

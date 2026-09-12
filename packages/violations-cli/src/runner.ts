@@ -87,6 +87,10 @@ async function loadRule(
 	}
 }
 
+function isDisabled(override: RuleOverride | true): boolean {
+	return override !== true && override != null && (override as RuleOverride).$severity === false
+}
+
 function stripMetaFields(override: RuleOverride): Record<string, unknown> {
 	const { $severity: _s, $scopeAdd: _a, $exclude: _e, ...rest } = override as RuleOverride & Record<string, unknown>
 	return rest
@@ -127,22 +131,33 @@ export async function run(options: RunOptions): Promise<RuleResult[]> {
 		mergedRules[key] = val as RuleOverride | true
 	}
 
-	// Pre-compute active rule IDs for no-dead-suppress injection.
-	// For lib rules the config key IS the rule id; local rules (./...) are excluded
-	// from this list since we'd need to load them to get their id.
-	const activeRuleIds: string[] = Object.entries(mergedRules)
-		.filter(([, override]) => !(override !== true && override != null && (override as RuleOverride).$severity === false))
-		.filter(([ruleKey]) => !ruleKey.startsWith('./') && !ruleKey.startsWith('../'))
-		.map(([ruleKey]) => ruleKey)
+	// Load all local rules once, caching the Rule instance.
+	// Lib rules: config key IS the rule id (no load needed for ID collection).
+	// Local rules (./...): the key is a file path; we need rule.id (e.g. 'security/no-raw-err')
+	// for no-dead-suppress validation. Caching avoids a second compile+import in Promise.all.
+	const localRuleCache = new Map<string, Rule>()
+	for (const [ruleKey, override] of Object.entries(mergedRules)) {
+		if (!ruleKey.startsWith('./') && !ruleKey.startsWith('../')) continue
+		if (isDisabled(override)) continue
+		const r = await loadRule(ruleKey, projectRoot, cacheDir, manifestPath, frameworkVersion)
+		if (r) localRuleCache.set(ruleKey, r)
+	}
+	const activeRuleIds: string[] = [
+		...Object.entries(mergedRules)
+			.filter(([, override]) => !isDisabled(override))
+			.filter(([ruleKey]) => !ruleKey.startsWith('./') && !ruleKey.startsWith('../'))
+			.map(([ruleKey]) => ruleKey),
+		...[...localRuleCache.values()].map(r => r.id),
+	]
 
 	await Promise.all(
 		Object.entries(mergedRules).map(async ([ruleKey, override]) => {
-			// $severity: false = disabled
-			if (override !== true && override != null && (override as RuleOverride).$severity === false) {
-				return
-			}
+			if (isDisabled(override)) return
 
-			const rule = await loadRule(ruleKey, projectRoot, cacheDir, manifestPath, frameworkVersion)
+			const isLocal = ruleKey.startsWith('./') || ruleKey.startsWith('../')
+			const rule = isLocal
+				? (localRuleCache.get(ruleKey) ?? await loadRule(ruleKey, projectRoot, cacheDir, manifestPath, frameworkVersion))
+				: await loadRule(ruleKey, projectRoot, cacheDir, manifestPath, frameworkVersion)
 			if (!rule) return
 
 			// Determine effective severity

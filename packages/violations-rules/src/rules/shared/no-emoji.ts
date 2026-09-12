@@ -17,6 +17,7 @@ export const rule: Rule<Config> = {
   tags: 'shared',
   defaultScope: ['**/*.ts', '**/*.tsx', '**/*.cs', '**/*.md'],
   defaultSeverity: 'error',
+  // Fix script: node node_modules/@wadeck-app/violations-rules/dist/rules/shared/no-emoji-fix.js --dry-run --root <path>
   async check(files: string[], _config: Config): Promise<Violation[]> {
     const violations: Violation[] = []
     for (const file of files) {
@@ -24,20 +25,27 @@ export const rule: Rule<Config> = {
       const lines = text.split('\n')
       for (let li = 0; li < lines.length; li++) {
         const line = lines[li]!
+        const found: Array<{ ch: string; cp: number }> = []
         for (let ci = 0; ci < line.length; ) {
           const cp = line.codePointAt(ci) ?? 0
           const charLen = cp > 0xFFFF ? 2 : 1
           if (cp > 0x007F) {
             const ch = line.slice(ci, ci + charLen)
             if (SYMBOL_RE.test(ch)) {
-              violations.push({
-                file,
-                line: li + 1,
-                message: `Emoji/symbol '${ch}' (U+${cp.toString(16).toUpperCase().padStart(4, '0')}) not allowed - use a text alternative or a Lucide icon component`,
-              })
+              found.push({ ch, cp })
             }
           }
           ci += charLen
+        }
+        if (found.length > 0) {
+          const detail = found
+            .map(({ ch, cp }) => `'${ch}' (U+${cp.toString(16).toUpperCase().padStart(4, '0')})`)
+            .join(', ')
+          violations.push({
+            file,
+            line: li + 1,
+            message: `Symbol(s) found: ${detail} - use text alternatives or a Lucide icon component`,
+          })
         }
       }
     }

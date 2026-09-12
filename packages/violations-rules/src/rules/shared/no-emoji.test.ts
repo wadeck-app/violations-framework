@@ -21,7 +21,7 @@ describe('shared/no-emoji', () => {
       const violations = await rule.check([file], {})
       assert.ok(violations.length > 0)
       assert.equal(violations[0].line, 1)
-      assert.match(violations[0].message, /Emoji/)
+      assert.match(violations[0].message, /Symbol\(s\) found/)
     })
   })
 
@@ -83,17 +83,18 @@ describe('shared/no-emoji', () => {
     })
   })
 
-  // ── Per-character reporting ───────────────────────────────────────────────
+  // ── Per-line reporting ────────────────────────────────────────────────────
 
-  it('reports one violation per symbol character on the same line', async () => {
-    await withTmp('per-char', async (dir) => {
+  it('reports one violation per line even when multiple symbols are present', async () => {
+    await withTmp('per-line', async (dir) => {
       const file = join(dir, 'test.ts')
-      // Two distinct symbols on the same line
+      // Two distinct symbols on the same line → single violation listing both
       await writeFile(file, 'const x = "\u{2192}\u{2713}"\n')
       const violations = await rule.check([file], {})
-      assert.equal(violations.length, 2)
+      assert.equal(violations.length, 1)
       assert.equal(violations[0].line, 1)
-      assert.equal(violations[1].line, 1)
+      assert.match(violations[0].message, /U\+2192/)
+      assert.match(violations[0].message, /U\+2713/)
     })
   })
 

@@ -87,6 +87,55 @@ export default {
 	})
 })
 
+describe('no-dead-suppress with local rules', () => {
+	it('does not flag suppress comments for locally-registered rule IDs', async () => {
+		const dir = await mkdtemp(join(tmpdir(), 'violations-local-suppress-'))
+		try {
+			await mkdir(join(dir, '.violations', 'rules'), { recursive: true })
+			await mkdir(join(dir, 'src'), { recursive: true })
+
+			// Local rule whose id differs from its config key path
+			await writeFile(join(dir, '.violations', 'rules', 'no-raw-err.js'), `
+const rule = {
+  id: 'security/no-raw-err',
+  tags: 'shared',
+  defaultScope: ['**/*.ts'],
+  defaultSeverity: 'error',
+  async check(files, _config) { return [] }
+}
+export default rule
+`)
+
+			// Source file with a suppress comment referencing the local rule's id
+			await writeFile(
+				join(dir, 'src', 'foo.ts'),
+				'// violations-suppress: security/no-raw-err intentional\nconst x = 1\n'
+			)
+
+			await writeFile(join(dir, '.violations', 'config.ts'), `
+export default {
+  projectTags: [],
+  rules: {
+    './.violations/rules/no-raw-err.js': true,
+    'violations-meta/no-rule-without-test': { $severity: false },
+  }
+}
+`)
+
+			const results = await run({ projectRoot: dir })
+			const deadSuppressResult = results.find(r => r.ruleId === 'shared/no-dead-suppress')
+			assert.ok(deadSuppressResult, 'shared/no-dead-suppress should run')
+			assert.equal(
+				deadSuppressResult.counts.violations,
+				0,
+				'suppress for locally-registered rule id must not be flagged as dead'
+			)
+		} finally {
+			await rm(dir, { recursive: true, force: true })
+		}
+	})
+})
+
 describe('runner integration', () => {
 	let tempDir: string
 
