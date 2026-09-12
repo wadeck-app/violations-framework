@@ -1,8 +1,11 @@
 # Lessons learned
 
-<!-- Last updated: 2026-09-12T12:55:47.972Z -->
+<!-- Last updated: 2026-09-12T12:57:31.156Z -->
 
 ## Recurring feedback
+
+<!-- session 2ae04c1d 2026-09-12 -->
+- Format validation is strict: lesson extraction requires exact pattern matching - each finding prefixed with `[Section]`, one per line. Deviation causes user correction cycle.
 
 <!-- session 291575a9 2026-09-12 -->
 - Output format strictly enforces only these four patterns: [Recurring feedback], [Agent errors], [Documentation gaps], [Known constraints] — no other patterns or mixed formats are valid; partial violations trigger rejection.
@@ -41,6 +44,12 @@
 - When saving documentation for multi-project work, write to the target project's `.claude/docs/` folder, not to violation-framework's memory system — project context matters even when you're physically in another directory
 
 ## Agent errors
+
+<!-- session 2ae04c1d 2026-09-12 -->
+- `/doctor` fork spent multiple round-trips (12:51:43–12:53:29) exploring transcript JSON structure via trial-and-error bash commands to locate `toolDenialKind` entries, suggesting incomplete schema knowledge rather than direct lookup.
+
+<!-- session 2cdeb972 2026-09-12 -->
+- Assistant's initial output violated the strict 4-pattern format specification (only [Recurring feedback], [Agent errors], [Documentation gaps], [Known constraints] allowed), requiring user to provide format correction.
 
 <!-- session 402e606c 2026-09-12 -->
 - /doctor fork assumed `toolDenialKind` would be at transcript JSON top-level; multiple grep/parse retries (12:53:14–12:53:31) with explicit corrections ("NOT at the top level - it seems to be inside the message") indicate wrong assumption about field nesting.
@@ -163,6 +172,12 @@
 - When Go version mismatches occur between `go-version-file` (reads directive) and explicit `go-version:` in workflows, CI produces different binaries but logs nothing — added diagnostic output in build-tray-binary.yml to expose actual GOVERSION/GOTOOLCHAIN/GOROOT on next run
 
 ## Known constraints
+
+<!-- session 2ae04c1d 2026-09-12 -->
+- ToolSearch with `select:` prefix fails silently (WARN) when target tool schema is not yet known—schemas must be fetched or pre-loaded before invocation, not discovered on demand.
+
+<!-- session 2cdeb972 2026-09-12 -->
+- Tools ToolSearch and mcp__intellij__get_inspections reported as "*** NOT YET KNOWN ***" with warnings in guardrails log—indicates dynamic tool registration/availability may fail silently or with minimal visibility.
 
 <!-- session 5de881f2 2026-09-12 -->
 - Windows Git Bash: use `$TEMP` instead of `/tmp` for temp directories; `/tmp` maps to AppData/Local/Temp and may cause issues with path logic
