@@ -19,6 +19,8 @@ function isExcluded(file: string, text: string): boolean {
   // Normalise path separators
   const fwd = file.replace(/\\/g, '/')
   if (/\/display\/Chart\.tsx$/.test(fwd)) return true
+  // Test and story files use inline SVGs as fixtures — not production UI
+  if (/\.(test|stories)\.tsx$/.test(fwd)) return true
   return false
 }
 
