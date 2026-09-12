@@ -13,7 +13,7 @@
  *   .md                                               all lines
  *
  * Skipped (reported but not fixed):
- *   Non-comment lines in .ts/.tsx/.js/.cs/.yaml/.shader — the dash may be intentional
+ *   Non-comment lines in .ts/.tsx/.js/.cs/.yaml/.shader - the dash may be intentional
  *   user-visible text (labels, log messages, UI strings).
  *
  * Note: .violations/ is excluded from the walk (compiled cache + config files).
@@ -24,20 +24,21 @@ import { readFile, writeFile, readdir } from 'node:fs/promises'
 import { join, extname, resolve } from 'node:path'
 import { writeFileSync } from 'node:fs'
 
-// ─── Types ────────────────────────────────────────────────────────────────────
+// --- Types ---
 
 type Change = { line: number; original: string; proposed: string }
 type Skipped = { line: number; content: string; reason: string }
 type FileProposal = { file: string; changes: Change[]; skipped: Skipped[] }
 
-// ─── Constants ────────────────────────────────────────────────────────────────
+// --- Constants ---
 
 const SCOPED_EXTS = new Set(['.ts', '.tsx', '.js', '.cs', '.yaml', '.shader'])
 const ALL_EXTS = new Set([...SCOPED_EXTS, '.md'])
+// violations-suppress: shared/no-em-dash intentional - regex contains the characters it matches
 const DASH_RE = /[—–]/g
 const SKIP_DIRS = new Set(['node_modules', '.git', 'dist', 'dist-bundle', '.violations'])
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
+// --- Helpers ---
 
 function isCommentLine(line: string, ext: string): boolean {
   const t = line.trimStart()
@@ -79,7 +80,7 @@ function processFile(content: string, file: string): { fixed: string; changes: C
       skipped.push({
         line: i + 1,
         content: line,
-        reason: 'non-comment line — dash may be intentional user-visible text',
+        reason: 'non-comment line - dash may be intentional user-visible text',
       })
       return line
     }
@@ -88,7 +89,7 @@ function processFile(content: string, file: string): { fixed: string; changes: C
   return { fixed: fixed.join('\n'), changes, skipped }
 }
 
-// ─── Main ─────────────────────────────────────────────────────────────────────
+// --- Main ---
 
 async function main(): Promise<void> {
   const args = process.argv.slice(2)
@@ -119,7 +120,7 @@ async function main(): Promise<void> {
         console.log(`\n[propose] ${rel}`)
         for (const c of changes) {
           console.log(`  line ${c.line}: ${c.original.trim()}`)
-          console.log(`        → ${c.proposed.trim()}`)
+          console.log(`        -> ${c.proposed.trim()}`)
         }
       }
       if (skipped.length > 0) {

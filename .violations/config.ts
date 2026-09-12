@@ -24,13 +24,6 @@ export default {
         'packages/violations-rules/src/rules/shared/no-emoji.test.ts',
       ],
     },
-    'shared/no-emoji': {
-      // test fixtures contain emoji/symbols intentionally
-      $exclude: [
-        'packages/violations-rules/src/rules/shared/no-emoji.test.ts',
-        'packages/violations-rules/src/rules/shared/no-french.test.ts',
-      ],
-    },
     'shared/no-dead-suppress': {
       $exclude: [
         'packages/violations-rules/src/rules/shared/no-dead-suppress.test.ts',
@@ -119,10 +112,10 @@ export default {
     // no-legacy-violations-folder: suppress in this repo (we host migration tooling)
     'violations-meta/no-legacy-violations-folder': { $severity: false },
 
-    // no-rule-without-test: exclude helper files (types.ts, all-rules.ts) and test utilities
+    // no-rule-without-test: exclude helper files, test utilities, and companion fix scripts
     'violations-meta/no-rule-without-test': {
       $scopeAdd: ['packages/violations-rules/src/rules/**/*.ts'],
-      $exclude: ['**/types.ts', '**/all-rules.ts', '**/test-utils/**'],
+      $exclude: ['**/types.ts', '**/all-rules.ts', '**/test-utils/**', '**/*-fix.ts'],
     },
   },
 } satisfies ViolationsConfig

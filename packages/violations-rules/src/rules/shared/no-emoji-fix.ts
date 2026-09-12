@@ -13,29 +13,29 @@
  *   .md                all lines
  *
  * Skipped (reported but not fixed):
- *   Non-comment lines in .ts/.tsx/.cs — the symbol may be intentional UI text
- *   (e.g. close buttons '×', caret '▾', icon glyphs in JSX/strings).
+ *   Non-comment lines in .ts/.tsx/.cs - the symbol may be intentional UI text
+ *   (e.g. close-button symbols, caret glyphs, icon glyphs in JSX/strings).
  *
  * Note: .violations/ is excluded from the walk (compiled cache + config files).
  *   Symbols in .violations/config.ts or local rules must be fixed manually.
  *
  * Replacement strategy (comment lines and .md):
- *   Box-drawing U+2550 (═), U+2554/7/A/D/66/69/6C (double corners/crosses) → '='
- *   Other box-drawing U+2500–U+257F                                          → '-'
- *   All other symbols / emoji                                                → '' (removed)
+ *   Box-drawing U+2550 (=), U+2554/7/A/D/66/69/6C (double corners/crosses) -> '='
+ *   Other box-drawing U+2500-U+257F                                         -> '-'
+ *   All other symbols / emoji                                               -> '' (removed)
  */
 
 import { readFile, writeFile, readdir } from 'node:fs/promises'
 import { join, extname, resolve } from 'node:path'
 import { writeFileSync } from 'node:fs'
 
-// ─── Types ────────────────────────────────────────────────────────────────────
+// --- Types ---
 
 type Change = { line: number; original: string; proposed: string }
 type Skipped = { line: number; content: string; reason: string }
 type FileProposal = { file: string; changes: Change[]; skipped: Skipped[] }
 
-// ─── Constants ────────────────────────────────────────────────────────────────
+// --- Constants ---
 
 const SCOPED_EXTS = new Set(['.ts', '.tsx', '.cs'])
 const ALL_EXTS = new Set([...SCOPED_EXTS, '.md'])
@@ -49,14 +49,14 @@ const DOUBLE_BOX = new Set([
   0x2550, 0x2554, 0x2557, 0x255A, 0x255D, 0x2560, 0x2563, 0x2566, 0x2569, 0x256C,
 ])
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
+// --- Helpers ---
 
 function replaceSymbol(cp: number): string {
-  // Box-drawing block: U+2500–U+257F
+  // Box-drawing block: U+2500-U+257F
   if (cp >= 0x2500 && cp <= 0x257F) {
     return DOUBLE_BOX.has(cp) ? '=' : '-'
   }
-  // Everything else (emoji, math symbols, currency, etc.) → strip
+  // Everything else (emoji, math symbols, currency, etc.) - strip
   return ''
 }
 
@@ -137,7 +137,7 @@ function processFile(content: string, file: string): { fixed: string; changes: C
       skipped.push({
         line: i + 1,
         content: line,
-        reason: 'non-comment line — symbol may be intentional UI text (JSX, string literal)',
+        reason: 'non-comment line - symbol may be intentional UI text (JSX, string literal)',
       })
       return line
     }
@@ -146,7 +146,7 @@ function processFile(content: string, file: string): { fixed: string; changes: C
   return { fixed: fixed.join('\n'), changes, skipped }
 }
 
-// ─── Main ─────────────────────────────────────────────────────────────────────
+// --- Main ---
 
 async function main(): Promise<void> {
   const args = process.argv.slice(2)
@@ -177,7 +177,7 @@ async function main(): Promise<void> {
         console.log(`\n[propose] ${rel}`)
         for (const c of changes) {
           console.log(`  line ${c.line}: ${c.original.trim()}`)
-          console.log(`        → ${c.proposed.trim()}`)
+          console.log(`        -> ${c.proposed.trim()}`)
         }
       }
       if (skipped.length > 0) {
