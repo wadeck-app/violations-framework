@@ -22,6 +22,7 @@ export { rule as noSingleFileFolder } from './ts/no-single-file-folder.js'
 export { rule as noInlineSubcomponent } from './ts/no-inline-subcomponent.js'
 export { rule as noUnsafeTypeCast } from './ts/no-unsafe-type-cast.js'
 export { rule as nodeBuiltinPrefix } from './ts/node-builtin-prefix.js'
+export { rule as noInlineIfBody } from './ts/no-inline-if-body.js'
 export { rule as noRawButton } from './react/no-raw-button.js'
 export { rule as noRawInput } from './react/no-raw-input.js'
 export { rule as noInlineSvg } from './react/no-inline-svg.js'
@@ -90,6 +91,7 @@ export type { Config as NoSingleFileFolderConfig } from './ts/no-single-file-fol
 export type { Config as NoInlineSubcomponentConfig } from './ts/no-inline-subcomponent.js'
 export type { Config as NoUnsafeTypeCastConfig } from './ts/no-unsafe-type-cast.js'
 export type { Config as NodeBuiltinPrefixConfig } from './ts/node-builtin-prefix.js'
+export type { Config as NoInlineIfBodyConfig } from './ts/no-inline-if-body.js'
 export type { Config as NoRawButtonConfig } from './react/no-raw-button.js'
 export type { Config as NoRawInputConfig } from './react/no-raw-input.js'
 export type { Config as NoInlineSvgConfig } from './react/no-inline-svg.js'
@@ -158,6 +160,7 @@ import { rule as noSingleFileFolder } from './ts/no-single-file-folder.js'
 import { rule as noInlineSubcomponent } from './ts/no-inline-subcomponent.js'
 import { rule as noUnsafeTypeCast } from './ts/no-unsafe-type-cast.js'
 import { rule as nodeBuiltinPrefix } from './ts/node-builtin-prefix.js'
+import { rule as noInlineIfBody } from './ts/no-inline-if-body.js'
 import { rule as noRawButton } from './react/no-raw-button.js'
 import { rule as noRawInput } from './react/no-raw-input.js'
 import { rule as noInlineSvg } from './react/no-inline-svg.js'
@@ -229,6 +232,7 @@ export const allRules: Rule<any>[] = [
   noInlineSubcomponent,
   noUnsafeTypeCast,
   nodeBuiltinPrefix,
+  noInlineIfBody,
   noRawButton,
   noRawInput,
   noInlineSvg,
