@@ -12,7 +12,7 @@ Tag activation uses **AND logic for specificity**: declaring `react` implies `ts
 
 | Tag | Activates rules for |
 |---|---|
-| `shared` | Language-agnostic rules (French text, em-dash, emoji, partial-impl flags…) |
+| `shared` | Language-agnostic rules (French text, em-dash, emoji, partial-impl flags...) |
 | `ts` | TypeScript source files |
 | `react` | React/TSX components (implies `ts`) |
 | `tailwind` | Tailwind CSS usage |
