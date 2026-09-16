@@ -77,7 +77,9 @@ export async function writeReports(
 	supLines.push(`Total suppressed: ${totalSuppressed}`)
 	supLines.push('')
 	for (const r of results) {
-		if (r.counts.suppressed === 0) continue
+		if (r.counts.suppressed === 0) {
+		  continue;
+		}
 		supLines.push(`## ${r.ruleId} (${r.counts.suppressed} suppressed)`)
 		supLines.push('')
 		for (const v of r.suppressed) {

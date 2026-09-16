@@ -19,12 +19,16 @@ export const rule: Rule<Config> = {
       } catch {
         continue
       }
-      if (!PATTERN.test(text)) continue
+      if (!PATTERN.test(text)) {
+        continue;
+      }
       const lines = text.split(/\r?\n/)
       for (let i = 0; i < lines.length; i++) {
         const line = lines[i]
         const trimmed = line.trimStart()
-        if (trimmed.startsWith('//') || trimmed.startsWith('*')) continue
+        if (trimmed.startsWith('//') || trimmed.startsWith('*')) {
+          continue;
+        }
         if (PATTERN.test(line)) {
           violations.push({ file, line: i + 1, message: 'Use the project log factory instead of Debug.Log / Debug.LogWarning / Debug.LogError.' })
         }

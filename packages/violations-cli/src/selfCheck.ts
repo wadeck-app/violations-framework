@@ -13,7 +13,9 @@ export async function selfCheck(): Promise<void> {
 		async () => {
 			try {
 				const v: string = __VIOLATIONS_CLI_VERSION__
-				if (!v) return { name: 'bundle-version', ok: false, detail: 'version string is empty' }
+				if (!v) {
+				  return { name: 'bundle-version', ok: false, detail: 'version string is empty' };
+				}
 				return { name: 'bundle-version', ok: true }
 			} catch {
 				return { name: 'bundle-version', ok: false, detail: 'not bundled (dev build)' }

@@ -42,7 +42,9 @@ export const rule: Rule<Config> = {
       }
 
       // Fast pre-check: skip files with no accented chars and no French words
-      if (!ACCENTED.test(text) && !frenchWordRe.test(text)) continue
+      if (!ACCENTED.test(text) && !frenchWordRe.test(text)) {
+        continue;
+      }
 
       const lines = text.split(/\r?\n/)
       for (let i = 0; i < lines.length; i++) {

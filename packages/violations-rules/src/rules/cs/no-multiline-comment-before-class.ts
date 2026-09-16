@@ -25,12 +25,18 @@ export const rule: Rule<Config> = {
       }
       const lines = text.split(/\r?\n/)
       for (let i = 1; i < lines.length; i++) {
-        if (!CLASS_DECL.test(lines[i])) continue
+        if (!CLASS_DECL.test(lines[i])) {
+          continue;
+        }
         // Walk backwards over blank lines
         let prev = i - 1
         while (prev >= 0 && lines[prev].trim() === '') prev--
-        if (prev < 0) continue
-        if (!isSingleLineComment(lines[prev])) continue
+        if (prev < 0) {
+          continue;
+        }
+        if (!isSingleLineComment(lines[prev])) {
+          continue;
+        }
         // Find block start
         let blockStart = prev
         while (blockStart > 0 && isSingleLineComment(lines[blockStart - 1])) blockStart--

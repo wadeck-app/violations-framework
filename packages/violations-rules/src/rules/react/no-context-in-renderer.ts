@@ -20,7 +20,9 @@ export const rule: Rule<Config> = {
       if (restrictToPackages && restrictToPackages.length > 0) {
         const fwd = file.replace(/\\/g, '/')
         const underRestricted = restrictToPackages.some(p => fwd.includes(p.replace(/\\/g, '/')))
-        if (!underRestricted) continue
+        if (!underRestricted) {
+          continue;
+        }
       }
 
       let text: string
@@ -34,7 +36,9 @@ export const rule: Rule<Config> = {
       for (let i = 0; i < lines.length; i++) {
         const trimmed = lines[i].trimStart()
         // Skip comment lines
-        if (trimmed.startsWith('//') || trimmed.startsWith('*')) continue
+        if (trimmed.startsWith('//') || trimmed.startsWith('*')) {
+          continue;
+        }
         // Strip inline comments before checking
         const codeOnly = lines[i].replace(/\/\/.*$/, '')
         if (codeOnly.includes('createContext(')) {

@@ -20,7 +20,9 @@ export const rule: Rule<Config> = {
       const lines = text.split(/\r?\n/)
       for (let i = 0; i < lines.length; i++) {
         const trimmed = lines[i].trimStart()
-        if (trimmed.startsWith('//')) continue
+        if (trimmed.startsWith('//')) {
+          continue;
+        }
         if (/\.Wait\(/.test(lines[i])) {
           violations.push({ file, line: i + 1, message: 'Synchronous .Wait() call detected - use async/await to avoid deadlocks.' })
         }

@@ -30,7 +30,9 @@ export const rule: Rule<Config> = {
 
       for (let i = 0; i < lines.length; i++) {
         const m = SUPPRESS_RE.exec(lines[i])
-        if (!m) continue
+        if (!m) {
+          continue;
+        }
 
         const suppressedIds = m[1]
           .split(',')

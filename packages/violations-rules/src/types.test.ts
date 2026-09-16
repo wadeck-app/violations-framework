@@ -20,10 +20,18 @@ describe('Rule<Config> type constraints', () => {
     }
 
     // Verify runtime shape too
-    if (rule.id !== 'ts/no-long-file') throw new Error('id mismatch')
-    if (rule.tags !== 'ts') throw new Error('tags mismatch')
-    if (rule.defaultScope[0] !== '**/*.ts') throw new Error('defaultScope mismatch')
-    if (rule.defaultSeverity !== 'warning') throw new Error('defaultSeverity mismatch')
+    if (rule.id !== 'ts/no-long-file') {
+      throw new Error('id mismatch');
+    }
+    if (rule.tags !== 'ts') {
+      throw new Error('tags mismatch');
+    }
+    if (rule.defaultScope[0] !== '**/*.ts') {
+      throw new Error('defaultScope mismatch');
+    }
+    if (rule.defaultSeverity !== 'warning') {
+      throw new Error('defaultSeverity mismatch');
+    }
   })
 
   it('accepts a Rule with no config (defaults to Record<string, never>)', () => {
@@ -36,12 +44,16 @@ describe('Rule<Config> type constraints', () => {
         return []
       },
     }
-    if (rule.id !== 'shared/no-em-dash') throw new Error('id mismatch')
+    if (rule.id !== 'shared/no-em-dash') {
+      throw new Error('id mismatch');
+    }
   })
 
   it('Severity is a union of three literals', () => {
     const severities: Severity[] = ['error', 'warning', 'info']
-    if (severities.length !== 3) throw new Error('unexpected severity count')
+    if (severities.length !== 3) {
+      throw new Error('unexpected severity count');
+    }
   })
 
   it('RuleOverride accepts $severity, $scopeAdd, $exclude, and Partial<Config>', () => {
@@ -51,12 +63,16 @@ describe('Rule<Config> type constraints', () => {
       $exclude: ['**/generated/**'],
       maxLines: 120,
     }
-    if (override.$severity !== 'warning') throw new Error('$severity mismatch')
+    if (override.$severity !== 'warning') {
+      throw new Error('$severity mismatch');
+    }
   })
 
   it('RuleOverride allows $severity: false to disable a rule', () => {
     const override: RuleOverride = { $severity: false }
-    if (override.$severity !== false) throw new Error('$severity false mismatch')
+    if (override.$severity !== false) {
+      throw new Error('$severity false mismatch');
+    }
   })
 
   it('ViolationsConfig accepts projectTags and rule overrides', () => {
@@ -70,7 +86,9 @@ describe('Rule<Config> type constraints', () => {
         './.violations/rules/my-rule.js': true,
       },
     }
-    if (!config.projectTags.includes('ts')) throw new Error('projectTags mismatch')
+    if (!config.projectTags.includes('ts')) {
+      throw new Error('projectTags mismatch');
+    }
   })
 
   it('RuleResult has correct shape', () => {
@@ -81,16 +99,24 @@ describe('Rule<Config> type constraints', () => {
       suppressed: [],
       counts: { violations: 1, suppressed: 0 },
     }
-    if (result.counts.violations !== 1) throw new Error('counts mismatch')
+    if (result.counts.violations !== 1) {
+      throw new Error('counts mismatch');
+    }
   })
 
   it('SuppressDirective is a discriminated union on kind', () => {
     const inline: SuppressDirective = { kind: 'inline', ruleId: 'ts/no-export-star', line: 10 }
     const start: SuppressDirective = { kind: 'start', ruleId: 'ts/no-export-star', reason: 'legacy', line: 5 }
     const end: SuppressDirective = { kind: 'end', ruleId: 'ts/no-export-star', line: 20 }
-    if (inline.kind !== 'inline') throw new Error('inline kind mismatch')
-    if (start.kind !== 'start') throw new Error('start kind mismatch')
-    if (end.kind !== 'end') throw new Error('end kind mismatch')
+    if (inline.kind !== 'inline') {
+      throw new Error('inline kind mismatch');
+    }
+    if (start.kind !== 'start') {
+      throw new Error('start kind mismatch');
+    }
+    if (end.kind !== 'end') {
+      throw new Error('end kind mismatch');
+    }
   })
 
   it('CacheManifest has frameworkVersion and files map', () => {
@@ -103,6 +129,8 @@ describe('Rule<Config> type constraints', () => {
         },
       },
     }
-    if (manifest.frameworkVersion !== '0.1.0') throw new Error('frameworkVersion mismatch')
+    if (manifest.frameworkVersion !== '0.1.0') {
+      throw new Error('frameworkVersion mismatch');
+    }
   })
 })

@@ -100,7 +100,9 @@ function hasSymbol(line: string): boolean {
 
 function isCommentLine(line: string, ext: string): boolean {
   const t = line.trimStart()
-  if (ext === '.yaml') return t.startsWith('#')
+  if (ext === '.yaml') {
+    return t.startsWith('#');
+  }
   return t.startsWith('//') || t.startsWith('/*') || t.startsWith('*')
 }
 
@@ -109,7 +111,9 @@ async function* walkFiles(dir: string): AsyncGenerator<string> {
   for (const entry of entries) {
     const full = join(dir, entry.name)
     if (entry.isDirectory()) {
-      if (!SKIP_DIRS.has(entry.name)) yield* walkFiles(full)
+      if (!SKIP_DIRS.has(entry.name)) {
+        yield* walkFiles(full);
+      }
     } else if (entry.isFile() && ALL_EXTS.has(extname(entry.name))) {
       yield full
     }
@@ -124,7 +128,9 @@ function processFile(content: string, file: string): { fixed: string; changes: C
   const skipped: Skipped[] = []
 
   const fixed = lines.map((line, i) => {
-    if (!hasSymbol(line)) return line
+    if (!hasSymbol(line)) {
+      return line;
+    }
 
     const safe = isMd || isCommentLine(line, ext)
     if (safe) {
@@ -162,10 +168,14 @@ async function main(): Promise<void> {
 
   for await (const file of walkFiles(root)) {
     const content = await readFile(file, 'utf8').catch(() => null)
-    if (content === null) continue
+    if (content === null) {
+      continue;
+    }
 
     const { fixed, changes, skipped } = processFile(content, file)
-    if (changes.length === 0 && skipped.length === 0) continue
+    if (changes.length === 0 && skipped.length === 0) {
+      continue;
+    }
 
     totalChanges += changes.length
     totalSkipped += skipped.length

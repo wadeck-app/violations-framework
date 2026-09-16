@@ -17,7 +17,9 @@ export const rule: Rule<Config> = {
       } catch {
         continue
       }
-      if (!text.includes('<summary>')) continue
+      if (!text.includes('<summary>')) {
+        continue;
+      }
       const lines = text.split(/\r?\n/)
       for (let i = 0; i < lines.length; i++) {
         if (lines[i].includes('<summary>')) {

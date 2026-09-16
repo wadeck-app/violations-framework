@@ -33,9 +33,13 @@ export const rule: Rule<Config> = {
 
     for (const ruleFile of files) {
       // Skip test files themselves
-      if (ruleFile.endsWith('.test.ts') || ruleFile.endsWith('.test.js')) continue
+      if (ruleFile.endsWith('.test.ts') || ruleFile.endsWith('.test.js')) {
+        continue;
+      }
       // Skip exempt rules
-      if (isExempt(ruleFile)) continue
+      if (isExempt(ruleFile)) {
+        continue;
+      }
 
       const dir = dirname(ruleFile)
       const base = basename(ruleFile).replace(/\.(ts|js)$/, '')

@@ -116,7 +116,9 @@ export async function typeCheck(sourcePath: string): Promise<{ errors: string[] 
 	const customHost: ts.CompilerHost = {
 		...defaultCompilerHost,
 		getSourceFile: (fileName, langVersion) => {
-			if (fileName === sourcePath) return sourceFile
+			if (fileName === sourcePath) {
+			  return sourceFile;
+			}
 			return defaultCompilerHost.getSourceFile(fileName, langVersion)
 		},
 	}

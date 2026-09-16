@@ -22,7 +22,9 @@ export const rule: Rule<Config> = {
       }
       const lines = text.split('\n')
       for (let i = 0; i < lines.length; i++) {
-        if (!EXPORT_STAR_RE.test(lines[i].trimStart())) continue
+        if (!EXPORT_STAR_RE.test(lines[i].trimStart())) {
+          continue;
+        }
         violations.push({
           file,
           line: i + 1,

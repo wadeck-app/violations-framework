@@ -21,7 +21,9 @@ const QUOTED_STRING_RE = /['"]([^'"]+)['"]/g
  */
 function extractDefaultScope(source: string): string[] | null {
   const match = SCOPE_BLOCK_RE.exec(source)
-  if (!match) return null
+  if (!match) {
+    return null;
+  }
   const arrayBody = match[1]
   const paths: string[] = []
   let m: RegExpExecArray | null
@@ -48,7 +50,9 @@ function scopePathExists(pattern: string, projectRoot: string): boolean {
     return existsSync(projectRoot)
   }
   const absPath = join(projectRoot, prefix)
-  if (!existsSync(absPath)) return false
+  if (!existsSync(absPath)) {
+    return false;
+  }
   const s = statSync(absPath)
   return s.isDirectory() || s.isFile()
 }
@@ -74,7 +78,9 @@ export const rule: Rule<Config> = {
 
       const scopeGlobs = extractDefaultScope(source)
       // No defaultScope array - dynamic or special rule, exempt
-      if (scopeGlobs === null) continue
+      if (scopeGlobs === null) {
+        continue;
+      }
 
       // Check whether at least one glob prefix resolves to an existing path
       const anyExists = scopeGlobs.some(pattern => scopePathExists(pattern, projectRoot))

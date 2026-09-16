@@ -15,23 +15,33 @@ export const rule: Rule<Config> = {
     const violations: Violation[] = []
     for (const file of files) {
       // Exclude _generated/ dirs
-      if (file.includes('/_generated/') || file.includes('\\_generated\\')) continue
+      if (file.includes('/_generated/') || file.includes('\\_generated\\')) {
+        continue;
+      }
       let text: string
       try {
         text = await readFile(file, 'utf8')
       } catch {
         continue
       }
-      if (!text.includes('const ')) continue
+      if (!text.includes('const ')) {
+        continue;
+      }
       const lines = text.split(/\r?\n/)
       for (let i = 0; i < lines.length; i++) {
         const line = lines[i]
         const trimmed = line.trimStart()
-        if (trimmed.startsWith('//') || trimmed.startsWith('*')) continue
+        if (trimmed.startsWith('//') || trimmed.startsWith('*')) {
+          continue;
+        }
         const match = CONST_FIELD.exec(line)
-        if (!match) continue
+        if (!match) {
+          continue;
+        }
         const name = match[1]
-        if (PASCAL_CASE.test(name)) continue
+        if (PASCAL_CASE.test(name)) {
+          continue;
+        }
         violations.push({ file, line: i + 1, message: `Const field "${name}" must be named in PascalCase. When renaming: grep for all usages across the codebase including test files before editing (public consts are referenced as ClassName.${name}).` })
       }
     }

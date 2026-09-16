@@ -51,16 +51,22 @@ export const rule: Rule<Config> = {
       const dirName = basename(dir)
 
       // Skip src/ root
-      if (dirName === 'src') continue
+      if (dirName === 'src') {
+        continue;
+      }
 
       // Skip exempt names
-      if (exemptNames.includes(dirName)) continue
+      if (exemptNames.includes(dirName)) {
+        continue;
+      }
 
       // Count source files (ts/tsx, not test, not stories)
       const sourceFiles = dirFiles.filter(
         (f) => SOURCE_EXT_RE.test(f) && !TEST_OR_STORIES_RE.test(f),
       )
-      if (sourceFiles.length !== 1) continue
+      if (sourceFiles.length !== 1) {
+        continue;
+      }
 
       // Check for subdirectories
       let entries: Dirent[]
@@ -70,7 +76,9 @@ export const rule: Rule<Config> = {
         continue
       }
       const hasSubdirs = entries.some((e) => e.isDirectory())
-      if (hasSubdirs) continue
+      if (hasSubdirs) {
+        continue;
+      }
 
       violations.push({
         file: dir,

@@ -27,8 +27,12 @@ export const rule: Rule<Config> = {
 
       for (let i = 0; i < lines.length; i++) {
         const line = lines[i]
-        if (!ANY_SUPPRESS_RE.test(line)) continue
-        if (STANDALONE_RE.test(line)) continue
+        if (!ANY_SUPPRESS_RE.test(line)) {
+          continue;
+        }
+        if (STANDALONE_RE.test(line)) {
+          continue;
+        }
         violations.push({
           file,
           line: i + 1,

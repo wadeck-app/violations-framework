@@ -15,12 +15,18 @@ function isAtomic(text: string): boolean {
  *   - Chart.tsx in a display/ directory (recharts generates SVG internally)
  */
 function isExcluded(file: string, text: string): boolean {
-  if (isAtomic(text)) return true
+  if (isAtomic(text)) {
+    return true;
+  }
   // Normalise path separators
   const fwd = file.replace(/\\/g, '/')
-  if (/\/display\/Chart\.tsx$/.test(fwd)) return true
+  if (/\/display\/Chart\.tsx$/.test(fwd)) {
+    return true;
+  }
   // Test and story files use inline SVGs as fixtures - not production UI
-  if (/\.(test|stories)\.tsx$/.test(fwd)) return true
+  if (/\.(test|stories)\.tsx$/.test(fwd)) {
+    return true;
+  }
   return false
 }
 
@@ -42,10 +48,14 @@ export const rule: Rule<Config> = {
       }
 
       const lines = text.split('\n')
-      if (isExcluded(file, text)) continue
+      if (isExcluded(file, text)) {
+        continue;
+      }
 
       for (let i = 0; i < lines.length; i++) {
-        if (!lines[i].includes('<svg')) continue
+        if (!lines[i].includes('<svg')) {
+          continue;
+        }
         violations.push({
           file,
           line: i + 1,

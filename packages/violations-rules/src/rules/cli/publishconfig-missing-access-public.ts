@@ -36,9 +36,15 @@ export const rule: Rule<Config> = {
       }
 
       const { name, publishConfig } = pkg
-      if (typeof name !== 'string' || !name.startsWith('@')) continue
-      if (!publishConfig) continue
-      if (publishConfig['access'] === 'public') continue
+      if (typeof name !== 'string' || !name.startsWith('@')) {
+        continue;
+      }
+      if (!publishConfig) {
+        continue;
+      }
+      if (publishConfig['access'] === 'public') {
+        continue;
+      }
 
       violations.push({
         file,

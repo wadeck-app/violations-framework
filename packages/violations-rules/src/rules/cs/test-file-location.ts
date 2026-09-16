@@ -12,9 +12,13 @@ export const rule: Rule<Config> = {
     const violations: Violation[] = []
     for (const file of files) {
       const base = basename(file)
-      if (!base.startsWith('Test_') || !base.endsWith('.cs')) continue
+      if (!base.startsWith('Test_') || !base.endsWith('.cs')) {
+        continue;
+      }
       const segments = file.split(/[/\\]/)
-      if (segments.includes('_tests')) continue
+      if (segments.includes('_tests')) {
+        continue;
+      }
       violations.push({ file, line: 1, message: `Test_*.cs file must live under a _tests/ folder (found at ${file}).` })
     }
     return violations

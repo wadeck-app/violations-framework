@@ -45,7 +45,9 @@ describe('shared/no-workspace-shadow', () => {
       } catch (e) {
         // Windows requires elevated privileges or Developer Mode for symlinks - skip
         const code = (e as NodeJS.ErrnoException).code
-        if (code === 'EPERM' || code === 'EACCES') return
+        if (code === 'EPERM' || code === 'EACCES') {
+          return;
+        }
         throw e
       }
       const violations = await rule.check([rootPkg], {})

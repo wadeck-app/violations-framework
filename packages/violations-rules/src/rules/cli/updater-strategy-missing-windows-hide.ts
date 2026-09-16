@@ -24,13 +24,19 @@ export const rule: Rule<Config> = {
         continue
       }
 
-      if (!text.includes('npm') && !text.includes('UpdateCmd')) continue
+      if (!text.includes('npm') && !text.includes('UpdateCmd')) {
+        continue;
+      }
 
       const lines = text.split('\n')
       for (let i = 0; i < lines.length; i++) {
         const line = lines[i]
-        if (!line.includes('exec.Command') && !line.includes('cmd.Start()')) continue
-        if (!line.includes('npm') && !line.includes('cmd[0]')) continue
+        if (!line.includes('exec.Command') && !line.includes('cmd.Start()')) {
+          continue;
+        }
+        if (!line.includes('npm') && !line.includes('cmd[0]')) {
+          continue;
+        }
 
         const start = Math.max(0, i - 3)
         const end = Math.min(lines.length - 1, i + 15)

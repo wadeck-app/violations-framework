@@ -20,7 +20,9 @@ export const rule: Rule<Config> = {
 
     for (const file of files) {
       // Accept any casing of README.md as the runner may pass files from glob patterns
-      if (basename(file).toLowerCase() !== 'readme.md') continue
+      if (basename(file).toLowerCase() !== 'readme.md') {
+        continue;
+      }
 
       let text: string
       try {

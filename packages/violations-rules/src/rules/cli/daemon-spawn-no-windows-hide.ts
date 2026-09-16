@@ -30,7 +30,9 @@ export const rule: Rule<Config> = {
 
       // Pass 1: spawn() with detached:true missing windowsHide:true
       for (let i = 0; i < lines.length; i++) {
-        if (!lines[i].includes('detached: true')) continue
+        if (!lines[i].includes('detached: true')) {
+          continue;
+        }
 
         // Look within the surrounding 10 lines for windowsHide
         const start = Math.max(0, i - 5)
@@ -51,7 +53,9 @@ export const rule: Rule<Config> = {
       const EXEC_PATTERN = /\b(execSync|execFileSync|execFile)\s*\(/
       const WINDOWS_HIDE_PATTERN = /windowsHide\s*:\s*true/
       for (let i = 0; i < lines.length; i++) {
-        if (!EXEC_PATTERN.test(lines[i])) continue
+        if (!EXEC_PATTERN.test(lines[i])) {
+          continue;
+        }
 
         // Look at current line and next 5 lines (covers multi-line options objects)
         const end = Math.min(lines.length - 1, i + 5)

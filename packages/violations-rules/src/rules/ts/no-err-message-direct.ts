@@ -17,7 +17,9 @@ export const rule: Rule<Config> = {
     const violations: Violation[] = []
     for (const file of files) {
       const normalised = file.replace(/\\/g, '/')
-      if (SKIPPED_SUFFIXES.some(suffix => normalised.endsWith(suffix))) continue
+      if (SKIPPED_SUFFIXES.some(suffix => normalised.endsWith(suffix))) {
+        continue;
+      }
 
       let text: string
       try {
@@ -28,8 +30,12 @@ export const rule: Rule<Config> = {
       const lines = text.split('\n')
       for (let i = 0; i < lines.length; i++) {
         const trimmed = lines[i].trimStart()
-        if (trimmed.startsWith('//') || trimmed.startsWith('*')) continue
-        if (!ERR_MESSAGE_RE.test(lines[i])) continue
+        if (trimmed.startsWith('//') || trimmed.startsWith('*')) {
+          continue;
+        }
+        if (!ERR_MESSAGE_RE.test(lines[i])) {
+          continue;
+        }
         violations.push({
           file,
           line: i + 1,

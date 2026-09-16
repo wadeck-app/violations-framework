@@ -14,14 +14,18 @@ export const rule: Rule<Config> = {
     const violations: Violation[] = []
     for (const file of files) {
       // Exclude _generated/ dirs
-      if (file.includes('/_generated/') || file.includes('\\_generated\\')) continue
+      if (file.includes('/_generated/') || file.includes('\\_generated\\')) {
+        continue;
+      }
       let text: string
       try {
         text = await readFile(file, 'utf8')
       } catch {
         continue
       }
-      if (!text.includes('System.Linq')) continue
+      if (!text.includes('System.Linq')) {
+        continue;
+      }
       const lines = text.split(/\r?\n/)
       for (let i = 0; i < lines.length; i++) {
         if (PATTERN.test(lines[i])) {

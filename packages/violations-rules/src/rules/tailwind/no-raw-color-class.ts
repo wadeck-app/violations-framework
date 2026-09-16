@@ -41,10 +41,14 @@ export const rule: Rule<Config> = {
       const lines = text.split('\n')
 
       // Atomic components are the correct owners of domain-semantic color mappings
-      if (isAtomic(text)) continue
+      if (isAtomic(text)) {
+        continue;
+      }
 
       for (let i = 0; i < lines.length; i++) {
-        if (!RAW_COLOR_RE.test(lines[i])) continue
+        if (!RAW_COLOR_RE.test(lines[i])) {
+          continue;
+        }
         violations.push({
           file,
           line: i + 1,

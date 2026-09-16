@@ -14,14 +14,18 @@ export const rule: Rule<Config> = {
     const violations: Violation[] = []
     for (const file of files) {
       // Exclude editor dirs
-      if (/[/\\]editor[/\\]/i.test(file)) continue
+      if (/[/\\]editor[/\\]/i.test(file)) {
+        continue;
+      }
       let text: string
       try {
         text = await readFile(file, 'utf8')
       } catch {
         continue
       }
-      if (!PATTERN.test(text)) continue
+      if (!PATTERN.test(text)) {
+        continue;
+      }
       const lines = text.split(/\r?\n/)
       const ifStack: Array<string | null> = []
       for (let i = 0; i < lines.length; i++) {
@@ -43,8 +47,12 @@ export const rule: Rule<Config> = {
           ifStack.pop()
           continue
         }
-        if (ifStack.some(c => c === 'UNITY_EDITOR')) continue
-        if (trimmed.startsWith('//') || trimmed.startsWith('*')) continue
+        if (ifStack.some(c => c === 'UNITY_EDITOR')) {
+          continue;
+        }
+        if (trimmed.startsWith('//') || trimmed.startsWith('*')) {
+          continue;
+        }
         if (PATTERN.test(line)) {
           violations.push({ file, line: i + 1, message: 'new Texture2D() breaks batching in runtime code - load textures from assets instead.' })
         }

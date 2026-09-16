@@ -23,7 +23,9 @@ export const rule: Rule<Config> = {
       }
       const lines = text.split('\n')
       for (let i = 0; i < lines.length; i++) {
-        if (!UNION_STRING_RE.test(lines[i])) continue
+        if (!UNION_STRING_RE.test(lines[i])) {
+          continue;
+        }
         violations.push({
           file,
           line: i + 1,

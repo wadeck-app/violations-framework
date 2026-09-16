@@ -30,10 +30,14 @@ export const rule: Rule<Config> = {
       }
 
       const lines = text.split('\n')
-      if (isAtomic(text)) continue
+      if (isAtomic(text)) {
+        continue;
+      }
 
       for (let i = 0; i < lines.length; i++) {
-        if (!lines[i].includes('<button')) continue
+        if (!lines[i].includes('<button')) {
+          continue;
+        }
         violations.push({
           file,
           line: i + 1,

@@ -22,19 +22,25 @@ export const rule: Rule<Config> = {
     const violations: Violation[] = []
     for (const file of files) {
       // Exclude _generated/ dirs
-      if (file.includes('/_generated/') || file.includes('\\_generated\\')) continue
+      if (file.includes('/_generated/') || file.includes('\\_generated\\')) {
+        continue;
+      }
       let text: string
       try {
         text = await readFile(file, 'utf8')
       } catch {
         continue
       }
-      if (!text.includes('throw new ')) continue
+      if (!text.includes('throw new ')) {
+        continue;
+      }
       const lines = text.split(/\r?\n/)
       for (let i = 0; i < lines.length; i++) {
         const line = lines[i]
         const trimmed = line.trimStart()
-        if (trimmed.startsWith('//') || trimmed.startsWith('*')) continue
+        if (trimmed.startsWith('//') || trimmed.startsWith('*')) {
+          continue;
+        }
         if (pattern.test(line)) {
           violations.push({ file, line: i + 1, message: 'Use a domain exception instead of raw .NET exceptions for programming errors.' })
         }

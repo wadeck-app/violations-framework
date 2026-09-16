@@ -38,7 +38,9 @@ function makePrefixRule(
 
           // Track block comment state
           if (inBlockComment) {
-            if (raw.includes('*/')) inBlockComment = false
+            if (raw.includes('*/')) {
+              inBlockComment = false;
+            }
             continue
           }
           if (raw.includes('/*') && !raw.includes('*/')) {
@@ -51,11 +53,15 @@ function makePrefixRule(
             continue
           }
           if (trimmed.startsWith('#elif ') || trimmed.startsWith('#elif\t')) {
-            if (ifStack.length > 0) ifStack[ifStack.length - 1] = trimmed.slice(5).trim()
+            if (ifStack.length > 0) {
+              ifStack[ifStack.length - 1] = trimmed.slice(5).trim();
+            }
             continue
           }
           if (trimmed.startsWith('#else')) {
-            if (ifStack.length > 0) ifStack[ifStack.length - 1] = null
+            if (ifStack.length > 0) {
+              ifStack[ifStack.length - 1] = null;
+            }
             continue
           }
           if (trimmed.startsWith('#endif')) {
@@ -64,7 +70,9 @@ function makePrefixRule(
           }
 
           // Skip line comments
-          if (trimmed.startsWith('//')) continue
+          if (trimmed.startsWith('//')) {
+            continue;
+          }
 
           // Check if requiredDirective is currently active in the if-stack
           const isGuarded = ifStack.some(cond => cond !== null && cond.includes(requiredDirective))

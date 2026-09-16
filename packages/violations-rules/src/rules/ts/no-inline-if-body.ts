@@ -7,11 +7,29 @@ const IF_RE = /^\s*(?:(?:}\s*)?else\s+)?if\s*\(/
 
 function findCondEnd(line: string): number {
   const start = line.indexOf('(', line.search(/if\s*\(/))
-  if (start === -1) return -1
+  if (start === -1) {
+    return -1;
+  }
   let depth = 0
+  let inStr: string | null = null
   for (let i = start; i < line.length; i++) {
-    if (line[i] === '(') depth++
-    else if (line[i] === ')') { depth--; if (depth === 0) return i }
+    const ch = line[i]!
+    if (inStr) {
+      if (ch === '\\') {
+        i++
+      } else if (ch === inStr) {
+        inStr = null
+      }
+    } else if (ch === '"' || ch === "'") {
+      inStr = ch
+    } else if (ch === '(') {
+      depth++
+    } else if (ch === ')') {
+      depth--
+      if (depth === 0) {
+        return i
+      }
+    }
   }
   return -1
 }
@@ -30,10 +48,16 @@ export const rule: Rule<Config> = {
       for (let i = 0; i < lines.length; i++) {
         const line = lines[i]!
         const trimmed = line.trimStart()
-        if (trimmed.startsWith('//') || trimmed.startsWith('*') || trimmed.startsWith('/*')) continue
-        if (!IF_RE.test(line)) continue
+        if (trimmed.startsWith('//') || trimmed.startsWith('*') || trimmed.startsWith('/*')) {
+          continue;
+        }
+        if (!IF_RE.test(line)) {
+          continue;
+        }
         const condEnd = findCondEnd(line)
-        if (condEnd === -1) continue
+        if (condEnd === -1) {
+          continue;
+        }
         const after = line.slice(condEnd + 1).trimStart()
         if (!after || after.startsWith('//')) {
           // body on next line -- check it opens with {

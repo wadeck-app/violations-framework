@@ -39,9 +39,13 @@ export const rule: Rule<Config> = {
       const lines = text.split('\n')
       for (let i = 0; i < lines.length; i++) {
         const m = BUTTON_CLASSNAME_INLINE_RE.exec(lines[i])
-        if (!m) continue
+        if (!m) {
+          continue;
+        }
         const className = m[1]
-        if (!hasStyleToken(className)) continue
+        if (!hasStyleToken(className)) {
+          continue;
+        }
         violations.push({
           file,
           line: i + 1,

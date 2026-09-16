@@ -15,9 +15,15 @@ const CLASS_RE = /className=["']([^"']+)["']/
  * statically measured: template literals, interpolations, or array joins.
  */
 function isDynamic(line: string): boolean {
-  if (line.includes('`')) return true
-  if (line.includes('${')) return true
-  if (line.includes('className={[')) return true
+  if (line.includes('`')) {
+    return true;
+  }
+  if (line.includes('${')) {
+    return true;
+  }
+  if (line.includes('className={[')) {
+    return true;
+  }
   return false
 }
 
@@ -51,12 +57,20 @@ export const rule: Rule<Config> = {
 
       for (let i = 0; i < lines.length; i++) {
         const line = lines[i]
-        if (!line.includes('className=')) continue
-        if (isDynamic(line)) continue
-        if (isConstDeclaration(line)) continue
+        if (!line.includes('className=')) {
+          continue;
+        }
+        if (isDynamic(line)) {
+          continue;
+        }
+        if (isConstDeclaration(line)) {
+          continue;
+        }
 
         const match = CLASS_RE.exec(line)
-        if (!match) continue
+        if (!match) {
+          continue;
+        }
 
         const classValue = match[1]
         if (classValue.length > maxChars) {

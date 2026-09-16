@@ -138,8 +138,12 @@ function formatViolations(results: RuleResult[]): { lines: string[]; errors: num
 		for (const v of result.violations) {
 			const loc = v.line ? `${v.file}:${v.line}` : v.file
 			lines.push(`${loc}  ${v.message}  [${result.ruleId}]`)
-			if (result.severity === 'error') errors++
-			else if (result.severity === 'warning') warnings++
+			if (result.severity === 'error') {
+			  errors++;
+			}
+			else if (result.severity === 'warning') {
+			  warnings++;
+			}
 		}
 	}
 
@@ -169,8 +173,12 @@ async function buildDefaultConfig(projectRoot: string): Promise<ViolationsConfig
 	])
 
 	const projectTags: string[] = ['shared']
-	if (hasTsInSrc || hasTsInRoot) projectTags.push('ts')
-	if (hasTsxInSrc || hasTsxInRoot) projectTags.push('react')
+	if (hasTsInSrc || hasTsInRoot) {
+	  projectTags.push('ts');
+	}
+	if (hasTsxInSrc || hasTsxInRoot) {
+	  projectTags.push('react');
+	}
 
 	return {
 		projectTags,
@@ -223,10 +231,16 @@ async function cmdCheck(args: string[]): Promise<void> {
 		console.log('[ok] 0 violations')
 	} else {
 		const parts: string[] = []
-		if (errors > 0) parts.push(`${errors} error${errors === 1 ? '' : 's'}`)
-		if (warnings > 0) parts.push(`${warnings} warning${warnings === 1 ? '' : 's'}`)
+		if (errors > 0) {
+		  parts.push(`${errors} error${errors === 1 ? '' : 's'}`);
+		}
+		if (warnings > 0) {
+		  parts.push(`${warnings} warning${warnings === 1 ? '' : 's'}`);
+		}
 		const rest = totalViolations - errors - warnings
-		if (rest > 0) parts.push(`${rest} info`)
+		if (rest > 0) {
+		  parts.push(`${rest} info`);
+		}
 		const breakdown = parts.length > 0 ? `  (${parts.join(', ')})` : ''
 		console.log(`${totalViolations} violation${totalViolations === 1 ? '' : 's'}${breakdown}`)
 	}
@@ -267,7 +281,9 @@ async function cmdTest(args: string[]): Promise<void> {
 
 		// Also look for compiled package test
 		const pkgTest = join(__dirname, '..', 'dist', 'rules', `${ruleId}.test.js`)
-		if (existsSync(pkgTest)) testFiles.push(pkgTest)
+		if (existsSync(pkgTest)) {
+		  testFiles.push(pkgTest);
+		}
 	} else if (localOnly) {
 		const localDir = join(dotViolationsDir, 'rules')
 		if (existsSync(localDir)) {
@@ -303,9 +319,13 @@ async function cmdTest(args: string[]): Promise<void> {
 	// This lets compiled tests that import './foo.js' resolve to the cache-compiled rule, not the source .js.
 	const importRedirects = new Map<string, string>()
 	for (const f of testFiles) {
-		if (!f.endsWith('.ts')) continue
+		if (!f.endsWith('.ts')) {
+		  continue;
+		}
 		const ruleSourceTs = f.replace(/\.test\.ts$/, '.ts')
-		if (ruleSourceTs === f || !existsSync(ruleSourceTs)) continue
+		if (ruleSourceTs === f || !existsSync(ruleSourceTs)) {
+		  continue;
+		}
 		const compiledRule = join(cacheDir, 'rules', basename(ruleSourceTs, '.ts') + '.js')
 		await compileIfNeeded(ruleSourceTs, compiledRule, manifestPath, frameworkVersion)
 		// Map the .js file in the rules dir → compiled .js in cache
@@ -332,7 +352,9 @@ async function cmdTest(args: string[]): Promise<void> {
 			const child = spawn(process.execPath, ['--test', file], { stdio: 'inherit' })
 			child.on('close', (c) => resolveP(c ?? 1))
 		})
-		if (code !== 0) failed = true
+		if (code !== 0) {
+		  failed = true;
+		}
 	}
 
 	process.exit(failed ? 1 : 0)
@@ -356,11 +378,15 @@ async function globDir(dir: string, pattern: RegExp): Promise<string[]> {
 // Minimal single-file glob using pattern with wildcards
 async function glob(pattern: string): Promise<string[]> {
 	// Simple: check if file exists literally first
-	if (existsSync(pattern)) return [pattern]
+	if (existsSync(pattern)) {
+	  return [pattern];
+	}
 	// Otherwise check common extensions
 	for (const ext of ['.ts', '.js']) {
 		const candidate = pattern.replace(/\.\*$/, ext)
-		if (existsSync(candidate)) return [candidate]
+		if (existsSync(candidate)) {
+		  return [candidate];
+		}
 	}
 	return []
 }
@@ -556,11 +582,15 @@ async function cmdRulesCreate(name: string, args: string[]): Promise<void> {
 	for (let i = 0; i < args.length; i++) {
 		if (args[i] === '--lang' && args[i + 1]) {
 			const val = args[i + 1]
-			if (val === 'ts' || val === 'js') lang = val
+			if (val === 'ts' || val === 'js') {
+			  lang = val;
+			}
 			i++
 		} else if (args[i]?.startsWith('--lang=')) {
 			const val = args[i].slice('--lang='.length)
-			if (val === 'ts' || val === 'js') lang = val
+			if (val === 'ts' || val === 'js') {
+			  lang = val;
+			}
 		}
 	}
 

@@ -19,7 +19,9 @@ function getVersion(): string {
 	try {
 		const pkgPath = path.join(root, 'package.json');
 		const { version } = JSON.parse(readFileSync(pkgPath, 'utf8'));
-		if (version && version !== '0.0.0') return version;
+		if (version && version !== '0.0.0') {
+		  return version;
+		}
 	} catch { /* ignore */ }
 	// Dev fallback: same format as CI but with HHMMSS so it's clearly local
 	const now = new Date();

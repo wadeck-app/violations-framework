@@ -21,7 +21,9 @@ export const rule: Rule<Config> = {
     const violations: Violation[] = []
     for (const file of files) {
       const rel = file.split('\\').join('/')
-      if (EXCLUDE_RE.test(rel)) continue
+      if (EXCLUDE_RE.test(rel)) {
+        continue;
+      }
       let text: string
       try {
         text = await readFile(file, 'utf8')

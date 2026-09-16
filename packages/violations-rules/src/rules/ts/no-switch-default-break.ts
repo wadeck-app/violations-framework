@@ -27,16 +27,24 @@ export const rule: Rule<Config> = {
         const trimmed = line.trimStart()
 
         // Skip comment lines
-        if (trimmed.startsWith('//') || trimmed.startsWith('*')) continue
+        if (trimmed.startsWith('//') || trimmed.startsWith('*')) {
+          continue;
+        }
 
-        if (!DEFAULT_LABEL_RE.test(line)) continue
+        if (!DEFAULT_LABEL_RE.test(line)) {
+          continue;
+        }
 
         // Only flag standalone switch-case 'default:' labels (starts the trimmed line).
         // Prevents false positives on TypeScript type annotations like `as { default: Type }`.
-        if (!trimmed.startsWith('default:')) continue
+        if (!trimmed.startsWith('default:')) {
+          continue;
+        }
 
         // Skip if this line already contains a throw
-        if (/\bthrow\b/.test(line)) continue
+        if (/\bthrow\b/.test(line)) {
+          continue;
+        }
 
         // Single-line: default: break; or default: return ...;
         if (SINGLE_LINE_BREAK_RE.test(line)) {
@@ -53,7 +61,9 @@ export const rule: Rule<Config> = {
         let checked = 0
         for (let j = i + 1; j < lines.length && checked < 4; j++) {
           const next = lines[j].trim()
-          if (next === '' || next === '{') continue
+          if (next === '' || next === '{') {
+            continue;
+          }
           checked++
           if (next.startsWith('throw')) {
             // throw found - OK, no violation

@@ -25,12 +25,16 @@ export const rule: Rule<Config> = {
       } catch {
         continue
       }
-      if (!pattern.test(text)) continue
+      if (!pattern.test(text)) {
+        continue;
+      }
       const lines = text.split(/\r?\n/)
       for (let i = 0; i < lines.length; i++) {
         const line = lines[i]
         const trimmed = line.trimStart()
-        if (trimmed.startsWith('//') || trimmed.startsWith('*')) continue
+        if (trimmed.startsWith('//') || trimmed.startsWith('*')) {
+          continue;
+        }
         if (pattern.test(line)) {
           violations.push({ file, line: i + 1, message: 'Use Tween.Delay(...) instead of Task.Delay(...).' })
         }

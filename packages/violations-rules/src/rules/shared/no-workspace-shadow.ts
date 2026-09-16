@@ -29,7 +29,9 @@ async function resolveWorkspacePackages(
       try {
         const raw = await readFile(pkgJsonPath, 'utf8')
         const pkg = JSON.parse(raw) as PackageJson
-        if (pkg.name) nameToDir.set(pkg.name, pkgDir)
+        if (pkg.name) {
+          nameToDir.set(pkg.name, pkgDir);
+        }
       } catch {
         // not a package dir
       }
@@ -62,7 +64,9 @@ export const rule: Rule<Config> = {
         continue
       }
 
-      if (!pkg.workspaces) continue
+      if (!pkg.workspaces) {
+        continue;
+      }
 
       const rootDir = dirname(file)
       const workspacesGlobs = Array.isArray(pkg.workspaces)
@@ -73,7 +77,9 @@ export const rule: Rule<Config> = {
 
       for (const [pkgName, pkgDir] of workspacePackages) {
         for (const [, otherDir] of workspacePackages) {
-          if (otherDir === pkgDir) continue
+          if (otherDir === pkgDir) {
+            continue;
+          }
           const shadowPath = join(otherDir, 'node_modules', pkgName)
           let stat
           try {
@@ -81,7 +87,9 @@ export const rule: Rule<Config> = {
           } catch {
             continue
           }
-          if (stat.isSymbolicLink()) continue
+          if (stat.isSymbolicLink()) {
+            continue;
+          }
           violations.push({
             file,
             line: 1,

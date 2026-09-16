@@ -11,7 +11,9 @@ const NAMESPACE_ALLMAN_HEADER = /^\s*namespace\s+[A-Za-z_][A-Za-z0-9_.]*\s*(\/\/
 function isFollowedByOpenBrace(lines: string[], headerIndex: number): boolean {
   for (let j = headerIndex + 1; j < lines.length; j++) {
     const trimmed = lines[j].trim()
-    if (trimmed === '' || trimmed.startsWith('//')) continue
+    if (trimmed === '' || trimmed.startsWith('//')) {
+      continue;
+    }
     return trimmed.startsWith('{')
   }
   return false
@@ -26,7 +28,9 @@ export const rule: Rule<Config> = {
     const violations: Violation[] = []
     for (const file of files) {
       // Exclude _generated/ dirs
-      if (file.includes('/_generated/') || file.includes('\\_generated\\')) continue
+      if (file.includes('/_generated/') || file.includes('\\_generated\\')) {
+        continue;
+      }
       let text: string
       try {
         text = await readFile(file, 'utf8')

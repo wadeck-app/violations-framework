@@ -137,10 +137,16 @@ export async function run(options: RunOptions): Promise<RuleResult[]> {
 	// for no-dead-suppress validation. Caching avoids a second compile+import in Promise.all.
 	const localRuleCache = new Map<string, Rule>()
 	for (const [ruleKey, override] of Object.entries(mergedRules)) {
-		if (!ruleKey.startsWith('./') && !ruleKey.startsWith('../')) continue
-		if (isDisabled(override)) continue
+		if (!ruleKey.startsWith('./') && !ruleKey.startsWith('../')) {
+		  continue;
+		}
+		if (isDisabled(override)) {
+		  continue;
+		}
 		const r = await loadRule(ruleKey, projectRoot, cacheDir, manifestPath, frameworkVersion)
-		if (r) localRuleCache.set(ruleKey, r)
+		if (r) {
+		  localRuleCache.set(ruleKey, r);
+		}
 	}
 	const activeRuleIds: string[] = [
 		...Object.entries(mergedRules)
@@ -152,13 +158,17 @@ export async function run(options: RunOptions): Promise<RuleResult[]> {
 
 	await Promise.all(
 		Object.entries(mergedRules).map(async ([ruleKey, override]) => {
-			if (isDisabled(override)) return
+			if (isDisabled(override)) {
+			  return;
+			}
 
 			const isLocal = ruleKey.startsWith('./') || ruleKey.startsWith('../')
 			const rule = isLocal
 				? (localRuleCache.get(ruleKey) ?? await loadRule(ruleKey, projectRoot, cacheDir, manifestPath, frameworkVersion))
 				: await loadRule(ruleKey, projectRoot, cacheDir, manifestPath, frameworkVersion)
-			if (!rule) return
+			if (!rule) {
+			  return;
+			}
 
 			// Determine effective severity
 			const effectiveSeverity =

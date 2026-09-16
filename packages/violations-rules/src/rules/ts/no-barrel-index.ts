@@ -13,7 +13,9 @@ export const rule: Rule<Config> = {
     const violations: Violation[] = []
     for (const file of files) {
       const name = basename(file)
-      if (name !== 'index.ts' && name !== 'index.tsx') continue
+      if (name !== 'index.ts' && name !== 'index.tsx') {
+        continue;
+      }
       violations.push({
         file,
         line: 1,

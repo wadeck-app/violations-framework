@@ -15,7 +15,9 @@ function isAtomic(text: string): boolean {
  * Scans up to 3 following lines for a type= attribute; no type = defaults to text (banned).
  */
 function isBannedInputBlock(lines: string[], idx: number): boolean {
-  if (!lines[idx].includes('<input')) return false
+  if (!lines[idx].includes('<input')) {
+    return false;
+  }
   const chunk = lines.slice(idx, idx + 4).join(' ')
   const typeMatch = chunk.match(/type\s*=\s*["']([^"']*)["']/)
   if (!typeMatch) {
@@ -43,10 +45,14 @@ export const rule: Rule<Config> = {
       }
 
       const lines = text.split('\n')
-      if (isAtomic(text)) continue
+      if (isAtomic(text)) {
+        continue;
+      }
 
       for (let i = 0; i < lines.length; i++) {
-        if (!isBannedInputBlock(lines, i)) continue
+        if (!isBannedInputBlock(lines, i)) {
+          continue;
+        }
         violations.push({
           file,
           line: i + 1,

@@ -22,12 +22,16 @@ export const rule: Rule<Config> = {
       } catch {
         continue
       }
-      if (!text.includes('Quaternion.identity')) continue
+      if (!text.includes('Quaternion.identity')) {
+        continue;
+      }
       const lines = text.split(/\r?\n/)
       for (let i = 0; i < lines.length; i++) {
         const line = lines[i]
         const trimmed = line.trimStart()
-        if (trimmed.startsWith('//') || trimmed.startsWith('*')) continue
+        if (trimmed.startsWith('//') || trimmed.startsWith('*')) {
+          continue;
+        }
         if (PATTERN.test(line)) {
           violations.push({
             file,

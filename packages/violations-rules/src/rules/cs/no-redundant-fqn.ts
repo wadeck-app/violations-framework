@@ -48,10 +48,14 @@ export const rule: Rule<Config> = {
           ifStack.pop()
           continue
         }
-        if (ifStack.some(c => c === 'UNITY_EDITOR')) continue
+        if (ifStack.some(c => c === 'UNITY_EDITOR')) {
+          continue;
+        }
 
         if (inBlockComment) {
-          if (raw.includes('*/')) inBlockComment = false
+          if (raw.includes('*/')) {
+            inBlockComment = false;
+          }
           continue
         }
         if (raw.includes('/*') && !raw.includes('*/')) {
@@ -60,7 +64,9 @@ export const rule: Rule<Config> = {
         }
 
         // Skip line comments and using directives
-        if (trimmed.startsWith('//') || trimmed.startsWith('using ')) continue
+        if (trimmed.startsWith('//') || trimmed.startsWith('using ')) {
+          continue;
+        }
 
         // Strip trailing line comment before scanning
         const commentIdx = raw.indexOf('//')
@@ -71,15 +77,21 @@ export const rule: Rule<Config> = {
         const suppressed =
           raw.includes('violations-suppress: cs/no-redundant-fqn') ||
           suppressLine.includes('violations-suppress: cs/no-redundant-fqn')
-        if (suppressed) continue
+        if (suppressed) {
+          continue;
+        }
 
         FQN_REGEX.lastIndex = 0
         let match: RegExpExecArray | null
         while ((match = FQN_REGEX.exec(scanLine)) !== null) {
           const fqn = match[1]
-          if (!fqn.startsWith('System.') && !fqn.startsWith('UnityEngine.')) continue
+          if (!fqn.startsWith('System.') && !fqn.startsWith('UnityEngine.')) {
+            continue;
+          }
           // UnityEditor FQNs are intentional
-          if (fqn.startsWith('UnityEditor.')) continue
+          if (fqn.startsWith('UnityEditor.')) {
+            continue;
+          }
           violations.push({ file, line: i + 1, message: `Redundant FQN \`${fqn}\` - use the short name instead.` })
         }
       }

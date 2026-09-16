@@ -30,11 +30,15 @@ export async function walk(
 		for (const entry of entries) {
 			const full = join(current, entry.name)
 			const rel = relative(dir, full).split('\\').join('/')
-			if (micromatch.isMatch(rel, allExcludes)) continue
+			if (micromatch.isMatch(rel, allExcludes)) {
+			  continue;
+			}
 			if (entry.isDirectory()) {
 				await visit(full)
 			} else if (entry.isFile()) {
-				if (options.extensions.length > 0 && !options.extensions.some(ext => entry.name.endsWith(ext))) continue
+				if (options.extensions.length > 0 && !options.extensions.some(ext => entry.name.endsWith(ext))) {
+				  continue;
+				}
 				results.push(full.split('\\').join('/'))
 			}
 		}

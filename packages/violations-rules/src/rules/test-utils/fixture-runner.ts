@@ -11,8 +11,12 @@ function collectFixtures(dir: string): string[] {
   const result: string[] = []
   for (const entry of entries) {
     const abs = join(dir, entry.name)
-    if (entry.isDirectory()) result.push(...collectFixtures(abs))
-    else if (entry.name.endsWith('.cs') && !entry.name.endsWith('.cs.expected')) result.push(abs)
+    if (entry.isDirectory()) {
+      result.push(...collectFixtures(abs));
+    }
+    else if (entry.name.endsWith('.cs') && !entry.name.endsWith('.cs.expected')) {
+      result.push(abs);
+    }
   }
   return result
 }

@@ -20,14 +20,20 @@ export const rule: Rule<Config> = {
       } catch {
         continue
       }
-      if (!text.includes('.ToString()')) continue
+      if (!text.includes('.ToString()')) {
+        continue;
+      }
       const lines = text.split(/\r?\n/)
       for (let i = 0; i < lines.length; i++) {
         const line = lines[i]
         const trimmed = line.trimStart()
-        if (trimmed.startsWith('//') || trimmed.startsWith('*')) continue
+        if (trimmed.startsWith('//') || trimmed.startsWith('*')) {
+          continue;
+        }
         // Exclude debug/log lines and padding operations
-        if (trimmed.includes('Debug.Log') || trimmed.includes('.PadLeft(') || trimmed.includes('.PadRight(')) continue
+        if (trimmed.includes('Debug.Log') || trimmed.includes('.PadLeft(') || trimmed.includes('.PadRight(')) {
+          continue;
+        }
         if (TYPED_PATTERN.test(line) || VAR_PATTERN.test(line)) {
           violations.push({ file, line: i + 1, message: 'Use NumberFormatter.Format() instead of .ToString() for numeric values displayed in UI.' })
         }

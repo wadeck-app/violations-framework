@@ -15,7 +15,9 @@ export const rule: Rule<Config> = {
     for (const file of files) {
       // Only files whose path has a 'logic' segment
       const parts = file.split(/[/\\]/)
-      if (!parts.includes('logic')) continue
+      if (!parts.includes('logic')) {
+        continue;
+      }
       let text: string
       try {
         text = await readFile(file, 'utf8')

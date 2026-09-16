@@ -27,7 +27,9 @@ export const rule: Rule<Config> = {
       const lines = text.split('\n')
       for (let i = 0; i < lines.length; i++) {
         const m = EXPORT_HOOK_RE.exec(lines[i])
-        if (!m) continue
+        if (!m) {
+          continue;
+        }
         violations.push({
           file,
           line: i + 1,

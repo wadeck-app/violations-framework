@@ -20,14 +20,22 @@ export const rule: Rule<Config> = {
       } catch {
         continue
       }
-      if (!FLAG_PATTERN.test(text)) continue
+      if (!FLAG_PATTERN.test(text)) {
+        continue;
+      }
       const lines = text.split(/\r?\n/)
       for (let i = 0; i < lines.length; i++) {
         const line = lines[i]
         const trimmed = line.trimStart()
-        if (trimmed.startsWith('//') || trimmed.startsWith('*') || trimmed.startsWith('///')) continue
-        if (!FLAG_PATTERN.test(line)) continue
-        if (SAFE_PATTERN.test(line)) continue
+        if (trimmed.startsWith('//') || trimmed.startsWith('*') || trimmed.startsWith('///')) {
+          continue;
+        }
+        if (!FLAG_PATTERN.test(line)) {
+          continue;
+        }
+        if (SAFE_PATTERN.test(line)) {
+          continue;
+        }
         violations.push({ file, line: i + 1, message: 'Use StringHelper.Split(...) instead of .Split(...) - some overloads throw MissingMethodException under Unity Mono.' })
       }
     }

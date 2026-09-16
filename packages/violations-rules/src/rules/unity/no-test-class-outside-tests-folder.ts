@@ -14,7 +14,9 @@ export const rule: Rule<Config> = {
     const violations: Violation[] = []
     for (const file of files) {
       const segments = file.split(/[/\\]/)
-      if (segments.includes('_tests')) continue
+      if (segments.includes('_tests')) {
+        continue;
+      }
       let text: string
       try {
         text = await readFile(file, 'utf8')

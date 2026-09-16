@@ -18,7 +18,9 @@ export const rule: Rule<Config> = {
     const violations: Violation[] = []
 
     for (const file of files) {
-      if (file.includes('.test.') || file.includes('.spec.')) continue
+      if (file.includes('.test.') || file.includes('.spec.')) {
+        continue;
+      }
 
       let text: string
       try {
@@ -30,11 +32,15 @@ export const rule: Rule<Config> = {
       const lines = text.split('\n')
 
       for (let i = 0; i < lines.length; i++) {
-        if (!SPAWN_CALL_RE.test(lines[i])) continue
+        if (!SPAWN_CALL_RE.test(lines[i])) {
+          continue;
+        }
 
         // Scan current line + next 8 lines to capture multi-line options objects
         const block = lines.slice(i, i + 9).join('\n')
-        if (WINDOWS_HIDE_RE.test(block)) continue
+        if (WINDOWS_HIDE_RE.test(block)) {
+          continue;
+        }
 
         violations.push({
           file,

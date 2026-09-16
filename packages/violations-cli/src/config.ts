@@ -22,7 +22,9 @@ export function loadUserConfig(configDir?: string): UserConfig {
 	const resolvedDir = configDir ?? ConfigDir.get('violations')
 	const configFile = path.join(resolvedDir, 'config.yml')
 
-	if (!fs.existsSync(configFile)) return DEFAULTS
+	if (!fs.existsSync(configFile)) {
+	  return DEFAULTS;
+	}
 
 	try {
 		const raw = fs.readFileSync(configFile, 'utf-8')

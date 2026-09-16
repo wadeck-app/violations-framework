@@ -16,7 +16,9 @@ export const rule: Rule<Config> = {
   async check(files: string[], _config: Config): Promise<Violation[]> {
     const violations: Violation[] = []
     for (const file of files) {
-      if (SKIP_SUFFIXES.some((suffix) => file.endsWith(suffix))) continue
+      if (SKIP_SUFFIXES.some((suffix) => file.endsWith(suffix))) {
+        continue;
+      }
 
       let text: string
       try {
@@ -26,7 +28,9 @@ export const rule: Rule<Config> = {
       }
 
       const matches = text.match(COMPONENT_FN_RE)
-      if (!matches || matches.length < 2) continue
+      if (!matches || matches.length < 2) {
+        continue;
+      }
 
       violations.push({
         file,

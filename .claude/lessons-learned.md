@@ -4,6 +4,9 @@
 
 ## Recurring feedback
 
+<!-- session 01cadb55 2026-09-16 -->
+- When adding a new `ts/*` rule, always validate the repo using `node packages/violations-cli/dist/cli.js check` (the local build) BEFORE committing — not `violations check` (the globally installed CLI, which lacks the new rule). Otherwise CI fails its own self-check with N violations in this repo.
+
 <!-- session 1d5f66b0 2026-09-16 -->
 - Avoid sleep-based polling for CI status. Session used multiple `sleep 15/20/8` waits for GitHub Actions instead of ScheduleWakeup or `poll-ci` skill. This is wasteful and brittle.
 - Sequential rapid-fire Edit operations (16+ edits to 2 files in ~20 seconds) should be batched—read once, construct changes in memory, write/edit fewer times. Reduces tool call overhead.
