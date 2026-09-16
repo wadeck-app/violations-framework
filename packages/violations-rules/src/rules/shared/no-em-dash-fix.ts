@@ -35,7 +35,7 @@ type FileProposal = { file: string; changes: Change[]; skipped: Skipped[] }
 const SCOPED_EXTS = new Set(['.ts', '.tsx', '.js', '.cs', '.yaml', '.shader'])
 const ALL_EXTS = new Set([...SCOPED_EXTS, '.md'])
 // violations-suppress: shared/no-em-dash intentional - regex contains the characters it matches
-const DASH_RE = /[—–]/g
+const DASH_RE = /[—–·‧•‣›»…]/g
 const SKIP_DIRS = new Set(['node_modules', '.git', 'dist', 'dist-bundle', '.violations'])
 
 // --- Helpers ---
@@ -80,7 +80,7 @@ function processFile(content: string, file: string): { fixed: string; changes: C
       skipped.push({
         line: i + 1,
         content: line,
-        reason: 'non-comment line - dash may be intentional user-visible text',
+        reason: 'non-comment line - separator may be intentional user-visible text',
       })
       return line
     }

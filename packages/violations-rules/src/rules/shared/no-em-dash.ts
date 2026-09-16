@@ -4,9 +4,11 @@ import type { Rule, Violation } from '../types.js'
 export type Config = Record<never, never>
 
 // violations-suppress: shared/no-em-dash intentional test fixture
-// U+2014 em-dash and U+2013 en-dash — both forbidden
+// U+2014 em-dash, U+2013 en-dash, U+00B7 middle-dot, U+2027 hyphenation-point,
+// U+2022 bullet, U+2023 triangular-bullet, U+203A single angle quote,
+// U+00BB double angle quote, U+2026 ellipsis - all forbidden (AI-generated decorators)
 // violations-suppress: shared/no-em-dash intentional test fixture
-const DASH_RE = /[—–]/
+const DASH_RE = /[—–·‧•‣›»…]/
 
 export const rule: Rule<Config> = {
   id: 'shared/no-em-dash',
@@ -32,7 +34,7 @@ export const rule: Rule<Config> = {
           file,
           line: i + 1,
           // violations-suppress: shared/no-em-dash intentional test fixture
-          message: 'Em-dash or en-dash found — replace with a plain hyphen',
+          message: 'Typographic decorator found (dash, middle-dot, bullet, angle-quote, or ellipsis) — replace with plain ASCII',
         })
       }
     }

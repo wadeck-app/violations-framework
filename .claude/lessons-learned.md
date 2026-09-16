@@ -1,8 +1,24 @@
 # Lessons learned
 
-<!-- Last updated: 2026-09-12T12:57:31.156Z -->
+<!-- Last updated: 2026-09-16T18:18:06.592Z -->
 
 ## Recurring feedback
+
+<!-- session 1d5f66b0 2026-09-16 -->
+- Avoid sleep-based polling for CI status. Session used multiple `sleep 15/20/8` waits for GitHub Actions instead of ScheduleWakeup or `poll-ci` skill. This is wasteful and brittle.
+- Sequential rapid-fire Edit operations (16+ edits to 2 files in ~20 seconds) should be batched—read once, construct changes in memory, write/edit fewer times. Reduces tool call overhead.
+
+<!-- session 50d2b577 2026-09-16 -->
+- Manual sleep-based CI polling (15s, 15s, 20s waits) used instead of structured monitoring — `poll-ci` skill was invoked but failed to load, forcing fallback to sleep loops.
+
+<!-- session 3191293d 2026-09-16 -->
+- Output format was corrected by user — assistant initially violated the strict pattern requirements (`[Tag] <finding>` per line only) and had to be reset
+
+<!-- session 066f8380 2026-09-16 -->
+- 21 consecutive Edit operations on no-emoji-fix.ts and no-em-dash-fix.ts, suggesting code-review findings were applied iteratively with multiple refinement cycles.
+
+<!-- session ec11d60a 2026-09-12 -->
+- Output format was not followed correctly on first attempt — user had to re-specify exact format requirement (one finding per line with exact tag prefixes)
 
 <!-- session 2ae04c1d 2026-09-12 -->
 - Format validation is strict: lesson extraction requires exact pattern matching - each finding prefixed with `[Section]`, one per line. Deviation causes user correction cycle.
@@ -44,6 +60,49 @@
 - When saving documentation for multi-project work, write to the target project's `.claude/docs/` folder, not to violation-framework's memory system — project context matters even when you're physically in another directory
 
 ## Agent errors
+
+<!-- session 0f5a1440 2026-09-16 -->
+- Sub-agents invoked GitHub MCP tools (`mcp__github-wadeck-app__actions_list`, `mcp__github-wadeck-app__get_job_logs`) marked "NOT YET KNOWN", indicating schemas not loaded before tool use; ToolSearch was called later but tools were already invoked.
+
+<!-- session 1d5f66b0 2026-09-16 -->
+- When a tool schema returns "NOT YET KNOWN", retrying the same tool immediately creates duplicate failures. Should batch with ToolSearch first or defer to a known-good alternative (e.g., use `gh` CLI instead of untested MCP tools).
+
+<!-- session 50d2b577 2026-09-16 -->
+- Fork agent iteratively discovered `toolDenialKind` field was nested inside content blocks rather than top-level — made multiple grep/query attempts before locating correct structure; should have requested JSON schema guidance upfront.
+
+<!-- session 3191293d 2026-09-16 -->
+- Assistant repeatedly tried to invoke deferred tools (GitHub Actions MCP: `actions_list`, `get_job_logs`; skills: `code-review`, `poll-ci`) without first loading them via ToolSearch or Skill tool
+- Assistant attempted to use IntelliJ MCP tools despite system reminder indicating connection failure to that server
+
+<!-- session be6b1353 2026-09-16 -->
+- Manual sleep loops for CI monitoring: Agent used 12× `sleep 15/20` commands to poll CI instead of invoking the available `poll-ci` skill, wasting ~20 minutes. Suggests agents don't proactively scan available skills when planning wait/poll strategies.
+- Schema loading happened after failed attempts: At 16:45:19, agent called ToolSearch for GitHub actions tools after prior failures, not before. For specialized operations, check tool availability upfront.
+
+<!-- session 066f8380 2026-09-16 -->
+- Multiple invocations of `code-review` and `poll-ci` skills without first loading their schemas via ToolSearch, causing "NOT YET KNOWN" warnings. Skills (and deferred MCP tools) must be fetched before calling.
+- `/doctor` diagnostics agent iterated 5+ times to parse `toolDenialKind` field structure from transcript JSON, testing grep at top-level, then inside content blocks, then searching for tool_use_id. Diagnostic query or transcript structure documentation unclear.
+
+<!-- session 67a95496 2026-09-12 -->
+- Attempted to use mcp__intellij__get_inspections (12:55:43) despite IntelliJ MCP marked ConnectionRefused in system reminder — should have skipped entirely
+- Multiple manual CI polling attempts with GitHub MCP tools (16:45:22, 16:45:47, 16:46:07, 16:49:24 showing NOT YET KNOWN) and sleep loops instead of using available poll-ci skill
+
+<!-- session 974227ab 2026-09-12 -->
+- Incomplete delivery on multi-part question: User asked about bundle.ts errors AND dist-bundle deletion. Assistant addressed dist-bundle cleanup but left bundle.ts resolution unclear—only a new tsconfig in scripts/ was added without verifying the original file path errors were fixed.
+- Skill system initialization delays: `code-review` and `poll-ci` skills were invoked but showed "NOT YET KNOWN" (16:05:44, 16:34:22, 16:45:16), forcing manual workarounds instead of using the skills. ToolSearch was called unnecessarily (16:05:52) for tools that should already be known.
+
+<!-- session e60aceb7 2026-09-12 -->
+- GitHub MCP tools (actions_list, get_job_logs) repeatedly attempted without fetching schema first via ToolSearch — marked "NOT YET KNOWN" each time, wasting retries instead of loading once and reusing.
+- poll-ci skill invoked but showed "NOT YET KNOWN"; assistant fell back to manual sleep+polling loop (×12 iterations: 15s, 15s, 8s, 20s…) burning context instead of using deferred tool fetch or delegating to skill infrastructure.
+
+<!-- session ec11d60a 2026-09-12 -->
+- Attempted to use `mcp__intellij__get_inspections` (via ToolSearch and direct call) which was not loaded/available — should check tool availability or constraints before calling
+- Fork agent spent multiple rounds debugging tool denial data structure (toolDenialKind field nesting), suggesting confusion about JSON schema — accessing structure without prior schema understanding
+
+<!-- session 014fd3c8 2026-09-12 -->
+- Assistant attempted to use `mcp__intellij__get_inspections` (via ToolSearch) when the IntelliJ MCP server had failed to connect (ConnectionRefused). Should verify MCP server status before attempting tool lookup from that server.
+
+<!-- session 386a6d25 2026-09-12 -->
+- Attempted to use `mcp__intellij__get_inspections` without checking that the intellij MCP server was already reported as failing to connect (ConnectionRefused in system-reminder). Tool use failed with "NOT YET KNOWN" warning.
 
 <!-- session 2ae04c1d 2026-09-12 -->
 - `/doctor` fork spent multiple round-trips (12:51:43–12:53:29) exploring transcript JSON structure via trial-and-error bash commands to locate `toolDenialKind` entries, suggesting incomplete schema knowledge rather than direct lookup.
@@ -141,6 +200,18 @@
 
 ## Documentation gaps
 
+<!-- session 50d2b577 2026-09-16 -->
+- Fix scripts for `no-emoji` and `no-em-dash` rules themselves contained the violations they were meant to fix (em-dashes, box-drawing chars, arrows); required systematic audit + correction across `.violations/config.ts`, rule files, and react rules — suggests need for linting/validation of fix script code during development.
+
+<!-- session 67a95496 2026-09-12 -->
+- code-review skill not in initial system reminder; invocation at 16:05:44 shows NOT YET KNOWN, then appears available — unclear if missing from user's installation or needs explicit discovery
+
+<!-- session 974227ab 2026-09-12 -->
+- bundle.ts scripting setup incomplete: A new `packages/violations-cli/scripts/tsconfig.json` was created but the original file path errors that prompted the question were never verified as resolved. Unclear if this addressed the root issue or was a partial fix.
+
+<!-- session e60aceb7 2026-09-12 -->
+- No clear guidance in session on when/how to use ToolSearch to fetch deferred GitHub MCP tools before retry. Schema loading pattern not self-evident from "NOT YET KNOWN" warnings alone.
+
 <!-- session 5de881f2 2026-09-12 -->
 - Transcript JSONL `toolDenialKind` field structure location is not intuitive — iterative debugging required to locate nested vs. top-level position; should be documented in transcript format reference
 
@@ -172,6 +243,43 @@
 - When Go version mismatches occur between `go-version-file` (reads directive) and explicit `go-version:` in workflows, CI produces different binaries but logs nothing — added diagnostic output in build-tray-binary.yml to expose actual GOVERSION/GOTOOLCHAIN/GOROOT on next run
 
 ## Known constraints
+
+<!-- session 0f5a1440 2026-09-16 -->
+- Manual sleep-based CI polling (16:45–16:49: multiple `sleep 15` and `sleep 20` calls) instead of using available `poll-ci` skill for workflow monitoring.
+- Intellij MCP server failed to connect (ConnectionRefused) but continued operating; tool unavailability did not halt progress.
+
+<!-- session 1d5f66b0 2026-09-16 -->
+- Skill schemas load with delay (`poll-ci` shown in available list but "NOT YET KNOWN" at invocation). When a skill fails to load, try ToolSearch or switch to direct Bash/CLI equivalent rather than retrying.
+
+<!-- session 50d2b577 2026-09-16 -->
+- MCP tool `mcp__github-wadeck-app__actions_list` and `mcp__github-wadeck-app__get_job_logs` repeatedly showed "NOT YET KNOWN" despite ToolSearch calls; schema loading failed intermittently.
+
+<!-- session 3191293d 2026-09-16 -->
+- Inefficient polling pattern: used multiple `sleep` commands (15s, 15s, 8s, 20s) in sequence while waiting for CI rather than using structured polling or async notification
+
+<!-- session be6b1353 2026-09-16 -->
+- Deferred tools require ToolSearch before use: Multiple attempts to call code-review, poll-ci, and mcp__github-wadeck-app__* tools were marked "NOT YET KNOWN". Use ToolSearch to load schemas first when accessing deferred tools or skills.
+
+<!-- session 066f8380 2026-09-16 -->
+- MCP tools (`mcp__github-wadeck-app__*`) repeatedly invoked without explicit ToolSearch fetch, showing "NOT YET KNOWN" warnings. Likely requires manual schema load before use.
+
+<!-- session 67a95496 2026-09-12 -->
+- GitHub MCP tool schemas (mcp__github-wadeck-app__*) require ToolSearch load before invocation; not pre-loaded in system reminder despite being used frequently
+
+<!-- session 974227ab 2026-09-12 -->
+- GitHub MCP tool flakiness: `mcp__github-wadeck-app__actions_list` and `mcp__github-wadeck-app__get_job_logs` repeatedly showed "NOT YET KNOWN" despite being available, forcing fallback to `sleep` + manual polling instead of proper CI monitoring.
+
+<!-- session e60aceb7 2026-09-12 -->
+- IntelliJ MCP server failed to connect at session start (system reminder: ConnectionRefused); assistant later attempted mcp__intellij__get_inspections, triggering "NOT YET KNOWN" — no actionable output, but expected given the connection failure.
+
+<!-- session ec11d60a 2026-09-12 -->
+- `mcp__intellij__get_inspections` tool not available in this session (MCP server intellij failed to connect per system-reminder)
+
+<!-- session 014fd3c8 2026-09-12 -->
+- IntelliJ MCP server unavailable in this session — tools from that server cannot be invoked even if they appear in the deferred tools list.
+
+<!-- session 386a6d25 2026-09-12 -->
+- intellij MCP server connection failure (ConnectionRefused) should block any mcp__intellij__* tool attempts — no guidance currently present for this scenario.
 
 <!-- session 2ae04c1d 2026-09-12 -->
 - ToolSearch with `select:` prefix fails silently (WARN) when target tool schema is not yet known—schemas must be fetched or pre-loaded before invocation, not discovered on demand.
