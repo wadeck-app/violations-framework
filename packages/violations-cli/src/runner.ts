@@ -200,10 +200,18 @@ export async function run(options: RunOptions): Promise<RuleResult[]> {
 				return micromatch.isMatch(rel, scopePatterns)
 			})
 
-			// Intersect with options.files if provided
+			// Intersect with options.files if provided. Compared case-insensitively
+			// on Windows: walkedFiles carries whatever casing walk()/projectRoot
+			// happened to use, and an absolute path handed in via --files (as
+			// opposed to one resolved relative to projectRoot by the CLI) can
+			// legitimately differ only in case while still being the same file.
 			if (options.files && options.files.length > 0) {
-				const filesSet = new Set(options.files.map(f => f.split('\\').join('/')))
-				walkedFiles = walkedFiles.filter(f => filesSet.has(f))
+				const normalize = (f: string) => {
+					const slash = f.split('\\').join('/')
+					return process.platform === 'win32' ? slash.toLowerCase() : slash
+				}
+				const filesSet = new Set(options.files.map(normalize))
+				walkedFiles = walkedFiles.filter(f => filesSet.has(normalize(f)))
 			}
 
 			if (walkedFiles.length === 0) {

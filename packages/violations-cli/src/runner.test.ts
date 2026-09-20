@@ -176,3 +176,54 @@ describe('runner integration', () => {
 		assert.equal(result.violations[0].message, 'found VIOLATE keyword')
 	})
 })
+
+// Regression tests for the options.files intersection bug: relative paths and
+// case differences used to silently produce 0 files checked instead of an
+// error or a correct match. cli.ts resolves relative --files entries to
+// absolute paths before calling run(), so these tests exercise run() with
+// the absolute paths it actually receives in production.
+describe('runner integration - options.files intersection', () => {
+	let tempDir: string
+
+	before(async () => {
+		tempDir = await mkdtemp(join(tmpdir(), 'violations-files-test-'))
+		await mkdir(join(tempDir, '.violations', 'rules'), { recursive: true })
+		await mkdir(join(tempDir, 'src'), { recursive: true })
+		await writeFile(join(tempDir, 'src', 'violation.txt'), 'VIOLATE this line\n')
+		await writeFile(join(tempDir, 'src', 'clean.txt'), 'nothing to see here\n')
+		await writeFile(join(tempDir, '.violations', 'rules', 'test-rule.js'), TEST_RULE_JS)
+		await writeFile(join(tempDir, '.violations', 'config.ts'), CONFIG_TS)
+	})
+
+	after(async () => {
+		await rm(tempDir, { recursive: true, force: true })
+	})
+
+	it('an absolute path matching walk() casing exactly is checked', async () => {
+		const results = await run({ projectRoot: tempDir, files: [join(tempDir, 'src', 'violation.txt')] })
+		const result = results.find(r => r.ruleId === 'test-rule')
+		assert.equal(result?.counts.violations, 1)
+	})
+
+	it('intersecting with only the clean file finds 0 violations even though violation.txt exists', async () => {
+		const results = await run({ projectRoot: tempDir, files: [join(tempDir, 'src', 'clean.txt')] })
+		const result = results.find(r => r.ruleId === 'test-rule')
+		assert.equal(result?.counts.violations, 0, 'the violating file must be excluded by the files filter')
+	})
+
+	it('a path differing only by case still matches (Windows case-insensitivity)', async () => {
+		if (process.platform !== 'win32') {
+			return // case-sensitive filesystems: not applicable
+		}
+		const upper = join(tempDir, 'src', 'violation.txt').toUpperCase()
+		const results = await run({ projectRoot: tempDir, files: [upper] })
+		const result = results.find(r => r.ruleId === 'test-rule')
+		assert.equal(result?.counts.violations, 1, 'case-only difference must not cause a silent 0-file miss')
+	})
+
+	it('a path that does not exist under the project simply matches nothing (validation is the CLI layer\'s job)', async () => {
+		const results = await run({ projectRoot: tempDir, files: [join(tempDir, 'src', 'does-not-exist.txt')] })
+		const result = results.find(r => r.ruleId === 'test-rule')
+		assert.equal(result?.counts.violations, 0)
+	})
+})

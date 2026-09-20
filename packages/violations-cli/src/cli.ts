@@ -66,10 +66,15 @@ Concepts:
   check     Runs enabled rules; exit code equals the number of violations found
 
 Usage:
-  violations check [--staged] [--files <path,...>]
+  violations check [--staged] [--files <path> [<path> ...]]
                               Scan files against all enabled rules
                               --staged: only git-staged files (git diff --cached)
-                              --files:  comma-separated file paths to check
+                              --files:  file paths to check - comma-separated
+                                        ("a,b"), space-separated ("a" "b"), or
+                                        repeated (--files a --files b). Relative
+                                        paths resolve against the project root.
+                                        Any path that does not exist errors out
+                                        instead of silently checking 0 files.
 
   violations test [--rule <id>] [--local]
                               Run rule unit tests
@@ -200,12 +205,56 @@ async function cmdCheck(args: string[]): Promise<void> {
 	for (let i = 0; i < args.length; i++) {
 		if (args[i] === '--staged') {
 			staged = true
-		} else if (args[i] === '--files' && args[i + 1]) {
-			files = args[i + 1].split(',').map(f => f.trim())
-			i++
-		} else if (args[i]?.startsWith('--files=')) {
-			files = args[i].slice('--files='.length).split(',').map(f => f.trim())
+		} else if (args[i] === '--files' || args[i]?.startsWith('--files=')) {
+			const collected: string[] = []
+			if (args[i]?.startsWith('--files=')) {
+				collected.push(...args[i].slice('--files='.length).split(',').map(f => f.trim()).filter(Boolean))
+			} else {
+				// Space-separated form: consume every following token up to the
+				// next --flag. Each token may itself be comma-separated.
+				while (i + 1 < args.length && !args[i + 1].startsWith('--')) {
+					collected.push(...args[i + 1].split(',').map(f => f.trim()).filter(Boolean))
+					i++
+				}
+			}
+			if (collected.length === 0) {
+				console.error('Error: --files requires at least one file path')
+				process.exit(1)
+			}
+			// Accumulate across repeated --files flags instead of overwriting -
+			// `--files A --files B` used to silently drop A.
+			files = [...(files ?? []), ...collected]
+		} else {
+			// Unknown flag, or a bare positional arg outside of a --files run
+			// (the normal space-separated `--files A B` form is already fully
+			// consumed above and never reaches here). Warn rather than hard-fail,
+			// matching warnUnknownArgs' tone used elsewhere in this CLI - but
+			// warn LOUDLY, since a silently-ignored arg here is exactly the bug
+			// being fixed.
+			console.error(`[warning] violations check: unrecognized argument "${args[i]}" - ignored`)
 		}
+	}
+
+	if (files && files.length > 0) {
+		const resolved: string[] = []
+		const missing: string[] = []
+		for (const f of files) {
+			const abs = resolve(projectRoot, f).split('\\').join('/')
+			if (existsSync(abs)) {
+				resolved.push(abs)
+			} else {
+				missing.push(f)
+			}
+		}
+		if (missing.length > 0) {
+			console.error(
+				`Error: --files entries do not resolve to existing files under ${projectRoot}:\n` +
+				missing.map(f => `  ${f}`).join('\n') +
+				'\nRelative paths are resolved against the project root, not the file being checked.'
+			)
+			process.exit(1)
+		}
+		files = resolved
 	}
 
 	let overrideConfig: ViolationsConfig | undefined
@@ -227,8 +276,13 @@ async function cmdCheck(args: string[]): Promise<void> {
 		console.log(line)
 	}
 
+	// Only --files narrows the checked set to something a user should sanity-check
+	// at a glance; --staged and full-project runs walk everything, so this is
+	// omitted there to avoid noise.
+	const filesSuffix = files ? ` (${files.length} file${files.length === 1 ? '' : 's'} checked)` : ''
+
 	if (totalViolations === 0) {
-		console.log('[ok] 0 violations')
+		console.log(`[ok] 0 violations${filesSuffix}`)
 	} else {
 		const parts: string[] = []
 		if (errors > 0) {
@@ -242,7 +296,7 @@ async function cmdCheck(args: string[]): Promise<void> {
 		  parts.push(`${rest} info`);
 		}
 		const breakdown = parts.length > 0 ? `  (${parts.join(', ')})` : ''
-		console.log(`${totalViolations} violation${totalViolations === 1 ? '' : 's'}${breakdown}`)
+		console.log(`${totalViolations} violation${totalViolations === 1 ? '' : 's'}${breakdown}${filesSuffix}`)
 	}
 
 	process.exit(Math.min(totalViolations, 254))
