@@ -3,6 +3,7 @@
 - Rules receive pre-filtered `files[]`; never call `walk()` inside a rule.
 - Use `tags` (string, AND logic) for rule activation; declare only the most-specific tag — `react` implies `ts`, `unity` implies `cs`.
 - `alwaysActive: true` bypasses tag-based activation — use only for rules that must fire in any project with local rules, without requiring a specific `projectTags` entry.
+- Local rules in `.violations/rules/` are auto-discovered and active unless disabled in config (see README); `config.ts` is only for overrides, so never require a declaration to activate a rule.
 - `$scope` for full scope replacement is banned; use `$scopeAdd` to extend and `$exclude` to punch holes — full replacement creates activation blind spots.
 - Reports write to `.violations/.reports/`; `.violations/.gitignore` excludes them automatically — never write to the project root.
 - Auto-detect fallback applies when no `.violations/config.ts` is present: prints `[auto]` to stderr and runs with inferred tags — no silence on missing config.

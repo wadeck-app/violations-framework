@@ -40,6 +40,8 @@ violations <command> [options]
 
 Rules are configured in `.violations/config.ts` at the project root.
 
+Local rules: every top-level `.ts`/`.js` file in `.violations/rules/` runs by default; declare it in `config.rules` only to override it, or to disable it with `{ $severity: false }`. Excluded from discovery: `*.test.*`, `*.d.ts`, `_`-prefixed helpers, subfolders (`fixtures/`). A discovered file that exports no rule, or a `<name>.ts` + `<name>.js` pair, fails the check.
+
 ## Configuration
 
 Config dir: `~/.config/violations/` (override: `VIOLATIONS_CONFIG_DIR` env)

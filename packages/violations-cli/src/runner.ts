@@ -1,4 +1,4 @@
-import { readFile, mkdir } from 'node:fs/promises'
+import { readFile, mkdir, readdir } from 'node:fs/promises'
 import { join, resolve, dirname, basename, extname } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { existsSync } from 'node:fs'
@@ -87,6 +87,42 @@ async function loadRule(
 	}
 }
 
+function normalizePath(p: string): string {
+	const slash = p.split('\\').join('/')
+	return process.platform === 'win32' ? slash.toLowerCase() : slash
+}
+
+// Every top-level .ts/.js file in .violations/rules/ is a local rule, active by default.
+// Excluded: *.test.*, *.d.ts, files prefixed with '_' (helper modules), subfolders (fixtures/).
+// Returns config-style keys: './.violations/rules/<file>'.
+async function discoverLocalRules(projectRoot: string): Promise<string[]> {
+	const rulesDir = join(projectRoot, '.violations', 'rules')
+	if (!existsSync(rulesDir)) {
+		return []
+	}
+	const entries = await readdir(rulesDir, { withFileTypes: true })
+	const files = entries
+		.filter(e => e.isFile())
+		.map(e => e.name)
+		.filter(name => /\.(ts|js)$/.test(name))
+		.filter(name => !/\.test\.(ts|js)$/.test(name) && !name.endsWith('.d.ts') && !name.startsWith('_'))
+
+	const byStem = new Map<string, string[]>()
+	for (const name of files) {
+		const stem = name.replace(/\.(ts|js)$/, '')
+		byStem.set(stem, [...(byStem.get(stem) ?? []), name])
+	}
+	for (const [stem, names] of byStem) {
+		if (names.length > 1) {
+			throw new Error(
+				`[violations] Ambiguous local rule '${stem}': both ${names.join(' and ')} exist in .violations/rules/.\n` +
+				`       Delete one of them (usually the stale .js).`
+			)
+		}
+	}
+	return files.map(name => `./.violations/rules/${name}`)
+}
+
 function isDisabled(override: RuleOverride | true): boolean {
 	return override !== true && override != null && (override as RuleOverride).$severity === false
 }
@@ -127,6 +163,21 @@ export async function run(options: RunOptions): Promise<RuleResult[]> {
 			mergedRules[libRule.id] = true
 		}
 	}
+	// Auto-activate every discovered local rule. A config key pointing to the same file
+	// (compared by resolved path) takes priority, so each file is loaded once.
+	const discoveredLocal = await discoverLocalRules(projectRoot)
+	const configuredLocalPaths = new Set(
+		Object.keys(rulesConfig)
+			.filter(key => key.startsWith('./') || key.startsWith('../'))
+			.map(key => normalizePath(resolve(projectRoot, key)))
+	)
+	const discoveredKeys = new Set<string>()
+	for (const key of discoveredLocal) {
+		if (!configuredLocalPaths.has(normalizePath(resolve(projectRoot, key)))) {
+			mergedRules[key] = true
+			discoveredKeys.add(key)
+		}
+	}
 	for (const [key, val] of Object.entries(rulesConfig)) {
 		mergedRules[key] = val as RuleOverride | true
 	}
@@ -144,6 +195,13 @@ export async function run(options: RunOptions): Promise<RuleResult[]> {
 		  continue;
 		}
 		const r = await loadRule(ruleKey, projectRoot, cacheDir, manifestPath, frameworkVersion)
+		if (!r && discoveredKeys.has(ruleKey)) {
+			throw new Error(
+				`[violations] ${ruleKey} failed to load (see warning above) or does not export a rule (expected 'export const rule' or 'export default').\n` +
+				`       Every file in .violations/rules/ is loaded as a rule. For a helper module, prefix its name with '_' (e.g. _helpers.ts).\n` +
+				`       To disable the rule instead, add to config.ts rules: '${ruleKey}': { $severity: false }`
+			)
+		}
 		if (r) {
 		  localRuleCache.set(ruleKey, r);
 		}

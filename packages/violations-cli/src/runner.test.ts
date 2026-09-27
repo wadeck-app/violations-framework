@@ -136,6 +136,97 @@ export default {
 	})
 })
 
+describe('local rule auto-discovery', () => {
+	const NO_META = `'violations-meta/no-rule-without-test': { $severity: false },`
+
+	async function setup(prefix: string, rules: Record<string, string>, configRules: string): Promise<string> {
+		const dir = await mkdtemp(join(tmpdir(), `violations-discover-${prefix}-`))
+		await mkdir(join(dir, '.violations', 'rules', 'fixtures'), { recursive: true })
+		await mkdir(join(dir, 'src'), { recursive: true })
+		await writeFile(join(dir, 'src', 'violation.txt'), 'VIOLATE this line\n')
+		for (const [name, content] of Object.entries(rules)) {
+			await writeFile(join(dir, '.violations', 'rules', name), content)
+		}
+		await writeFile(join(dir, '.violations', 'config.ts'), `
+export default {
+  projectTags: ['test'],
+  rules: {
+    ${NO_META}
+    ${configRules}
+  }
+}
+`)
+		return dir
+	}
+
+	it('runs a local rule that is not declared in config.ts', async () => {
+		const dir = await setup('undeclared', { 'test-rule.js': TEST_RULE_JS }, '')
+		try {
+			const results = await run({ projectRoot: dir })
+			const result = results.find(r => r.ruleId === 'test-rule')
+			assert.ok(result, 'undeclared local rule must be auto-activated')
+			assert.equal(result.counts.violations, 1)
+		} finally {
+			await rm(dir, { recursive: true, force: true })
+		}
+	})
+
+	it('does not run a discovered local rule disabled with $severity: false', async () => {
+		const dir = await setup('disabled', { 'test-rule.js': TEST_RULE_JS }, `'./.violations/rules/test-rule.js': { $severity: false },`)
+		try {
+			const results = await run({ projectRoot: dir })
+			assert.equal(results.find(r => r.ruleId === 'test-rule'), undefined)
+		} finally {
+			await rm(dir, { recursive: true, force: true })
+		}
+	})
+
+	it('loads a rule declared in config and present on disk only once, with its override', async () => {
+		const dir = await setup('override', { 'test-rule.js': TEST_RULE_JS }, `'./.violations/rules/test-rule.js': { $severity: 'warning' },`)
+		try {
+			const results = await run({ projectRoot: dir })
+			const matches = results.filter(r => r.ruleId === 'test-rule')
+			assert.equal(matches.length, 1, 'same file must not run twice')
+			assert.equal(matches[0].severity, 'warning')
+		} finally {
+			await rm(dir, { recursive: true, force: true })
+		}
+	})
+
+	it('ignores *.test.*, _-prefixed helpers, and subfolders like fixtures/', async () => {
+		const dir = await setup('ignored', {
+			'test-rule.js': TEST_RULE_JS,
+			'test-rule.test.js': 'throw new Error("test file must not be loaded as a rule")\n',
+			'_helpers.js': 'export const helper = 1\n',
+			'fixtures/not-a-rule.js': 'throw new Error("fixture must not be loaded as a rule")\n',
+		}, '')
+		try {
+			const results = await run({ projectRoot: dir })
+			assert.ok(results.find(r => r.ruleId === 'test-rule'))
+		} finally {
+			await rm(dir, { recursive: true, force: true })
+		}
+	})
+
+	it('fails loudly when a discovered file does not export a rule', async () => {
+		const dir = await setup('invalid', { 'helper.js': 'export const helper = 1\n' }, '')
+		try {
+			await assert.rejects(run({ projectRoot: dir }), /helper\.js .*does not export a rule/)
+		} finally {
+			await rm(dir, { recursive: true, force: true })
+		}
+	})
+
+	it('fails loudly when both <name>.ts and <name>.js exist', async () => {
+		const dir = await setup('ambiguous', { 'test-rule.js': TEST_RULE_JS, 'test-rule.ts': 'export {}\n' }, '')
+		try {
+			await assert.rejects(run({ projectRoot: dir }), /Ambiguous local rule 'test-rule'/)
+		} finally {
+			await rm(dir, { recursive: true, force: true })
+		}
+	})
+})
+
 describe('runner integration', () => {
 	let tempDir: string
 
