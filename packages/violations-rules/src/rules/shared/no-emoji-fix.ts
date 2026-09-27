@@ -28,6 +28,7 @@
 import { readFile, writeFile, readdir } from 'node:fs/promises'
 import { join, extname, resolve } from 'node:path'
 import { writeFileSync } from 'node:fs'
+import { isForbiddenSymbol } from './no-emoji.js'
 
 // --- Types ---
 
@@ -41,8 +42,6 @@ const SCOPED_EXTS = new Set(['.ts', '.tsx', '.cs'])
 const ALL_EXTS = new Set([...SCOPED_EXTS, '.md'])
 const SKIP_DIRS = new Set(['node_modules', '.git', 'dist', 'dist-bundle', '.violations'])
 
-// Same regex as the rule: Extended_Pictographic + Symbol categories, ASCII excluded.
-const SYMBOL_RE = /\p{Extended_Pictographic}|\p{Symbol}/gu
 
 // Double-line box-drawing code points that map to '='
 const DOUBLE_BOX = new Set([
@@ -61,37 +60,24 @@ function replaceSymbol(cp: number): string {
 }
 
 function fixLine(line: string): string {
-  SYMBOL_RE.lastIndex = 0
   let result = ''
   let i = 0
   while (i < line.length) {
     const cp = line.codePointAt(i) ?? 0
     const charLen = cp > 0xFFFF ? 2 : 1
-    if (cp > 0x007F) {
-      const ch = line.slice(i, i + charLen)
-      if (SYMBOL_RE.test(ch)) {
-        SYMBOL_RE.lastIndex = 0
-        result += replaceSymbol(cp)
-        i += charLen
-        continue
-      }
-      SYMBOL_RE.lastIndex = 0
-    }
-    result += line.slice(i, i + charLen)
+    const ch = line.slice(i, i + charLen)
+    result += isForbiddenSymbol(cp, ch) ? replaceSymbol(cp) : ch
     i += charLen
   }
   return result
 }
 
 function hasSymbol(line: string): boolean {
-  SYMBOL_RE.lastIndex = 0
   for (let i = 0; i < line.length; ) {
     const cp = line.codePointAt(i) ?? 0
     const charLen = cp > 0xFFFF ? 2 : 1
-    if (cp > 0x007F) {
-      const ch = line.slice(i, i + charLen)
-      if (SYMBOL_RE.test(ch)) { SYMBOL_RE.lastIndex = 0; return true }
-      SYMBOL_RE.lastIndex = 0
+    if (isForbiddenSymbol(cp, line.slice(i, i + charLen))) {
+      return true
     }
     i += charLen
   }

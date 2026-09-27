@@ -55,16 +55,6 @@ describe('shared/no-emoji', () => {
     })
   })
 
-  it('flags multiplication sign \u{00D7} (Sm, U+00D7)', async () => {
-    await withTmp('mult', async (dir) => {
-      const file = join(dir, 'test.ts')
-      await writeFile(file, 'const label = "3\u{00D7} faster"\n')
-      const violations = await rule.check([file], {})
-      assert.ok(violations.length > 0)
-      assert.match(violations[0].message, /U\+00D7/)
-    })
-  })
-
   it('flags euro sign \u{20AC} (Sc, U+20AC)', async () => {
     await withTmp('euro', async (dir) => {
       const file = join(dir, 'test.ts')
@@ -153,6 +143,44 @@ describe('shared/no-emoji', () => {
       await writeFile(file, 'const x = "foo \u{2014} bar"\n')
       const violations = await rule.check([file], {})
       assert.equal(violations.length, 0)
+    })
+  })
+
+  it('does not flag degree sign \u{00B0} (So, U+00B0, allowlisted)', async () => {
+    await withTmp('degree', async (dir) => {
+      const file = join(dir, 'test.cs')
+      await writeFile(file, '// Convention: 0\u{00B0} = North (top), 90\u{00B0} = East\n')
+      const violations = await rule.check([file], {})
+      assert.equal(violations.length, 0)
+    })
+  })
+
+  it('does not flag plus-minus sign \u{00B1} (Sm, U+00B1, allowlisted)', async () => {
+    await withTmp('plus-minus', async (dir) => {
+      const file = join(dir, 'test.cs')
+      await writeFile(file, '// Tolerance of \u{00B1}22.5\u{00B0} for each direction\n')
+      const violations = await rule.check([file], {})
+      assert.equal(violations.length, 0)
+    })
+  })
+
+  it('does not flag multiplication sign \u{00D7} (Sm, U+00D7, allowlisted)', async () => {
+    await withTmp('mult', async (dir) => {
+      const file = join(dir, 'test.ts')
+      await writeFile(file, 'const label = "3\u{00D7} faster at 1920\u{00D7}1080"\n')
+      const violations = await rule.check([file], {})
+      assert.equal(violations.length, 0)
+    })
+  })
+
+  it('still flags other symbols on a line containing a degree sign', async () => {
+    await withTmp('degree-mixed', async (dir) => {
+      const file = join(dir, 'test.cs')
+      await writeFile(file, '// 0\u{00B0} \u{2192} North\n')
+      const violations = await rule.check([file], {})
+      assert.equal(violations.length, 1)
+      assert.match(violations[0].message, /U\+2192/)
+      assert.doesNotMatch(violations[0].message, /U\+00B0/)
     })
   })
 
