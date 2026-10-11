@@ -4,6 +4,12 @@ import { mkdtemp, mkdir, writeFile, rm } from 'node:fs/promises'
 import { join } from 'node:path'
 import { tmpdir } from 'node:os'
 import { rule } from './view-location.js'
+import { validateManifestViaAppCoreCli } from './manifest.js'
+
+// This rule's violations only surface once app-core-cli parses the manifest
+// (result.kind === 'ok') - if the binary isn't installed on the machine
+// running these tests, skip explicitly rather than silently passing.
+const appCoreCliAvailable = validateManifestViaAppCoreCli(join(tmpdir(), 'does-not-exist.json')).kind !== 'unavailable'
 
 describe('app-module/view-location', () => {
   async function setup(): Promise<{ dir: string; manifestPath: string }> {
@@ -21,7 +27,7 @@ describe('app-module/view-location', () => {
     }))
   }
 
-  it('flags a view path outside dsl-frontend/', async () => {
+  it('flags a view path outside dsl-frontend/', { skip: !appCoreCliAvailable && 'app-core-cli not installed on this machine' }, async () => {
     const { dir, manifestPath } = await setup()
     try {
       await writeManifest(manifestPath, './page.yaml')

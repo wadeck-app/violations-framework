@@ -4,6 +4,12 @@ import { mkdtemp, mkdir, writeFile, rm } from 'node:fs/promises'
 import { join } from 'node:path'
 import { tmpdir } from 'node:os'
 import { rule } from './backend-entry-location.js'
+import { validateManifestViaAppCoreCli } from './manifest.js'
+
+// This rule's violations only surface once app-core-cli parses the manifest
+// (result.kind === 'ok') - if the binary isn't installed on the machine
+// running these tests, skip explicitly rather than silently passing.
+const appCoreCliAvailable = validateManifestViaAppCoreCli(join(tmpdir(), 'does-not-exist.json')).kind !== 'unavailable'
 
 describe('app-module/backend-entry-location', () => {
   async function setup(): Promise<{ dir: string; manifestPath: string }> {
@@ -21,7 +27,7 @@ describe('app-module/backend-entry-location', () => {
     }))
   }
 
-  it('flags a backendEntryPath outside api-backend/', async () => {
+  it('flags a backendEntryPath outside api-backend/', { skip: !appCoreCliAvailable && 'app-core-cli not installed on this machine' }, async () => {
     const { dir, manifestPath } = await setup()
     try {
       await writeManifest(manifestPath, './backend.js')
@@ -44,7 +50,7 @@ describe('app-module/backend-entry-location', () => {
     }
   })
 
-  it('rejects a sneaky look-alike folder (api-backend-fake/) via proper path containment', async () => {
+  it('rejects a sneaky look-alike folder (api-backend-fake/) via proper path containment', { skip: !appCoreCliAvailable && 'app-core-cli not installed on this machine' }, async () => {
     const { dir, manifestPath } = await setup()
     try {
       await writeManifest(manifestPath, './api-backend-fake/index.js')
