@@ -3,7 +3,8 @@ import assert from 'node:assert/strict'
 import { mkdtemp, mkdir, writeFile, rm } from 'node:fs/promises'
 import { join, dirname } from 'node:path'
 import { tmpdir } from 'node:os'
-import { rule, validateManifestViaAppCoreCli } from './manifest-exists-and-valid.js'
+import { rule } from './manifest-exists-and-valid.js'
+import { validateManifestViaAppCoreCli } from './manifest.js'
 
 // These tests shell out to the real, globally-installed app-core-cli binary
 // (not a fake/stub) to exercise the actual validate contract - see

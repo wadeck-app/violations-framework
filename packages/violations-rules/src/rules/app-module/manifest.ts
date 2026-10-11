@@ -1,7 +1,6 @@
-// Minimal structural validation of an app-module manifest.json, deliberately
-// duplicated here instead of importing @wadeck-app/app-core-sdk's parseManifest -
-// violations-rules is a generic framework package and must not depend on an
-// app-specific SDK (wrong dependency direction).
+import { accessSync, constants, existsSync } from 'node:fs'
+import { delimiter, join } from 'node:path'
+import { spawnSync } from 'node:child_process'
 
 export type ExtensionPointView =
   | { type: 'path'; value: string }
@@ -19,54 +18,76 @@ export type Manifest = {
   extensionPoints: ExtensionPoint[]
 }
 
-export class ManifestValidationError extends Error {}
+// Delegates to `app-core-cli validate <path> --json` (@wadeck-app/app-core-cli)
+// instead of duplicating app-core's zod schema here - that CLI runs the exact
+// same schema app-core's server uses, so there is one source of truth instead
+// of a copy that can silently drift as the real manifest schema evolves.
+// Shared by all three app-module rules that need manifest content/validity
+// (manifest-exists-and-valid, backend-entry-location, view-location).
+export type ManifestCliResult =
+  | { kind: 'ok'; manifest: Manifest }
+  | { kind: 'invalid'; message: string }
+  | { kind: 'unavailable' }
 
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null
+// Resolves the binary ourselves via PATH/PATHEXT instead of letting spawnSync's
+// shell resolve it - a shell-resolution "not found" is reported as a normal
+// nonzero exit with a locale-dependent "command not found" message on stdout
+// (verified on this machine), indistinguishable from a real validation
+// failure without parsing OS/locale-specific text.
+function resolveExecutable(name: string): string | null {
+  const pathDirs = (process.env.PATH ?? '').split(delimiter).filter(Boolean)
+  const extensions = process.platform === 'win32'
+    ? (process.env.PATHEXT ?? '.COM;.EXE;.BAT;.CMD').split(';').filter(Boolean)
+    : ['']
+
+  for (const dir of pathDirs) {
+    for (const ext of extensions) {
+      const candidate = join(dir, name + ext)
+      if (!existsSync(candidate)) {
+        continue;
+      }
+      try {
+        accessSync(candidate, constants.X_OK)
+        return candidate
+      } catch {
+        continue
+      }
+    }
+  }
+  return null
 }
 
-export function parseManifest(raw: unknown): Manifest {
-  if (!isRecord(raw)) {
-    throw new ManifestValidationError('manifest must be an object')
+export function validateManifestViaAppCoreCli(manifestPath: string): ManifestCliResult {
+  const binaryPath = resolveExecutable('app-core-cli')
+  if (!binaryPath) {
+    return { kind: 'unavailable' }
   }
 
-  if (typeof raw.version !== 'string') {
-    throw new ManifestValidationError('version: must be a string')
-  }
-  if (typeof raw.backendEntryPath !== 'string') {
-    throw new ManifestValidationError('backendEntryPath: must be a string')
-  }
-  if (!Array.isArray(raw.extensionPoints)) {
-    throw new ManifestValidationError('extensionPoints: must be an array')
+  // shell: true is required on Windows to launch a resolved .cmd/.bat shim
+  // directly (verified: Node's spawnSync throws EINVAL on a .cmd path otherwise).
+  // Safe here despite shell interpretation risks (DEP0190) because both the
+  // binary path and manifestPath come from resolveExecutable()/defaultScope,
+  // never from unsanitized user input.
+  const result = spawnSync(binaryPath, ['validate', manifestPath, '--json'], {
+    encoding: 'utf-8',
+    shell: process.platform === 'win32',
+  })
+
+  const stdout = (result.stdout ?? '').trim()
+
+  if (result.status === 0) {
+    try {
+      return { kind: 'ok', manifest: JSON.parse(stdout) as Manifest }
+    } catch {
+      return { kind: 'invalid', message: `app-core-cli validate --json returned non-JSON stdout on success: ${stdout}` }
+    }
   }
 
-  const extensionPoints = raw.extensionPoints.map((ep, i) => parseExtensionPoint(ep, i))
-
-  return { version: raw.version, backendEntryPath: raw.backendEntryPath, extensionPoints }
-}
-
-function parseExtensionPoint(raw: unknown, index: number): ExtensionPoint {
-  if (!isRecord(raw)) {
-    throw new ManifestValidationError(`extensionPoints[${index}]: must be an object`)
+  try {
+    const parsed = JSON.parse(stdout) as { error: string }
+    return { kind: 'invalid', message: parsed.error }
+  } catch {
+    const message = (result.stderr || stdout || 'app-core-cli validate failed with no output').trim()
+    return { kind: 'invalid', message }
   }
-
-  if (typeof raw.kind !== 'string') {
-    throw new ManifestValidationError(`extensionPoints[${index}].kind: must be a string`)
-  }
-  if (typeof raw.slot !== 'string') {
-    throw new ManifestValidationError(`extensionPoints[${index}].slot: must be a string`)
-  }
-
-  const view = raw.view
-  if (!isRecord(view)) {
-    throw new ManifestValidationError(`extensionPoints[${index}].view: must be an object`)
-  }
-  if (view.type !== 'path' && view.type !== 'inline') {
-    throw new ManifestValidationError(`extensionPoints[${index}].view.type: must be "path" or "inline"`)
-  }
-  if (view.type === 'path' && typeof view.value !== 'string') {
-    throw new ManifestValidationError(`extensionPoints[${index}].view.value: must be a string for a "path" view`)
-  }
-
-  return { kind: raw.kind, slot: raw.slot, view: view as ExtensionPointView }
 }
