@@ -85,6 +85,12 @@ type RuleConfigMap = {
   'violations-meta/no-rule-without-test':       Record<never, never>
   'violations-meta/no-inline-walk':             { ruleFiles: string[] }
   'violations-meta/no-legacy-violations-folder': { projectRoot: string }
+  'cli/daemon-spawn-no-windows-hide':           Record<never, never>
+  'cli/publishconfig-missing-access-public':    Record<never, never>
+  'cli/no-spawn-without-windows-hide':          Record<never, never>
+  'cli/updater-strategy-missing-windows-hide':  Record<never, never>
+  'dsl/no-app-hook':                             Record<never, never>
+  'dsl/no-app-components':                       Record<never, never>
   'app-module/naming-convention':               Record<never, never>
   'app-module/manifest-exists-and-valid':       Record<never, never>
   'app-module/backend-entry-location':          Record<never, never>

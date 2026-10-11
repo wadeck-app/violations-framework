@@ -64,6 +64,7 @@ export { rule as unityNoUnityIncludeTestsInUnittestProject } from './unity/no-un
 export { rule as cliDaemonSpawnNoWindowsHide } from './cli/daemon-spawn-no-windows-hide.js'
 export { rule as cliPublishconfigMissingAccessPublic } from './cli/publishconfig-missing-access-public.js'
 export { rule as cliNoSpawnWithoutWindowsHide } from './cli/no-spawn-without-windows-hide.js'
+export { rule as cliUpdaterStrategyMissingWindowsHide } from './cli/updater-strategy-missing-windows-hide.js'
 export { rule as dslNoAppHook } from './dsl/no-app-hook.js'
 export { rule as dslNoAppComponents } from './dsl/no-app-components.js'
 export { rule as appModuleNamingConvention } from './app-module/naming-convention.js'
@@ -139,6 +140,7 @@ export type { Config as UnityNoUnityIncludeTestsInUnittestProjectConfig } from '
 export type { Config as CliDaemonSpawnNoWindowsHideConfig } from './cli/daemon-spawn-no-windows-hide.js'
 export type { Config as CliPublishconfigMissingAccessPublicConfig } from './cli/publishconfig-missing-access-public.js'
 export type { Config as CliNoSpawnWithoutWindowsHideConfig } from './cli/no-spawn-without-windows-hide.js'
+export type { Config as CliUpdaterStrategyMissingWindowsHideConfig } from './cli/updater-strategy-missing-windows-hide.js'
 export type { Config as DslNoAppHookConfig } from './dsl/no-app-hook.js'
 export type { Config as DslNoAppComponentsConfig } from './dsl/no-app-components.js'
 export type { Config as AppModuleNamingConventionConfig } from './app-module/naming-convention.js'
@@ -214,6 +216,7 @@ import { rule as unityNoUnityIncludeTestsInUnittestProject } from './unity/no-un
 import { rule as cliDaemonSpawnNoWindowsHide } from './cli/daemon-spawn-no-windows-hide.js'
 import { rule as cliPublishconfigMissingAccessPublic } from './cli/publishconfig-missing-access-public.js'
 import { rule as cliNoSpawnWithoutWindowsHide } from './cli/no-spawn-without-windows-hide.js'
+import { rule as cliUpdaterStrategyMissingWindowsHide } from './cli/updater-strategy-missing-windows-hide.js'
 import { rule as dslNoAppHook } from './dsl/no-app-hook.js'
 import { rule as dslNoAppComponents } from './dsl/no-app-components.js'
 import { rule as appModuleNamingConvention } from './app-module/naming-convention.js'
@@ -292,6 +295,7 @@ export const allRules: Rule<any>[] = [
   cliDaemonSpawnNoWindowsHide,
   cliPublishconfigMissingAccessPublic,
   cliNoSpawnWithoutWindowsHide,
+  cliUpdaterStrategyMissingWindowsHide,
   dslNoAppHook,
   dslNoAppComponents,
   appModuleNamingConvention,
