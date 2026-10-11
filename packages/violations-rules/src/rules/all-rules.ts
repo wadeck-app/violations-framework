@@ -67,6 +67,7 @@ export { rule as cliNoSpawnWithoutWindowsHide } from './cli/no-spawn-without-win
 export { rule as cliUpdaterStrategyMissingWindowsHide } from './cli/updater-strategy-missing-windows-hide.js'
 export { rule as dslNoAppHook } from './dsl/no-app-hook.js'
 export { rule as dslNoAppComponents } from './dsl/no-app-components.js'
+export { rule as dslNoAppUiOutsideShell } from './dsl/no-app-ui-outside-shell.js'
 export { rule as appModuleNamingConvention } from './app-module/naming-convention.js'
 export { rule as appModuleManifestExistsAndValid } from './app-module/manifest-exists-and-valid.js'
 export { rule as appModuleBackendEntryLocation } from './app-module/backend-entry-location.js'
@@ -143,6 +144,7 @@ export type { Config as CliNoSpawnWithoutWindowsHideConfig } from './cli/no-spaw
 export type { Config as CliUpdaterStrategyMissingWindowsHideConfig } from './cli/updater-strategy-missing-windows-hide.js'
 export type { Config as DslNoAppHookConfig } from './dsl/no-app-hook.js'
 export type { Config as DslNoAppComponentsConfig } from './dsl/no-app-components.js'
+export type { Config as DslNoAppUiOutsideShellConfig } from './dsl/no-app-ui-outside-shell.js'
 export type { Config as AppModuleNamingConventionConfig } from './app-module/naming-convention.js'
 export type { Config as AppModuleManifestExistsAndValidConfig } from './app-module/manifest-exists-and-valid.js'
 export type { Config as AppModuleBackendEntryLocationConfig } from './app-module/backend-entry-location.js'
@@ -219,6 +221,7 @@ import { rule as cliNoSpawnWithoutWindowsHide } from './cli/no-spawn-without-win
 import { rule as cliUpdaterStrategyMissingWindowsHide } from './cli/updater-strategy-missing-windows-hide.js'
 import { rule as dslNoAppHook } from './dsl/no-app-hook.js'
 import { rule as dslNoAppComponents } from './dsl/no-app-components.js'
+import { rule as dslNoAppUiOutsideShell } from './dsl/no-app-ui-outside-shell.js'
 import { rule as appModuleNamingConvention } from './app-module/naming-convention.js'
 import { rule as appModuleManifestExistsAndValid } from './app-module/manifest-exists-and-valid.js'
 import { rule as appModuleBackendEntryLocation } from './app-module/backend-entry-location.js'
@@ -298,6 +301,7 @@ export const allRules: Rule<any>[] = [
   cliUpdaterStrategyMissingWindowsHide,
   dslNoAppHook,
   dslNoAppComponents,
+  dslNoAppUiOutsideShell,
   appModuleNamingConvention,
   appModuleManifestExistsAndValid,
   appModuleBackendEntryLocation,
