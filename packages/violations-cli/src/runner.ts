@@ -123,6 +123,47 @@ async function discoverLocalRules(projectRoot: string): Promise<string[]> {
 	return files.map(name => `./.violations/rules/${name}`)
 }
 
+// A project depends on the DSL layer (and so needs the `dsl` tag active) if
+// any package.json under it - root or packages/* - lists a @wadeck-app/dsl-*
+// package. Dependency-based, not file-extension-based, since DSL contract
+// rules (e.g. dsl/no-app-hook) apply by package relationship, not by what
+// extensions happen to be present. Checked unconditionally (even when
+// projectTags is explicitly configured) so a consumer repo can never silently
+// miss DSL rules by forgetting to list 'dsl' in projectTags.
+async function readPackageJsonDeps(packageJsonPath: string): Promise<string[]> {
+	try {
+		const pkg = JSON.parse(await readFile(packageJsonPath, 'utf8')) as {
+			dependencies?: Record<string, string>
+			devDependencies?: Record<string, string>
+		}
+		return Object.keys({ ...pkg.dependencies, ...pkg.devDependencies })
+	} catch {
+		return []
+	}
+}
+
+export async function hasDslDependency(projectRoot: string): Promise<boolean> {
+	const rootDeps = await readPackageJsonDeps(join(projectRoot, 'package.json'))
+	if (rootDeps.some(name => name.startsWith('@wadeck-app/dsl-'))) {
+		return true
+	}
+
+	const packagesDir = join(projectRoot, 'packages')
+	let entries: string[]
+	try {
+		entries = (await readdir(packagesDir, { withFileTypes: true }))
+			.filter(e => e.isDirectory())
+			.map(e => e.name)
+	} catch {
+		return false
+	}
+
+	const depsPerPackage = await Promise.all(
+		entries.map(name => readPackageJsonDeps(join(packagesDir, name, 'package.json'))),
+	)
+	return depsPerPackage.some(deps => deps.some(name => name.startsWith('@wadeck-app/dsl-')))
+}
+
 function isDisabled(override: RuleOverride | true): boolean {
 	return override !== true && override != null && (override as RuleOverride).$severity === false
 }
@@ -148,6 +189,13 @@ export async function run(options: RunOptions): Promise<RuleResult[]> {
 	// Explicit config.rules entries take priority (override or disable with $severity: false).
 	const { allRules } = await import('@wadeck-app/violations-rules')
 	const projectTags = new Set(config.projectTags ?? [])
+	if (!projectTags.has('dsl') && await hasDslDependency(projectRoot)) {
+		projectTags.add('dsl')
+		process.stderr.write(
+			'[auto] @wadeck-app/dsl-* dependency detected - activating \'dsl\' tag rules automatically.\n' +
+			'       Add \'dsl\' to projectTags in .violations/config.ts to make this explicit.\n'
+		)
+	}
 	if (projectTags.size === 0) {
 		process.stderr.write(
 			'[warn] projectTags is empty - only shared rules will activate automatically.\n' +

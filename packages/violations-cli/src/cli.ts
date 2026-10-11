@@ -176,6 +176,9 @@ async function buildDefaultConfig(projectRoot: string): Promise<ViolationsConfig
 		hasFileWithExt(srcDir, '.tsx'),
 		hasFileWithExt(projectRoot, '.tsx'),
 	])
+	// 'dsl' is not detected here - run() in runner.ts detects it unconditionally
+	// (config present or not) from @wadeck-app/dsl-* dependencies, so it is never
+	// silently missed by a project that forgot to declare it.
 
 	const projectTags: string[] = ['shared']
 	if (hasTsInSrc || hasTsInRoot) {

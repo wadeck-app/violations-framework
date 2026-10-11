@@ -3,7 +3,7 @@ import assert from 'node:assert/strict'
 import { mkdtemp, writeFile, mkdir, rm } from 'node:fs/promises'
 import { join } from 'node:path'
 import { tmpdir } from 'node:os'
-import { run } from './runner.js'
+import { run, hasDslDependency } from './runner.js'
 
 const TEST_RULE_JS = `
 const rule = {
@@ -81,6 +81,71 @@ export default {
 			const emDashResult = results.find(r => r.ruleId === 'shared/no-em-dash')
 			assert.ok(emDashResult, 'shared/no-em-dash should auto-activate with empty projectTags')
 			assert.equal(emDashResult.counts.violations, 1, 'expected 1 em-dash violation')
+		} finally {
+			await rm(dir, { recursive: true, force: true })
+		}
+	})
+})
+
+describe('hasDslDependency', () => {
+	it('detects a @wadeck-app/dsl-* dependency in the root package.json', async () => {
+		const dir = await mkdtemp(join(tmpdir(), 'violations-dsl-root-'))
+		try {
+			await writeFile(join(dir, 'package.json'), JSON.stringify({
+				dependencies: { '@wadeck-app/dsl-renderer': '^1.0.0' },
+			}))
+			assert.equal(await hasDslDependency(dir), true)
+		} finally {
+			await rm(dir, { recursive: true, force: true })
+		}
+	})
+
+	it('detects a @wadeck-app/dsl-* dependency in a packages/* sub-package', async () => {
+		const dir = await mkdtemp(join(tmpdir(), 'violations-dsl-sub-'))
+		try {
+			await writeFile(join(dir, 'package.json'), JSON.stringify({ dependencies: {} }))
+			await mkdir(join(dir, 'packages', 'queue-app'), { recursive: true })
+			await writeFile(join(dir, 'packages', 'queue-app', 'package.json'), JSON.stringify({
+				devDependencies: { '@wadeck-app/dsl-ui': '^1.0.0' },
+			}))
+			assert.equal(await hasDslDependency(dir), true)
+		} finally {
+			await rm(dir, { recursive: true, force: true })
+		}
+	})
+
+	it('returns false when no @wadeck-app/dsl-* dependency is present anywhere', async () => {
+		const dir = await mkdtemp(join(tmpdir(), 'violations-dsl-none-'))
+		try {
+			await writeFile(join(dir, 'package.json'), JSON.stringify({ dependencies: { react: '^18.0.0' } }))
+			assert.equal(await hasDslDependency(dir), false)
+		} finally {
+			await rm(dir, { recursive: true, force: true })
+		}
+	})
+})
+
+describe('dsl tag auto-activation from dependencies', () => {
+	it('activates dsl/no-app-components even when projectTags omits "dsl"', async () => {
+		const dir = await mkdtemp(join(tmpdir(), 'violations-dsl-auto-'))
+		try {
+			await mkdir(join(dir, '.violations'), { recursive: true })
+			await writeFile(join(dir, 'package.json'), JSON.stringify({
+				dependencies: { '@wadeck-app/dsl-renderer': '^1.0.0' },
+			}))
+			await writeFile(join(dir, '.violations', 'config.ts'), `
+export default {
+  projectTags: ['ts'],
+  rules: {}
+}
+`)
+			await mkdir(join(dir, 'packages', 'fake-app', 'src', 'components'), { recursive: true })
+			await writeFile(join(dir, 'packages', 'fake-app', 'src', 'components', 'Widget.tsx'), 'export const x = 1\n')
+
+			const results = await run({ projectRoot: dir })
+			const result = results.find(r => r.ruleId === 'dsl/no-app-components')
+			assert.ok(result, 'dsl/no-app-components should auto-activate from the @wadeck-app/dsl-renderer dependency alone')
+			assert.equal(result.counts.violations, 1)
 		} finally {
 			await rm(dir, { recursive: true, force: true })
 		}
