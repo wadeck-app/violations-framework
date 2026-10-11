@@ -57,6 +57,14 @@ function resolveExecutable(name: string): string | null {
   return null
 }
 
+// cmd.exe quoting: wrap each arg in double quotes, escaping embedded double
+// quotes - sufficient here since inputs are a resolved filesystem path and
+// fixed literal flags, never arbitrary/untrusted text.
+function buildWindowsShellCommand(executable: string, args: string[]): string {
+  const quote = (arg: string): string => `"${arg.replace(/"/g, '\\"')}"`
+  return [executable, ...args].map(quote).join(' ')
+}
+
 export function validateManifestViaAppCoreCli(manifestPath: string): ManifestCliResult {
   const binaryPath = resolveExecutable('app-core-cli')
   if (!binaryPath) {
@@ -65,13 +73,13 @@ export function validateManifestViaAppCoreCli(manifestPath: string): ManifestCli
 
   // shell: true is required on Windows to launch a resolved .cmd/.bat shim
   // directly (verified: Node's spawnSync throws EINVAL on a .cmd path otherwise).
-  // Safe here despite shell interpretation risks (DEP0190) because both the
-  // binary path and manifestPath come from resolveExecutable()/defaultScope,
-  // never from unsanitized user input.
-  const result = spawnSync(binaryPath, ['validate', manifestPath, '--json'], {
-    encoding: 'utf-8',
-    shell: process.platform === 'win32',
-  })
+  // Node's DEP0190 warns specifically about combining shell:true with an args
+  // array (unescaped concatenation) - avoided by pre-quoting into one command
+  // string ourselves and passing no args array when shell is actually used;
+  // the non-Windows path never sets shell:true, so args stays a plain array there.
+  const result = process.platform === 'win32'
+    ? spawnSync(buildWindowsShellCommand(binaryPath, ['validate', manifestPath, '--json']), { encoding: 'utf-8', shell: true })
+    : spawnSync(binaryPath, ['validate', manifestPath, '--json'], { encoding: 'utf-8' })
 
   const stdout = (result.stdout ?? '').trim()
 
