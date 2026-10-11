@@ -66,6 +66,12 @@ export { rule as cliPublishconfigMissingAccessPublic } from './cli/publishconfig
 export { rule as cliNoSpawnWithoutWindowsHide } from './cli/no-spawn-without-windows-hide.js'
 export { rule as dslNoAppHook } from './dsl/no-app-hook.js'
 export { rule as dslNoAppComponents } from './dsl/no-app-components.js'
+export { rule as appModuleNamingConvention } from './app-module/naming-convention.js'
+export { rule as appModuleManifestExistsAndValid } from './app-module/manifest-exists-and-valid.js'
+export { rule as appModuleBackendEntryLocation } from './app-module/backend-entry-location.js'
+export { rule as appModuleViewLocation } from './app-module/view-location.js'
+export { rule as appModuleNoRawTimers } from './app-module/no-raw-timers.js'
+export { rule as appModuleNoReact } from './app-module/no-react.js'
 
 export type { Config as NoEmDashConfig } from './shared/no-em-dash.js'
 export type { Config as NoFrenchConfig } from './shared/no-french.js'
@@ -135,6 +141,12 @@ export type { Config as CliPublishconfigMissingAccessPublicConfig } from './cli/
 export type { Config as CliNoSpawnWithoutWindowsHideConfig } from './cli/no-spawn-without-windows-hide.js'
 export type { Config as DslNoAppHookConfig } from './dsl/no-app-hook.js'
 export type { Config as DslNoAppComponentsConfig } from './dsl/no-app-components.js'
+export type { Config as AppModuleNamingConventionConfig } from './app-module/naming-convention.js'
+export type { Config as AppModuleManifestExistsAndValidConfig } from './app-module/manifest-exists-and-valid.js'
+export type { Config as AppModuleBackendEntryLocationConfig } from './app-module/backend-entry-location.js'
+export type { Config as AppModuleViewLocationConfig } from './app-module/view-location.js'
+export type { Config as AppModuleNoRawTimersConfig } from './app-module/no-raw-timers.js'
+export type { Config as AppModuleNoReactConfig } from './app-module/no-react.js'
 
 import { rule as noEmDash } from './shared/no-em-dash.js'
 import { rule as noFrench } from './shared/no-french.js'
@@ -204,6 +216,12 @@ import { rule as cliPublishconfigMissingAccessPublic } from './cli/publishconfig
 import { rule as cliNoSpawnWithoutWindowsHide } from './cli/no-spawn-without-windows-hide.js'
 import { rule as dslNoAppHook } from './dsl/no-app-hook.js'
 import { rule as dslNoAppComponents } from './dsl/no-app-components.js'
+import { rule as appModuleNamingConvention } from './app-module/naming-convention.js'
+import { rule as appModuleManifestExistsAndValid } from './app-module/manifest-exists-and-valid.js'
+import { rule as appModuleBackendEntryLocation } from './app-module/backend-entry-location.js'
+import { rule as appModuleViewLocation } from './app-module/view-location.js'
+import { rule as appModuleNoRawTimers } from './app-module/no-raw-timers.js'
+import { rule as appModuleNoReact } from './app-module/no-react.js'
 import type { Rule } from '../types.js'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -276,4 +294,10 @@ export const allRules: Rule<any>[] = [
   cliNoSpawnWithoutWindowsHide,
   dslNoAppHook,
   dslNoAppComponents,
+  appModuleNamingConvention,
+  appModuleManifestExistsAndValid,
+  appModuleBackendEntryLocation,
+  appModuleViewLocation,
+  appModuleNoRawTimers,
+  appModuleNoReact,
 ]

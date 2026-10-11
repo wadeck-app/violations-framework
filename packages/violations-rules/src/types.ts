@@ -85,6 +85,12 @@ type RuleConfigMap = {
   'violations-meta/no-rule-without-test':       Record<never, never>
   'violations-meta/no-inline-walk':             { ruleFiles: string[] }
   'violations-meta/no-legacy-violations-folder': { projectRoot: string }
+  'app-module/naming-convention':               Record<never, never>
+  'app-module/manifest-exists-and-valid':       Record<never, never>
+  'app-module/backend-entry-location':          Record<never, never>
+  'app-module/view-location':                   Record<never, never>
+  'app-module/no-raw-timers':                   Record<never, never>
+  'app-module/no-react':                        Record<never, never>
 }
 
 // Local rule paths are relative strings (e.g. './.violations/rules/my-rule.js').
