@@ -5,12 +5,12 @@ export type Config = Record<never, never>
 
 // Complements dsl/no-app-components (flags components/ by presence) and
 // dsl/no-app-hook (flags any exported hook) by catching UI code defined
-// ad-hoc anywhere else in a *-app package's src/ — e.g. a component or
+// ad-hoc anywhere else in a *-app package's src/ - e.g. a component or
 // context created directly in a loose file instead of under components/.
 //
 // Allowed locations (never flagged): build/, generated/, dsl/, mock/, runners/,
 // main.tsx, App.tsx, registry.ts. components/ is deliberately NOT allowed here
-// even though it's skipped below — dsl/no-app-components already flags every
+// even though it's skipped below - dsl/no-app-components already flags every
 // file under components/ by presence, so re-flagging it here would duplicate
 // the same violation under a different rule id.
 const ALLOWED_SUBDIRS = new Set(['build', 'generated', 'dsl', 'mock', 'runners'])
@@ -49,7 +49,7 @@ function containsUiCode(source: string): boolean {
 }
 
 // A file whose only non-blank, non-comment lines are `export { ... } from ...`
-// is a re-export shim, not a UI definition — must not be flagged.
+// is a re-export shim, not a UI definition - must not be flagged.
 function isReExportShim(source: string): boolean {
   const lines = source.split(/\r?\n/)
   for (const line of lines) {

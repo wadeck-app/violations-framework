@@ -44,7 +44,7 @@ describe('dsl/no-app-ui-outside-shell', () => {
   it('does not flag a re-export shim', async () => {
     const [file, cleanup] = await withAppFile(
       'context/ThemeContext.ts',
-      "// Re-exported from ui-orch — source of truth has moved there.\nexport { ThemeContext } from 'ui-orch';",
+      "// Re-exported from ui-orch - source of truth has moved there.\nexport { ThemeContext } from 'ui-orch';",
     )
     try {
       const violations = await rule.check([file], {})
