@@ -98,6 +98,7 @@ type RuleConfigMap = {
   'app-module/view-location':                   Record<never, never>
   'app-module/no-raw-timers':                   Record<never, never>
   'app-module/no-react':                        Record<never, never>
+  'app-module/no-raw-color-in-views':           Record<never, never>
 }
 
 // Local rule paths are relative strings (e.g. './.violations/rules/my-rule.js').
