@@ -53,6 +53,20 @@ describe('ts/no-single-file-folder', () => {
     }
   })
 
+  it('does not fire for generated/ by default', async () => {
+    const base = await mkdtemp(join(tmpdir(), 'no-single-file-folder-'))
+    try {
+      const dir = join(base, 'generated')
+      await mkdir(dir)
+      const file = join(dir, 'entries.tsx')
+      await writeFile(file, 'export const x = 1\n')
+      const violations = await rule.check([file], {})
+      assert.equal(violations.length, 0)
+    } finally {
+      await rm(base, { recursive: true })
+    }
+  })
+
   it('does not fire when directory name is in exemptNames', async () => {
     const base = await mkdtemp(join(tmpdir(), 'no-single-file-folder-'))
     try {

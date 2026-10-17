@@ -20,6 +20,7 @@ const DEFAULT_EXEMPT_NAMES = [
   'runners',
   'build',
   'mock',
+  'generated',
 ]
 
 const SOURCE_EXT_RE = /\.(ts|tsx)$/
