@@ -92,6 +92,7 @@ type RuleConfigMap = {
   'dsl/no-app-hook':                             Record<never, never>
   'dsl/no-app-components':                       Record<never, never>
   'dsl/no-app-ui-outside-shell':                 Record<never, never>
+  'dsl/no-code-in-dsl-folder':                   Record<never, never>
   'app-module/naming-convention':               Record<never, never>
   'app-module/manifest-exists-and-valid':       Record<never, never>
   'app-module/backend-entry-location':          Record<never, never>
