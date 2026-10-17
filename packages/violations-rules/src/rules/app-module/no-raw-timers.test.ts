@@ -11,8 +11,9 @@ describe('app-module/no-raw-timers', () => {
     assert.equal(rule.defaultSeverity, 'error')
   })
 
-  it('scopes itself to packages/app-module-*/** so it auto-applies with no config', () => {
-    assert.ok(rule.defaultScope.some((p) => p.includes('packages/app-module-*')))
+  it('scopes itself to packages/app-module-*/api-backend/** (not browser bundles like dsl-lib/)', () => {
+    assert.ok(rule.defaultScope.length > 0)
+    assert.ok(rule.defaultScope.every((p) => p.includes('packages/app-module-*/api-backend/')))
   })
 
   describe('check()', () => {

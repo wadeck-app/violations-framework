@@ -5,8 +5,10 @@ export type Config = Record<never, never>
 
 // app-module packages must use moduleContext.setInterval/setTimeout/on instead
 // of raw globals, so app-core can clear them automatically on unload.
-// Scoped to **/packages/app-module-*/** so it auto-applies in any repo that adds
-// one, with no per-repo config/opt-in.
+// Scoped to **/packages/app-module-*/api-backend/** so it auto-applies in any repo
+// that adds one, with no per-repo config/opt-in. Only the backend runs in
+// app-core's process; other folders (e.g. dsl-lib/, the built browser bundle)
+// run in the browser where raw timers do not leak on unload.
 //
 // Only global, unqualified calls are flagged. A generic `.on(...)` check would
 // also match `moduleContext.on(...)` itself - same syntactic shape, no type
@@ -23,7 +25,7 @@ export const rule: Rule<Config> = {
   id: 'app-module/no-raw-timers',
   tags: 'app-module',
   alwaysActive: true,
-  defaultScope: ['**/packages/app-module-*/**/*.ts', '**/packages/app-module-*/**/*.js', '**/packages/app-module-*/**/*.mjs'],
+  defaultScope: ['**/packages/app-module-*/api-backend/**/*.ts', '**/packages/app-module-*/api-backend/**/*.js', '**/packages/app-module-*/api-backend/**/*.mjs'],
   defaultSeverity: 'error',
 
   async check(files: string[], _config: Config): Promise<Violation[]> {
