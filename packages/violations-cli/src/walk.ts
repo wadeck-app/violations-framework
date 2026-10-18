@@ -1,6 +1,6 @@
 import { readdir } from 'node:fs/promises'
 import { join, relative } from 'node:path'
-import micromatch from 'micromatch'
+import picomatch from 'picomatch'
 
 const DEFAULT_EXCLUDE_GLOBS = [
 	'**/node_modules/**',
@@ -18,6 +18,8 @@ export async function walk(
 	options: { extensions: string[]; excludeGlobs?: string[] }
 ): Promise<string[]> {
 	const allExcludes = [...DEFAULT_EXCLUDE_GLOBS, ...(options.excludeGlobs ?? [])]
+	// Compiled once: picomatch(patterns) returns a matcher reused for every entry.
+	const isExcluded = picomatch(allExcludes)
 	const results: string[] = []
 
 	async function visit(current: string): Promise<void> {
@@ -30,7 +32,7 @@ export async function walk(
 		for (const entry of entries) {
 			const full = join(current, entry.name)
 			const rel = relative(dir, full).split('\\').join('/')
-			if (micromatch.isMatch(rel, allExcludes)) {
+			if (isExcluded(rel)) {
 			  continue;
 			}
 			if (entry.isDirectory()) {

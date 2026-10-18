@@ -38,7 +38,7 @@ function extractDefaultScope(source: string): string[] | null {
  * Very lightweight check: does the pattern (interpreted as a path prefix before the first
  * glob character) resolve to an existing file or directory under projectRoot?
  *
- * For full glob resolution the runner would use micromatch/fast-glob; here we only need to
+ * For full glob resolution the runner would use picomatch/fast-glob; here we only need to
  * detect obviously dead paths (e.g. `packages/dsl-renderer/src` when that dir was deleted).
  * We strip the glob portion by taking everything before the first `*`, `?`, or `{`.
  */

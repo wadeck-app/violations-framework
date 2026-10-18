@@ -2,7 +2,7 @@ import { readFile, mkdir, readdir } from 'node:fs/promises'
 import { join, resolve, dirname, basename, extname } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { existsSync } from 'node:fs'
-import micromatch from 'micromatch'
+import picomatch from 'picomatch'
 import { walk } from './walk.js'
 import { isSuppressed, getSuppressReason } from './suppress.js'
 import { compileIfNeeded } from './compiler.js'
@@ -301,9 +301,10 @@ export async function run(options: RunOptions): Promise<RuleResult[]> {
 			})
 
 			// Filter by scope (relative paths)
+			const isInScope = picomatch(scopePatterns)
 			walkedFiles = walkedFiles.filter(absPath => {
 				const rel = absPath.replace(projectRoot.split('\\').join('/') + '/', '').replace(/^\//, '')
-				return micromatch.isMatch(rel, scopePatterns)
+				return isInScope(rel)
 			})
 
 			// Intersect with options.files if provided. Compared case-insensitively
