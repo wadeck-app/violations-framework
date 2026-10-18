@@ -1,7 +1,7 @@
 import { describe, it } from 'node:test'
 import assert from 'node:assert/strict'
 import { mkdtemp, mkdir, writeFile, rm } from 'node:fs/promises'
-import { join } from 'node:path'
+import { join, matchesGlob } from 'node:path'
 import { tmpdir } from 'node:os'
 import { rule } from './no-raw-timers.js'
 
@@ -14,6 +14,20 @@ describe('app-module/no-raw-timers', () => {
   it('scopes itself to packages/app-module-*/api-backend/** (not browser bundles like dsl-lib/)', () => {
     assert.ok(rule.defaultScope.length > 0)
     assert.ok(rule.defaultScope.every((p) => p.includes('packages/app-module-*/api-backend/')))
+  })
+
+  describe('defaultScope matching', () => {
+    const inScope = (p: string): boolean => rule.defaultScope.some((g) => matchesGlob(p, g))
+
+    it('includes backend files', () => {
+      assert.ok(inScope('repo/packages/app-module-fake/api-backend/backend.mjs'))
+      assert.ok(inScope('packages/app-module-fake/api-backend/src/backend.ts'))
+    })
+
+    it('excludes the built browser bundle in dsl-lib/', () => {
+      assert.ok(!inScope('repo/packages/app-module-fake/dsl-lib/entries.mjs'))
+      assert.ok(!inScope('packages/app-module-fake/dsl-lib/entries.mjs'))
+    })
   })
 
   describe('check()', () => {
