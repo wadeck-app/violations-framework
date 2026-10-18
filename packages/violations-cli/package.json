@@ -27,12 +27,12 @@
   "dependencies": {
     "@wadeck-app/shared-cli": "latest",
     "@wadeck-app/shared-updater": "latest",
-    "picomatch": "^2.3.2",
+    "picomatch": "^4.0.7",
     "typescript": "^5.5.0"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
-    "@types/picomatch": "^2.3.4",
+    "@types/picomatch": "^4.0.3",
     "@wadeck-app/violations-rules": "*",
     "esbuild": "^0.25.0",
     "tsx": "^4.0.0"
