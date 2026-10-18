@@ -8,7 +8,7 @@ import { rule } from './no-raw-color-in-views.js'
 describe('app-module/no-raw-color-in-views', () => {
   async function checkLine(line: string): Promise<ReturnType<typeof rule.check>> {
     const dir = await mkdtemp(join(tmpdir(), 'raw-color-'))
-    const appDir = join(dir, 'packages', 'app-module-fake', 'dsl-frontend')
+    const appDir = join(dir, 'packages', 'app-module-fake', 'src', 'dsl-views')
     await mkdir(appDir, { recursive: true })
     const file = join(appDir, 'view.yaml')
     await writeFile(file, `${line}\n`)
@@ -141,7 +141,7 @@ describe('app-module/no-raw-color-in-views', () => {
 
   it('reports 0 violations against the 3 real app-module-queue DSL views', async () => {
     const dir = await mkdtemp(join(tmpdir(), 'raw-color-realworld-'))
-    const appDir = join(dir, 'packages', 'app-module-queue', 'dsl-frontend')
+    const appDir = join(dir, 'packages', 'app-module-queue', 'src', 'dsl-views')
     await mkdir(appDir, { recursive: true })
     try {
       const files: string[] = []

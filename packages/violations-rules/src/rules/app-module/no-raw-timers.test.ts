@@ -1,9 +1,8 @@
-import { describe, it } from 'node:test'
+import { afterEach, describe, it } from 'node:test'
 import assert from 'node:assert/strict'
-import { mkdtemp, mkdir, writeFile, rm } from 'node:fs/promises'
-import { join, matchesGlob } from 'node:path'
-import { tmpdir } from 'node:os'
+import { matchesGlob } from 'node:path'
 import { rule } from './no-raw-timers.js'
+import { createModule, type TempModule } from '../test-utils/app-module-fixtures.js'
 
 describe('app-module/no-raw-timers', () => {
   it('has the correct rule id and severity', () => {
@@ -11,77 +10,58 @@ describe('app-module/no-raw-timers', () => {
     assert.equal(rule.defaultSeverity, 'error')
   })
 
-  it('scopes itself to packages/app-module-*/api-backend/** (not browser bundles like dsl-lib/)', () => {
+  it('scopes itself to src/backend of any app-module-* folder, wherever it sits in the repo', () => {
     assert.ok(rule.defaultScope.length > 0)
-    assert.ok(rule.defaultScope.every((p) => p.includes('packages/app-module-*/api-backend/')))
+    assert.ok(rule.defaultScope.every((p) => p.startsWith('**/app-module-*/src/backend/')))
   })
 
   describe('defaultScope matching', () => {
     const inScope = (p: string): boolean => rule.defaultScope.some((g) => matchesGlob(p, g))
 
-    it('includes backend files', () => {
-      assert.ok(inScope('repo/packages/app-module-fake/api-backend/backend.mjs'))
-      assert.ok(inScope('packages/app-module-fake/api-backend/src/backend.ts'))
+    it('includes backend files, nested or at the repo root', () => {
+      assert.ok(inScope('repo/packages/app-module-fake/src/backend/index.ts'))
+      assert.ok(inScope('app-module-fake/src/backend/lib/timers.mjs'))
     })
 
-    it('excludes the built browser bundle in dsl-lib/', () => {
-      assert.ok(!inScope('repo/packages/app-module-fake/dsl-lib/entries.mjs'))
-      assert.ok(!inScope('packages/app-module-fake/dsl-lib/entries.mjs'))
+    it('excludes browser-side and legacy folders', () => {
+      assert.ok(!inScope('packages/app-module-fake/src/dsl-components/Card.ts'))
+      assert.ok(!inScope('packages/app-module-fake/src/commons/a.ts'))
+      assert.ok(!inScope('packages/app-module-fake/api-backend/backend.mjs'))
     })
   })
 
   describe('check()', () => {
-    async function setup(): Promise<{ dir: string; file: string }> {
-      const dir = await mkdtemp(join(tmpdir(), 'app-module-timers-'))
-      const appModuleDir = join(dir, 'packages', 'app-module-fake', 'src')
-      await mkdir(appModuleDir, { recursive: true })
-      return { dir, file: join(appModuleDir, 'backend.ts') }
+    let mod: TempModule | undefined
+    afterEach(() => mod?.cleanup())
+
+    async function run(content: string, file = 'src/backend/index.ts') {
+      mod?.cleanup()
+      mod = createModule({ [file]: content })
+      return rule.check([mod.at(file)], {})
     }
 
     it('flags a raw setInterval call', async () => {
-      const { dir, file } = await setup()
-      try {
-        await writeFile(file, 'setInterval(() => {}, 1000);\n')
-        const violations = await rule.check([file], {})
-        assert.equal(violations.length, 1)
-        assert.match(violations[0].message, /setInterval/)
-      } finally {
-        await rm(dir, { recursive: true })
-      }
+      const violations = await run('setInterval(() => {}, 1000);\n')
+      assert.equal(violations.length, 1)
+      assert.match(violations[0].message, /setInterval/)
     })
 
-    it('flags raw addEventListener usage', async () => {
-      const { dir, file } = await setup()
-      try {
-        await writeFile(file, "window.addEventListener('x', fn);\n")
-        const violations = await rule.check([file], {})
-        assert.equal(violations.length, 1)
-      } finally {
-        await rm(dir, { recursive: true })
-      }
+    it('flags raw setTimeout and addEventListener usage', async () => {
+      assert.equal((await run('setTimeout(fn, 1);\n')).length, 1)
+      assert.equal((await run("window.addEventListener('x', fn);\n")).length, 1)
     })
 
     it('does not flag moduleContext.setInterval/.on usage', async () => {
-      const { dir, file } = await setup()
-      try {
-        await writeFile(file, "ctx.setInterval(() => {}, 1000);\nctx.on('y', fn);\n")
-        const violations = await rule.check([file], {})
-        assert.equal(violations.length, 0)
-      } finally {
-        await rm(dir, { recursive: true })
-      }
+      assert.equal((await run("ctx.setInterval(() => {}, 1000);\nctx.on('y', fn);\n")).length, 0)
     })
 
     it('ignores test files', async () => {
-      const { dir, file } = await setup()
-      try {
-        const testFile = file.replace('.ts', '.test.ts')
-        await writeFile(testFile, 'setInterval(() => {}, 1000);\n')
-        const violations = await rule.check([testFile], {})
-        assert.equal(violations.length, 0)
-      } finally {
-        await rm(dir, { recursive: true })
-      }
+      assert.equal((await run('setInterval(() => {}, 1000);\n', 'src/backend/index.test.ts')).length, 0)
+    })
+
+    it('ignores generated dist-module and .app-core-dev files', async () => {
+      assert.equal((await run('setInterval(() => {}, 1000);\n', 'dist-module/api-backend/backend.mjs')).length, 0)
+      assert.equal((await run('setInterval(() => {}, 1000);\n', '.app-core-dev/data/x.mjs')).length, 0)
     })
   })
 })

@@ -1,63 +1,51 @@
-import { describe, it } from 'node:test'
+import { afterEach, describe, it } from 'node:test'
 import assert from 'node:assert/strict'
-import { mkdtemp, mkdir, writeFile, rm } from 'node:fs/promises'
-import { join } from 'node:path'
-import { tmpdir } from 'node:os'
+import { mkdirSync, writeFileSync } from 'node:fs'
 import { rule } from './backend-entry-location.js'
-import { validateManifestViaAppCoreCli } from './manifest.js'
-
-// This rule's violations only surface once app-core-cli parses the manifest
-// (result.kind === 'ok') - if the binary isn't installed on the machine
-// running these tests, skip explicitly rather than silently passing.
-const appCoreCliAvailable = validateManifestViaAppCoreCli(join(tmpdir(), 'does-not-exist.json')).kind !== 'unavailable'
+import { createModule, type TempModule } from '../test-utils/app-module-fixtures.js'
 
 describe('app-module/backend-entry-location', () => {
-  async function setup(): Promise<{ dir: string; manifestPath: string }> {
-    const dir = await mkdtemp(join(tmpdir(), 'backend-loc-'))
-    const appModuleDir = join(dir, 'packages', 'app-module-fake')
-    await mkdir(appModuleDir, { recursive: true })
-    return { dir, manifestPath: join(appModuleDir, 'manifest.json') }
-  }
+  let mod: TempModule | undefined
+  afterEach(() => mod?.cleanup())
 
-  async function writeManifest(manifestPath: string, backendEntryPath: string): Promise<void> {
-    await writeFile(manifestPath, JSON.stringify({
-      version: '1.0.0',
-      backendEntryPath,
-      extensionPoints: [{ kind: 'widget', slot: 'dashboard', view: { type: 'inline', value: { $type: 'Badge', label: 'ok' } } }],
-    }))
-  }
-
-  it('flags a backendEntryPath outside api-backend/', { skip: !appCoreCliAvailable && 'app-core-cli not installed on this machine' }, async () => {
-    const { dir, manifestPath } = await setup()
-    try {
-      await writeManifest(manifestPath, './backend.js')
-      const violations = await rule.check([manifestPath], {})
-      assert.equal(violations.length, 1)
-      assert.match(violations[0].message, /api-backend\//)
-    } finally {
-      await rm(dir, { recursive: true })
-    }
+  it('passes src/backend/index.ts with a default export', async () => {
+    mod = createModule()
+    assert.equal((await rule.check([mod.at('manifest.json')], {})).length, 0)
   })
 
-  it('does not flag a backendEntryPath inside api-backend/', async () => {
-    const { dir, manifestPath } = await setup()
-    try {
-      await writeManifest(manifestPath, './api-backend/index.js')
-      const violations = await rule.check([manifestPath], {})
-      assert.equal(violations.length, 0)
-    } finally {
-      await rm(dir, { recursive: true })
-    }
+  it('passes `export { x as default }`', async () => {
+    mod = createModule({ 'src/backend/index.ts': 'function run() {}\nexport { run as default };\n' })
+    assert.equal((await rule.check([mod.at('manifest.json')], {})).length, 0)
   })
 
-  it('rejects a sneaky look-alike folder (api-backend-fake/) via proper path containment', { skip: !appCoreCliAvailable && 'app-core-cli not installed on this machine' }, async () => {
-    const { dir, manifestPath } = await setup()
-    try {
-      await writeManifest(manifestPath, './api-backend-fake/index.js')
-      const violations = await rule.check([manifestPath], {})
-      assert.equal(violations.length, 1)
-    } finally {
-      await rm(dir, { recursive: true })
-    }
+  it('flags a missing src/backend/index.ts', async () => {
+    mod = createModule({ 'src/backend/index.ts': null, 'src/backend/other.ts': 'export {};\n' })
+    const violations = await rule.check([mod.at('manifest.json')], {})
+    assert.equal(violations.length, 1)
+    assert.match(violations[0].message, /src\/backend\/index\.ts/)
+  })
+
+  it('flags an entry with no default export (a commented-out one does not count)', async () => {
+    mod = createModule({ 'src/backend/index.ts': '// export default function () {}\nexport const x = 1;\n' })
+    const violations = await rule.check([mod.at('manifest.json')], {})
+    assert.equal(violations.length, 1)
+    assert.match(violations[0].message, /no default export/)
+  })
+
+  it('ignores the generated dist-module manifest', async () => {
+    mod = createModule({ 'dist-module/manifest.json': '{}' })
+    assert.equal((await rule.check([mod.at('dist-module/manifest.json')], {})).length, 0)
+  })
+
+  it('flags the legacy layout (entry only under api-backend/)', async () => {
+    mod = createModule({ 'src/backend/index.ts': null })
+    mkdirSync(mod.at('api-backend'), { recursive: true })
+    writeFileSync(mod.at('api-backend/index.js'), 'export default () => {};\n')
+    assert.equal((await rule.check([mod.at('manifest.json')], {})).length, 1)
+  })
+
+  it('has the expected id and scope', () => {
+    assert.equal(rule.id, 'app-module/backend-entry-location')
+    assert.deepEqual(rule.defaultScope, ['**/app-module-*/manifest.json'])
   })
 })

@@ -1,58 +1,67 @@
-import { existsSync } from 'node:fs'
-import { dirname, join } from 'node:path'
+import { existsSync, readFileSync } from 'node:fs'
+import { join } from 'node:path'
 import type { Rule, Violation } from '../types.js'
-import { validateManifestViaAppCoreCli } from './manifest.js'
+import { isDir, listFiles, moduleRootOfRootFile } from './layout.js'
+import { validateSourceManifest } from './source-manifest.js'
 
 export type Config = Record<never, never>
 
-// Every app-module package must ship a valid manifest.json - a package with
-// backend code but no manifest cannot be registered with app-core at all.
+// Every app-module must ship a valid source manifest.json (id, extensionPoints, plus the optional
+// dslLib.shared, requires, expose, lifecycle; `package` writes version, backendEntryPath and
+// dslLib.entry/css into dist-module/manifest.json), and dslLib must agree with src/dsl-components.
 //
-// The violations rule API only hands check() a list of EXISTING files that
-// matched defaultScope - there is no way to represent "a file is missing"
-// from that list alone. So this rule scopes itself to package.json (always
-// present for a real npm package) as an anchor, and checks for the sibling
-// manifest.json from there, rather than scoping to manifest.json itself
-// (which would never appear in `files` if it's the thing that's missing).
-const FORBIDDEN_MESSAGE = 'app-module package is missing manifest.json - an app-module without a manifest cannot be registered with app-core at all.'
-
-let warnedMissingBinary = false
-
+// The rule API only hands check() existing files, so "a file is missing" cannot be represented from
+// manifest.json itself. The rule scopes itself to package.json (present in every real package) as an
+// anchor and looks for the sibling manifest.json from there.
 export const rule: Rule<Config> = {
   id: 'app-module/manifest-exists-and-valid',
   tags: 'app-module',
   alwaysActive: true,
-  defaultScope: ['**/packages/app-module-*/package.json'],
+  defaultScope: ['**/app-module-*/package.json'],
   defaultSeverity: 'error',
 
   async check(files: string[], _config: Config): Promise<Violation[]> {
     const violations: Violation[] = []
 
     for (const packageJsonPath of files) {
-      const dir = dirname(packageJsonPath)
-      const manifestPath = join(dir, 'manifest.json')
+      const root = moduleRootOfRootFile(packageJsonPath)
+      if (root === undefined) {
+        continue
+      }
+      const manifestPath = join(root, 'manifest.json')
 
       if (!existsSync(manifestPath)) {
-        violations.push({ file: manifestPath, line: 1, message: FORBIDDEN_MESSAGE })
+        violations.push({ file: manifestPath, line: 1, message: 'app-module package is missing manifest.json - an app-module without a manifest cannot be registered with app-core at all.' })
         continue
       }
 
-      const result = validateManifestViaAppCoreCli(manifestPath)
-
-      if (result.kind === 'unavailable') {
-        if (!warnedMissingBinary) {
-          warnedMissingBinary = true
-          process.stderr.write(
-            '[warn] app-module/manifest-exists-and-valid: "app-core-cli" binary not found on PATH - skipping manifest schema validation for this run.\n' +
-            '       Install app-core-cli (the global app-core tooling binary) to enable this check, or silence this warning by disabling the rule:\n' +
-            '       rules: { \'app-module/manifest-exists-and-valid\': { $severity: false } }\n'
-          )
-        }
+      let raw: unknown
+      try {
+        raw = JSON.parse(readFileSync(manifestPath, 'utf-8'))
+      } catch (err) {
+        violations.push({ file: manifestPath, line: 1, message: `manifest.json is not valid JSON: ${(err as Error).message}` })
         continue
       }
 
-      if (result.kind === 'invalid') {
-        violations.push({ file: manifestPath, line: 1, message: `manifest.json failed validation: ${result.message}` })
+      const result = validateSourceManifest(raw)
+      if (!result.ok) {
+        violations.push({
+          file: manifestPath,
+          line: 1,
+          message: `manifest.json failed validation: ${result.issues.join('; ')}. The source manifest holds only id, extensionPoints, dslLib.shared, requires, expose and lifecycle; \`package\` writes the rest (version, backendEntryPath, dslLib.entry/css).`,
+        })
+        continue
+      }
+      const manifest = result.manifest
+
+      const componentsDir = join(root, 'src', 'dsl-components')
+      const entryExists = existsSync(join(componentsDir, 'index.ts'))
+      const hasComponents = isDir(componentsDir) && listFiles(componentsDir).length > 0
+      if (manifest.dslLib !== undefined && !entryExists) {
+        violations.push({ file: join(componentsDir, 'index.ts'), line: 1, message: 'manifest.json declares dslLib but src/dsl-components/index.ts is missing. Create it (default-exporting the ComponentRegistryEntry[]), or remove dslLib.' })
+      }
+      if (manifest.dslLib === undefined && hasComponents) {
+        violations.push({ file: manifestPath, line: 1, message: 'src/dsl-components has files but manifest.json has no dslLib, so they would not be packaged. Add `"dslLib": { "shared": { ... } }`, or delete src/dsl-components.' })
       }
     }
 

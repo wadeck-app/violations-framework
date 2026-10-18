@@ -1,67 +1,61 @@
-import { describe, it } from 'node:test'
+import { afterEach, describe, it } from 'node:test'
 import assert from 'node:assert/strict'
-import { mkdtemp, mkdir, writeFile, rm } from 'node:fs/promises'
-import { join } from 'node:path'
-import { tmpdir } from 'node:os'
 import { rule } from './view-location.js'
-import { validateManifestViaAppCoreCli } from './manifest.js'
-
-// This rule's violations only surface once app-core-cli parses the manifest
-// (result.kind === 'ok') - if the binary isn't installed on the machine
-// running these tests, skip explicitly rather than silently passing.
-const appCoreCliAvailable = validateManifestViaAppCoreCli(join(tmpdir(), 'does-not-exist.json')).kind !== 'unavailable'
+import { createModule, manifestWithView, type TempModule } from '../test-utils/app-module-fixtures.js'
 
 describe('app-module/view-location', () => {
-  async function setup(): Promise<{ dir: string; manifestPath: string }> {
-    const dir = await mkdtemp(join(tmpdir(), 'view-loc-'))
-    const appModuleDir = join(dir, 'packages', 'app-module-fake')
-    await mkdir(appModuleDir, { recursive: true })
-    return { dir, manifestPath: join(appModuleDir, 'manifest.json') }
+  let mod: TempModule | undefined
+  afterEach(() => mod?.cleanup())
+
+  async function run(files: Record<string, string | null> = {}) {
+    mod?.cleanup()
+    mod = createModule(files)
+    return rule.check([mod.at('manifest.json')], {})
   }
 
-  async function writeManifest(manifestPath: string, viewPath: string): Promise<void> {
-    await writeFile(manifestPath, JSON.stringify({
-      version: '1.0.0',
-      backendEntryPath: './api-backend/index.js',
-      extensionPoints: [{ kind: 'page', slot: 'nav', view: { type: 'path', value: viewPath } }],
-    }))
-  }
-
-  it('flags a view path outside dsl-frontend/', { skip: !appCoreCliAvailable && 'app-core-cli not installed on this machine' }, async () => {
-    const { dir, manifestPath } = await setup()
-    try {
-      await writeManifest(manifestPath, './page.yaml')
-      const violations = await rule.check([manifestPath], {})
-      assert.equal(violations.length, 1)
-      assert.match(violations[0].message, /dsl-frontend\//)
-    } finally {
-      await rm(dir, { recursive: true })
-    }
+  it('passes a view inside src/dsl-views', async () => {
+    assert.equal((await run()).length, 0)
   })
 
-  it('does not flag a view path inside dsl-frontend/', async () => {
-    const { dir, manifestPath } = await setup()
-    try {
-      await writeManifest(manifestPath, './dsl-frontend/page.yaml')
-      const violations = await rule.check([manifestPath], {})
-      assert.equal(violations.length, 0)
-    } finally {
-      await rm(dir, { recursive: true })
-    }
+  it('flags a view outside src/dsl-views (legacy dsl-frontend/)', async () => {
+    const violations = await run({
+      'manifest.json': manifestWithView({ type: 'path', value: './dsl-frontend/page.yaml' }),
+      'dsl-frontend/page.yaml': '$type: Badge\n',
+    })
+    assert.equal(violations.length, 1)
+    assert.match(violations[0].message, /src\/dsl-views\//)
+  })
+
+  it('flags a referenced view that does not exist', async () => {
+    const violations = await run({ 'manifest.json': manifestWithView({ type: 'path', value: './src/dsl-views/missing.yaml' }) })
+    assert.equal(violations.length, 1)
+    assert.match(violations[0].message, /does not exist/)
+  })
+
+  it('flags a view that is a YAML sequence or scalar, not an object', async () => {
+    assert.equal((await run({ 'src/dsl-views/page.yaml': '- a\n- b\n' })).length, 1)
+    assert.equal((await run({ 'src/dsl-views/page.yaml': 'just text\n' })).length, 1)
+    assert.equal((await run({ 'src/dsl-views/page.yaml': '' })).length, 1)
+  })
+
+  it('accepts a YAML object preceded by comments and a document marker', async () => {
+    assert.equal((await run({ 'src/dsl-views/page.yaml': '# header\n---\n$type: Badge\n' })).length, 0)
+  })
+
+  it('checks .json views with a real JSON parser', async () => {
+    const manifest = manifestWithView({ type: 'path', value: './src/dsl-views/page.json' })
+    assert.equal((await run({ 'manifest.json': manifest, 'src/dsl-views/page.json': '{"$type":"Badge"}' })).length, 0)
+    const bad = await run({ 'manifest.json': manifest, 'src/dsl-views/page.json': '{nope' })
+    assert.equal(bad.length, 1)
+    assert.match(bad[0].message, /not valid JSON/)
+    assert.equal((await run({ 'manifest.json': manifest, 'src/dsl-views/page.json': '[1]' })).length, 1)
   })
 
   it('ignores inline views (no path to check)', async () => {
-    const { dir, manifestPath } = await setup()
-    try {
-      await writeFile(manifestPath, JSON.stringify({
-        version: '1.0.0',
-        backendEntryPath: './api-backend/index.js',
-        extensionPoints: [{ kind: 'widget', slot: 'dashboard', view: { type: 'inline', value: { $type: 'Badge', label: 'ok' } } }],
-      }))
-      const violations = await rule.check([manifestPath], {})
-      assert.equal(violations.length, 0)
-    } finally {
-      await rm(dir, { recursive: true })
-    }
+    assert.equal((await run({ 'manifest.json': manifestWithView({ type: 'inline', value: { $type: 'Badge', label: 'ok' } }) })).length, 0)
+  })
+
+  it('leaves an invalid manifest to manifest-exists-and-valid', async () => {
+    assert.equal((await run({ 'manifest.json': '{}' })).length, 0)
   })
 })

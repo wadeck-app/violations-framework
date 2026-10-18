@@ -1,79 +1,81 @@
-import { describe, it } from 'node:test'
+import { afterEach, describe, it } from 'node:test'
 import assert from 'node:assert/strict'
-import { mkdtemp, mkdir, writeFile, rm } from 'node:fs/promises'
-import { join, dirname } from 'node:path'
-import { tmpdir } from 'node:os'
 import { rule } from './manifest-exists-and-valid.js'
-import { validateManifestViaAppCoreCli } from './manifest.js'
+import { createModule, manifestWith, VALID_MODULE_FILES, type TempModule } from '../test-utils/app-module-fixtures.js'
 
-// These tests shell out to the real, globally-installed app-core-cli binary
-// (not a fake/stub) to exercise the actual validate contract - see
-// app-core-cli/src/validate.ts and cli.ts for the exit-code/stdio contract
-// this rule depends on. If app-core-cli is not installed on the machine
-// running these tests, the ok/invalid assertions are skipped explicitly
-// rather than silently passing.
-const appCoreCliAvailable = validateManifestViaAppCoreCli(join(tmpdir(), 'does-not-exist.json')).kind !== 'unavailable'
+const withDslLib = manifestWith({ dslLib: { shared: { react: '^19' } } })
 
 describe('app-module/manifest-exists-and-valid', () => {
-  async function setup(): Promise<{ dir: string; packageJsonPath: string }> {
-    const dir = await mkdtemp(join(tmpdir(), 'manifest-'))
-    const appModuleDir = join(dir, 'packages', 'app-module-fake')
-    await mkdir(appModuleDir, { recursive: true })
-    const packageJsonPath = join(appModuleDir, 'package.json')
-    await writeFile(packageJsonPath, '{}\n')
-    return { dir, packageJsonPath }
+  let mod: TempModule | undefined
+  afterEach(() => mod?.cleanup())
+
+  async function run(files: Record<string, string | null> = {}) {
+    mod?.cleanup()
+    mod = createModule(files)
+    return rule.check([mod.at('package.json')], {})
   }
 
-  it('flags a missing manifest.json - the real-world gap found when a module ships code with no manifest', async () => {
-    const { dir, packageJsonPath } = await setup()
-    try {
-      const violations = await rule.check([packageJsonPath], {})
-      assert.equal(violations.length, 1)
-      assert.match(violations[0].message, /missing manifest\.json/)
-    } finally {
-      await rm(dir, { recursive: true })
-    }
+  it('passes a valid source manifest', async () => {
+    assert.equal((await run()).length, 0)
   })
 
-  it('flags an invalid manifest.json via app-core-cli validate', { skip: !appCoreCliAvailable && 'app-core-cli not installed on this machine' }, async () => {
-    const { dir, packageJsonPath } = await setup()
-    try {
-      const manifestPath = join(dirname(packageJsonPath), 'manifest.json')
-      await writeFile(manifestPath, JSON.stringify({ version: '1.0.0', extensionPoints: [] }))
-      const violations = await rule.check([packageJsonPath], {})
-      assert.equal(violations.length, 1)
-      assert.match(violations[0].message, /failed validation/)
-    } finally {
-      await rm(dir, { recursive: true })
-    }
+  it('flags a missing manifest.json -- a module shipped with code and no manifest', async () => {
+    const violations = await run({ 'manifest.json': null })
+    assert.equal(violations.length, 1)
+    assert.match(violations[0].message, /missing manifest\.json/)
   })
 
-  it('passes a real, valid manifest.json via app-core-cli validate', { skip: !appCoreCliAvailable && 'app-core-cli not installed on this machine' }, async () => {
-    const { dir, packageJsonPath } = await setup()
-    try {
-      const manifestPath = join(dirname(packageJsonPath), 'manifest.json')
-      await writeFile(manifestPath, JSON.stringify({
-        version: '1.0.0',
-        backendEntryPath: './api-backend/index.js',
-        extensionPoints: [{ kind: 'widget', slot: 'dashboard', view: { type: 'inline', value: { $type: 'Badge', label: 'ok' } } }],
-      }))
-      const violations = await rule.check([packageJsonPath], {})
-      assert.equal(violations.length, 0)
-    } finally {
-      await rm(dir, { recursive: true })
-    }
+  it('flags a manifest that is not JSON', async () => {
+    const violations = await run({ 'manifest.json': '{nope' })
+    assert.equal(violations.length, 1)
+    assert.match(violations[0].message, /not valid JSON/)
   })
 
-  it('reports "unavailable" (not a false pass/fail) when app-core-cli is not resolvable on PATH', async () => {
-    const emptyBinDir = await mkdtemp(join(tmpdir(), 'empty-bin-'))
-    const originalPath = process.env.PATH
-    process.env.PATH = emptyBinDir
-    try {
-      const result = validateManifestViaAppCoreCli(join(tmpdir(), 'whatever.json'))
-      assert.equal(result.kind, 'unavailable')
-    } finally {
-      process.env.PATH = originalPath
-      await rm(emptyBinDir, { recursive: true })
-    }
+  it('flags a manifest without an id', async () => {
+    const violations = await run({ 'manifest.json': JSON.stringify({ extensionPoints: JSON.parse(VALID_MODULE_FILES['manifest.json']).extensionPoints }) })
+    assert.equal(violations.length, 1)
+    assert.match(violations[0].message, /id: required string/)
+  })
+
+  it('flags an invalid id', async () => {
+    const violations = await run({ 'manifest.json': manifestWith({ id: 'bad id!' }) })
+    assert.equal(violations.length, 1)
+    assert.match(violations[0].message, /module id must/)
+  })
+
+  it('flags build-output fields in the source manifest (version, backendEntryPath)', async () => {
+    const violations = await run({ 'manifest.json': manifestWith({ version: '1.0.0', backendEntryPath: './api-backend/index.js' }) })
+    assert.equal(violations.length, 1)
+    assert.match(violations[0].message, /failed validation/)
+    assert.match(violations[0].message, /unrecognized key "version"/)
+    assert.match(violations[0].message, /unrecognized key "backendEntryPath"/)
+  })
+
+  it('flags dslLib.entry (written by `package`, not by the author)', async () => {
+    const violations = await run({ 'manifest.json': manifestWith({ dslLib: { entry: './dsl-lib/x.mjs', shared: {} } }) })
+    assert.equal(violations.length, 1)
+    assert.match(violations[0].message, /unrecognized key "entry"/)
+  })
+
+  it('flags dslLib declared without src/dsl-components/index.ts', async () => {
+    const violations = await run({ 'manifest.json': withDslLib })
+    assert.equal(violations.length, 1)
+    assert.match(violations[0].message, /src\/dsl-components\/index\.ts/)
+  })
+
+  it('flags src/dsl-components files with no dslLib in the manifest', async () => {
+    const violations = await run({ 'src/dsl-components/index.ts': 'export default [];\n' })
+    assert.equal(violations.length, 1)
+    assert.match(violations[0].message, /no dslLib/)
+  })
+
+  it('passes dslLib together with src/dsl-components/index.ts', async () => {
+    assert.equal((await run({ 'manifest.json': withDslLib, 'src/dsl-components/index.ts': 'export default [];\n' })).length, 0)
+  })
+
+  it('ignores a package.json inside dist-module', async () => {
+    mod?.cleanup()
+    mod = createModule({ 'dist-module/package.json': '{}' })
+    assert.equal((await rule.check([mod.at('dist-module/package.json')], {})).length, 0)
   })
 })

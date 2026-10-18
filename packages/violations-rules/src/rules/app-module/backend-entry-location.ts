@@ -1,39 +1,35 @@
-import { dirname, resolve, sep } from 'node:path'
+import { existsSync, readFileSync } from 'node:fs'
+import { join } from 'node:path'
 import type { Rule, Violation } from '../types.js'
-import { validateManifestViaAppCoreCli } from './manifest.js'
+import { BACKEND_ENTRY, hasDefaultExport, moduleRootOfRootFile } from './layout.js'
 
 export type Config = Record<never, never>
 
-// An app-module's backendEntryPath must live inside its own
-// api-backend/ folder - keeps the backend/view split enforced, not just documented.
+// The backend entry is fixed by convention (decision 81): src/backend/index.ts, with a default export.
+// The source manifest no longer names it; `package` writes backendEntryPath into dist-module.
+// Anchored on manifest.json: the rule API only hands check() existing files, so a missing entry
+// cannot be a scoped file itself.
 export const rule: Rule<Config> = {
   id: 'app-module/backend-entry-location',
   tags: 'app-module',
   alwaysActive: true,
-  defaultScope: ['**/packages/app-module-*/manifest.json'],
+  defaultScope: ['**/app-module-*/manifest.json'],
   defaultSeverity: 'error',
 
   async check(files: string[], _config: Config): Promise<Violation[]> {
     const violations: Violation[] = []
 
     for (const manifestPath of files) {
-      const result = validateManifestViaAppCoreCli(manifestPath)
-      // "unavailable" (binary not installed) and "invalid" (bad manifest) are
-      // both reported by app-module/manifest-exists-and-valid - this rule only
-      // has anything to check once a valid, parsed manifest is in hand.
-      if (result.kind !== 'ok') {
-        continue;
+      const root = moduleRootOfRootFile(manifestPath)
+      if (root === undefined) {
+        continue
       }
 
-      const dir = dirname(manifestPath)
-      const requiredDir = resolve(dir, 'api-backend') + sep
-      const resolvedEntry = resolve(dir, result.manifest.backendEntryPath)
-      if (!resolvedEntry.startsWith(requiredDir)) {
-        violations.push({
-          file: manifestPath,
-          line: 1,
-          message: `backendEntryPath "${result.manifest.backendEntryPath}" must resolve inside this module's api-backend/ folder, resolved to "${resolvedEntry}".`,
-        })
+      const entry = join(root, BACKEND_ENTRY)
+      if (!existsSync(entry)) {
+        violations.push({ file: entry, line: 1, message: `the backend entry is missing: it is always ${BACKEND_ENTRY}. Create it with \`export default function (ctx) { ... }\`.` })
+      } else if (!hasDefaultExport(readFileSync(entry, 'utf-8'))) {
+        violations.push({ file: entry, line: 1, message: 'the backend entry has no default export. Add `export default function (ctx) { ... }`: app-core calls it when the module loads.' })
       }
     }
 

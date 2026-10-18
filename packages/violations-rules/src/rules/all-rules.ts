@@ -76,6 +76,9 @@ export { rule as appModuleViewLocation } from './app-module/view-location.js'
 export { rule as appModuleNoRawTimers } from './app-module/no-raw-timers.js'
 export { rule as appModuleNoReact } from './app-module/no-react.js'
 export { rule as appModuleNoRawColorInViews } from './app-module/no-raw-color-in-views.js'
+export { rule as appModuleSourceLayout } from './app-module/source-layout.js'
+export { rule as appModuleImportBoundaries } from './app-module/import-boundaries.js'
+export { rule as appModulePublishing } from './app-module/publishing.js'
 
 export type { Config as NoEmDashConfig } from './shared/no-em-dash.js'
 export type { Config as NoFrenchConfig } from './shared/no-french.js'
@@ -155,6 +158,9 @@ export type { Config as AppModuleViewLocationConfig } from './app-module/view-lo
 export type { Config as AppModuleNoRawTimersConfig } from './app-module/no-raw-timers.js'
 export type { Config as AppModuleNoReactConfig } from './app-module/no-react.js'
 export type { Config as AppModuleNoRawColorInViewsConfig } from './app-module/no-raw-color-in-views.js'
+export type { Config as AppModuleSourceLayoutConfig } from './app-module/source-layout.js'
+export type { Config as AppModuleImportBoundariesConfig } from './app-module/import-boundaries.js'
+export type { Config as AppModulePublishingConfig } from './app-module/publishing.js'
 
 import { rule as noEmDash } from './shared/no-em-dash.js'
 import { rule as noFrench } from './shared/no-french.js'
@@ -234,6 +240,9 @@ import { rule as appModuleViewLocation } from './app-module/view-location.js'
 import { rule as appModuleNoRawTimers } from './app-module/no-raw-timers.js'
 import { rule as appModuleNoReact } from './app-module/no-react.js'
 import { rule as appModuleNoRawColorInViews } from './app-module/no-raw-color-in-views.js'
+import { rule as appModuleSourceLayout } from './app-module/source-layout.js'
+import { rule as appModuleImportBoundaries } from './app-module/import-boundaries.js'
+import { rule as appModulePublishing } from './app-module/publishing.js'
 import type { Rule } from '../types.js'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -316,4 +325,7 @@ export const allRules: Rule<any>[] = [
   appModuleNoRawTimers,
   appModuleNoReact,
   appModuleNoRawColorInViews,
+  appModuleSourceLayout,
+  appModuleImportBoundaries,
+  appModulePublishing,
 ]

@@ -1,14 +1,16 @@
 import { readFileSync } from 'node:fs'
 import type { Rule, Violation } from '../types.js'
+import { isExcludedPath } from './layout.js'
 
 export type Config = Record<never, never>
 
 // app-module packages must use moduleContext.setInterval/setTimeout/on instead
 // of raw globals, so app-core can clear them automatically on unload.
-// Scoped to **/packages/app-module-*/api-backend/** so it auto-applies in any repo
-// that adds one, with no per-repo config/opt-in. Only the backend runs in
-// app-core's process; other folders (e.g. dsl-lib/, the built browser bundle)
-// run in the browser where raw timers do not leak on unload.
+// Scoped to **/app-module-*/src/backend/** so it auto-applies in any repo that has
+// such a module, with no per-repo config/opt-in. Only src/backend runs in app-core's
+// process under a ModuleContext; src/dsl-components and src/commons run in the browser,
+// where raw timers do not leak on unload. dist-module/ and .app-core-dev/ are skipped
+// (generated output / dev data, never source).
 //
 // Only global, unqualified calls are flagged. A generic `.on(...)` check would
 // also match `moduleContext.on(...)` itself - same syntactic shape, no type
@@ -25,14 +27,14 @@ export const rule: Rule<Config> = {
   id: 'app-module/no-raw-timers',
   tags: 'app-module',
   alwaysActive: true,
-  defaultScope: ['**/packages/app-module-*/api-backend/**/*.ts', '**/packages/app-module-*/api-backend/**/*.js', '**/packages/app-module-*/api-backend/**/*.mjs'],
+  defaultScope: ['**/app-module-*/src/backend/**/*.ts', '**/app-module-*/src/backend/**/*.js', '**/app-module-*/src/backend/**/*.mjs'],
   defaultSeverity: 'error',
 
   async check(files: string[], _config: Config): Promise<Violation[]> {
     const violations: Violation[] = []
 
     for (const file of files) {
-      if (file.endsWith('.test.ts') || file.endsWith('.test.js')) {
+      if (isExcludedPath(file) || file.endsWith('.test.ts') || file.endsWith('.test.js')) {
         continue;
       }
       const content = readFileSync(file, 'utf-8')

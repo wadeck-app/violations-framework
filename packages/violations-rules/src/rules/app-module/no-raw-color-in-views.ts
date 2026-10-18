@@ -1,5 +1,6 @@
 import { readFile } from 'node:fs/promises'
 import type { Rule, Violation } from '../types.js'
+import { isExcludedPath } from './layout.js'
 
 export type Config = Record<never, never>
 
@@ -43,13 +44,16 @@ export const rule: Rule<Config> = {
   id: 'app-module/no-raw-color-in-views',
   tags: 'app-module',
   alwaysActive: true,
-  defaultScope: ['packages/app-module-*/dsl-frontend/**/*.yaml', 'packages/app-module-*/dsl-frontend/**/*.yml'],
+  defaultScope: ['**/app-module-*/src/dsl-views/**/*.yaml', '**/app-module-*/src/dsl-views/**/*.yml'],
   defaultSeverity: 'error',
 
   async check(files: string[], _config: Config): Promise<Violation[]> {
     const violations: Violation[] = []
 
     for (const file of files) {
+      if (isExcludedPath(file)) {
+        continue
+      }
       let text: string
       try {
         text = await readFile(file, 'utf8')

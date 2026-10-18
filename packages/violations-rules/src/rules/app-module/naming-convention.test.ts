@@ -1,61 +1,39 @@
-import { describe, it } from 'node:test'
+import { afterEach, describe, it } from 'node:test'
 import assert from 'node:assert/strict'
-import { mkdtemp, mkdir, writeFile, rm } from 'node:fs/promises'
-import { join } from 'node:path'
-import { tmpdir } from 'node:os'
 import { rule } from './naming-convention.js'
+import { createModule, type TempModule } from '../test-utils/app-module-fixtures.js'
 
 describe('app-module/naming-convention', () => {
-  async function manifestAt(dir: string, packageDirName: string): Promise<string> {
-    const packageDir = join(dir, 'packages', packageDirName)
-    await mkdir(packageDir, { recursive: true })
-    const manifestPath = join(packageDir, 'manifest.json')
-    await writeFile(manifestPath, '{}\n')
-    return manifestPath
+  let mod: TempModule | undefined
+  afterEach(() => mod?.cleanup())
+
+  async function checkFolder(name: string) {
+    mod?.cleanup()
+    mod = createModule({}, name)
+    return rule.check([mod.at('manifest.json')], {})
   }
 
   it('passes a correctly prefixed name', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'naming-'))
-    try {
-      const manifestPath = await manifestAt(dir, 'app-module-queue')
-      const violations = await rule.check([manifestPath], {})
-      assert.equal(violations.length, 0)
-    } finally {
-      await rm(dir, { recursive: true })
-    }
+    assert.equal((await checkFolder('app-module-queue')).length, 0)
   })
 
   it('rejects a bare "app-module" with no suffix', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'naming-'))
-    try {
-      const manifestPath = await manifestAt(dir, 'app-module')
-      const violations = await rule.check([manifestPath], {})
-      assert.equal(violations.length, 1)
-      assert.match(violations[0].message, /must be named "app-module-<name>"/)
-    } finally {
-      await rm(dir, { recursive: true })
-    }
+    const violations = await checkFolder('app-module')
+    assert.equal(violations.length, 1)
+    assert.match(violations[0].message, /must be named "app-module-<name>"/)
   })
 
   it('rejects an unrelated name entirely', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'naming-'))
-    try {
-      const manifestPath = await manifestAt(dir, 'queue-module')
-      const violations = await rule.check([manifestPath], {})
-      assert.equal(violations.length, 1)
-    } finally {
-      await rm(dir, { recursive: true })
-    }
+    assert.equal((await checkFolder('queue-module')).length, 1)
   })
 
   it('rejects suffix-style naming (queue-app-module)', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'naming-'))
-    try {
-      const manifestPath = await manifestAt(dir, 'queue-app-module')
-      const violations = await rule.check([manifestPath], {})
-      assert.equal(violations.length, 1)
-    } finally {
-      await rm(dir, { recursive: true })
-    }
+    assert.equal((await checkFolder('queue-app-module')).length, 1)
+  })
+
+  it('skips the generated dist-module/manifest.json and .app-core-dev', async () => {
+    mod?.cleanup()
+    mod = createModule({ 'dist-module/manifest.json': '{}', '.app-core-dev/x/manifest.json': '{}' })
+    assert.equal((await rule.check([mod.at('dist-module/manifest.json'), mod.at('.app-core-dev/x/manifest.json')], {})).length, 0)
   })
 })

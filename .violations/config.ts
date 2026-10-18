@@ -36,6 +36,8 @@ export default {
       $exclude: [
         'packages/violations-rules/src/rules/shared/no-out-of-repo-path.test.ts',
         'packages/violations-rules/src/rules/shared/no-out-of-repo-path.ts',
+        // asserts that Windows-separator paths are normalised
+        'packages/violations-rules/src/rules/app-module/layout.test.ts',
       ],
     },
     'shared/no-emoji': {
@@ -90,6 +92,9 @@ export default {
     'ts/node-builtin-prefix': {
       $exclude: [
         'packages/violations-rules/src/rules/ts/node-builtin-prefix.test.ts',
+        // fixtures deliberately import bare 'path' / 'fs/promises' (Node builtin without prefix must be detected)
+        'packages/violations-rules/src/rules/app-module/import-boundaries.test.ts',
+        'packages/violations-rules/src/rules/test-utils/app-module-parity-scenarios.ts',
       ],
     },
 
