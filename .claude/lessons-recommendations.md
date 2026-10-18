@@ -32,3 +32,42 @@ NOTHING
 ### Configuration
 
 - [ ] Add an explicit warning to the `violations` skill: never use the `!` prefix for violations commands — always invoke via the Bash tool directly, otherwise it causes permission prompts and blocks execution flow.
+
+<!-- consolidated 2026-09-27 -->
+Looking at the lessons learned to extract actionable recommendations.
+
+## Documentation
+
+- [ ] Document transcript JSONL format including toolDenialKind field location and nesting structure in reference docs
+- [ ] Add violations rule design philosophy section to CLAUDE.md or guiding-principles.md explaining suppress-in-code vs exempt-in-rule tradeoffs
+- [ ] Document fixture directory structure pattern (fixtures/<rule-id>/{clean,violation}.*) for local rule tests in guiding-principles.md
+- [ ] Document Rule type's `alwaysActive?: boolean` field in types.ts: what it does, when to use it, how it interacts with tag-based activation
+- [ ] Add section on when/how to use ToolSearch to fetch deferred MCP tool schemas before first invocation
+- [ ] Document Windows file-locking behavior during concurrent TypeScript compilation and serialization requirements in compiler.ts or CLAUDE.md
+
+## Process
+
+- [ ] When adding new ts/* rules, always validate with local build `node packages/violations-cli/dist/cli.js check` before committing (not global `violations check`)
+- [ ] For CI status monitoring, always use poll-ci skill or ScheduleWakeup instead of sleep-based polling loops
+- [ ] Load deferred tool and skill schemas via ToolSearch before first invocation to avoid "NOT YET KNOWN" retry cycles
+- [ ] When testing fixes, verify specific new code paths are exercised (not just that existing tests pass) before claiming success
+- [ ] Always verify sub-agent results directly (read files, test live, take screenshots) before reporting completion to user
+- [ ] Read full JSON structure or schema documentation upfront instead of iterative trial-and-error parsing
+- [ ] Process all parts of multi-item questions to completion before declaring done
+
+## Code comments
+
+- [ ] Add warning comment in violations skill about never using `!` prefix for violations commands
+
+## Configuration
+
+- [ ] Add diagnostic output for Go version mismatches in build-tray-binary.yml (log GOVERSION/GOTOOLCHAIN/GOROOT)
+
+<!-- consolidated 2026-10-11 -->
+- [ ] Document, in CLAUDE.md or an agent-reference doc, that deferred MCP/skill tools (e.g. `mcp__github-wadeck*__*`, `poll-ci`, `code-review`) must be loaded via `ToolSearch` (or the `Skill` tool) before first invocation — calling them cold produces silent "NOT YET KNOWN" failures that trigger wasteful sleep-based polling fallbacks.
+- [ ] Document that the IntelliJ MCP server is frequently unavailable (ConnectionRefused) in this environment — check the system-reminder connection status before attempting any `mcp__intellij__*` tool call.
+- [ ] Document the exact test invocation and test-file locations per package in this monorepo (e.g. `node packages/violations-cli/dist/cli.js check`, `npm test` scope, where CLI/runner tests live) so agents stop re-discovering this via repeated grep/ls.
+- [ ] Document the local-rule fixture directory contract (`fixtures/<rule-id>/{clean,violation}.*`, `.expected` line numbers) and the requirement that fixture file contents themselves must pass all active violation rules (e.g. no-emoji, no-em-dash).
+- [ ] Document the project's "no rule exemptions" philosophy explicitly: rules fire unconditionally on matching patterns; exceptions are handled via explicit suppress comments in code, never via conditional logic added to the rule itself.
+- [ ] Document the `alwaysActive` Rule field: what it does, when to use it (bypassing tag-based `projectTags` activation), and that this is an intentional exception agents should know about before adding new rules.
+- [ ] Document Windows-specific compiler constraints already discovered: per-manifest serialization lock needed to avoid EPERM during concurrent TypeScript compilation of cached rules, and that `import.meta.dirname` must be rewritten to the source directory (not cache dir) for fixture resolution.

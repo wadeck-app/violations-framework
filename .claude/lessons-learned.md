@@ -1,8 +1,24 @@
 # Lessons learned
 
-<!-- Last updated: 2026-09-16T18:18:06.592Z -->
+<!-- Last updated: 2026-10-18T11:43:52.776Z -->
 
 ## Recurring feedback
+
+<!-- session a6ec7c10 2026-10-17 -->
+- Test file for new dsl rule rewritten mid-session (Write called twice), indicating initial test structure didn't align with actual rule requirements.
+
+<!-- session 3c92f0b4 2026-10-17 -->
+- Multi-agent updates to cap-owner staged asynchronously ("generated default added" → wait for CI → "generated default published; update and drop local exemption") — agents may need explicit gate/wait mechanism instead of fire-and-forget messaging
+
+<!-- session 886c9f82 2026-09-12 -->
+- Design shift from autofix framework feature to standalone companion scripts — user rejected autofix in favor of agent-owned scripts with dry-run mode. Required restart and different architecture.
+- 18+ iterative edits across 3 files (no-emoji-fix.ts, no-em-dash-fix.ts, no-inline-svg.ts) plus config edits between 16:40–16:47, suggesting fixes were incremental/reactive rather than batch-planned upfront.
+
+<!-- session fecd448c 2026-10-11 -->
+- When extracting findings from sessions, output format is strict: only `[Recurring feedback]`, `[Agent errors]`, `[Documentation gaps]`, `[Known constraints]` prefixes are valid — malformed output triggers rejection and retry.
+
+<!-- session 77841b00 2026-10-11 -->
+- Manual sleep-based polling (sleep 5, 40, 30 seconds) used for CI monitoring instead of poll-ci skill. When poll-ci eventually attempted, it showed "NOT YET KNOWN"—should have fetched and used it proactively instead of hardcoded waits.
 
 <!-- session 01cadb55 2026-09-16 -->
 - When adding a new `ts/*` rule, always validate the repo using `node packages/violations-cli/dist/cli.js check` (the local build) BEFORE committing — not `violations check` (the globally installed CLI, which lacks the new rule). Otherwise CI fails its own self-check with N violations in this repo.
@@ -63,6 +79,69 @@
 - When saving documentation for multi-project work, write to the target project's `.claude/docs/` folder, not to violation-framework's memory system — project context matters even when you're physically in another directory
 
 ## Agent errors
+
+<!-- session 477c960e 2026-10-18 -->
+- Deferred tools (SendMessage, Mcp actions, Skills) return "NOT YET KNOWN" initially. Assistant calls ToolSearch (fails), then calls tool (fails), sleeps 30-60s, retries successfully. This creates wasteful polling — tool becomes available on retry regardless of ToolSearch result. Batch or skip ToolSearch when tool will be retried anyway.
+- When creating new rule in `dsl/` subfolder, relative import path was initially wrong (`../../types.js` when first written), caught only at test time, requiring sed fix then full rewrite. Template in CLAUDE.md specifies depth for `src/rules/<tag>/` but doesn't warn that depth varies by subfolder nesting.
+
+<!-- session 2902d05b 2026-10-18 -->
+- CI polling avoided documented `queue wait ci` (CLAUDE.md); instead tried unavailable `poll-ci` skill, then manual GitHub MCP polling with sleep loops (09:19–14:09), eventually corrected to proper `queue wait ci` at 19:14:29.
+
+<!-- session 5f05c170 2026-10-17 -->
+- Called ToolSearch repeatedly for tools marked "NOT YET KNOWN" (`SendMessage`, `poll-ci`, MCP actions) instead of first checking tool availability or waiting for service initialization.
+
+<!-- session 6790c06d 2026-10-17 -->
+- New rule file placed with wrong directory depth; import path was `../../types.js` instead of `../types.js`, requiring a fix + rebuild + test cycle (14:06:20)
+- Multiple early attempts to use unavailable MCP tools (`mcp__github-wadeck-app__actions_list`) and skill (`poll-ci`); fell back to `sleep` polling instead of checking tool readiness first
+
+<!-- session a6ec7c10 2026-10-17 -->
+- New dsl rules require shallower imports (`../types.js` not `../../types.js`) — agent assumed same nesting depth as established rules in `ts/`, `react/` folders; caught during build.
+
+<!-- session 3c92f0b4 2026-10-17 -->
+- Fell back to manual `sleep 30` + MCP queries for CI polling when poll-ci skill unavailable — indicates skill should be loaded or session should have ToolSearch call for it
+
+<!-- session 2b13be85 2026-10-17 -->
+- Deferred tools not pre-fetched: Assistant attempted to use `SendMessage`, `poll-ci` skill, and GitHub MCP tools (`mcp__github-wadeck-app__actions_list`) without calling ToolSearch first to load schemas, causing "NOT YET KNOWN" warnings and extra round-trips. For future sessions: proactively fetch deferred tool schemas before use via `ToolSearch("select:<tool-names>")`.
+- Manual CI polling instead of `poll-ci` skill: Assistant used `sleep 30` + manual GitHub Actions MCP calls to monitor workflow status instead of invoking the available `poll-ci` skill (mentioned in system-reminder skills list), wasting time on manual polling loops.
+
+<!-- session 41bcf9c1 2026-10-17 -->
+- Attempted to invoke deferred skills (`poll-ci`) and MCP tools (`mcp__github-wadeck-app__actions_list`) without first loading their schemas via ToolSearch, generating "NOT YET KNOWN" warnings. Pattern: skill/MCP use must be preceded by `ToolSearch(query="select:<name>")` to fetch schema before invocation.
+- Called `ToolSearch` multiple times during the session but did not batch them; made separate ToolSearch calls for SendMessage and GitHub MCP tools at different times instead of one upfront query listing all deferred tools needed for the workflow.
+
+<!-- session 0d5876c6 2026-10-17 -->
+- Used deferred tools (SendMessage, mcp__github-wadeck-app__actions_list) without first fetching schemas via ToolSearch — multiple "NOT YET KNOWN" warnings indicate schema-fetch should precede tool invocation, not follow it
+- Used `sleep 30` for CI polling (09:19:45) instead of calling the available `poll-ci` skill — that skill was marked NOT YET KNOWN at 09:18:57, suggesting agent didn't fetch it before attempting CI observation
+
+<!-- session 886c9f82 2026-09-12 -->
+- Special characters (emoji, em-dashes, box-drawing) in fix scripts themselves violated the rules those scripts implement; caught at CI time, not during dev. Should verify meta-rules (rules about code that checks for violations) are satisfied by their own implementations.
+- Attempted to use poll-ci skill and mcp__github-wadeck-app__actions_list/get_job_logs tools showing "NOT YET KNOWN"; fell back to manual sleep-based CI polling instead of automated monitoring.
+
+<!-- session 6d4bde22 2026-10-17 -->
+- Attempted IntelliJ MCP tool usage when intellij MCP server was not connected — check deferred tool availability before attempting calls
+
+<!-- session f5dd6b6b 2026-10-17 -->
+- GitHub MCP tools (mcp__github-wadeck-app__actions_list for list_workflow_runs and list_workflow_jobs) attempted without fetching schema first via ToolSearch — marked "NOT YET KNOWN" each time, wasting retries instead of loading on first use.
+
+<!-- session 08aebc51 2026-10-11 -->
+- Skills marked "NOT YET KNOWN" on first attempt (`poll-ci`, `check-npm-published`, `write-doc`) — assistant fell back to manual bash + sleep loops. Suggest pre-loading or graceful retry pattern rather than immediate fallback.
+- Multiple GitHub MCP tool calls showed "NOT YET KNOWN" (`mcp__github-wadeck-app__actions_list`, `mcp__github-wadeck-app__actions_run_trigger`) — assistant switched to polling via bash+sleep. Verify MCP tooling sync before delegating to agents.
+
+<!-- session 4585fc5b 2026-10-11 -->
+- Output format did not match the specified requirements; user had to re-specify the exact format patterns expected.
+
+<!-- session 77841b00 2026-10-11 -->
+- Did not proactively fetch deferred tool schemas with ToolSearch before first use. Multiple "NOT YET KNOWN" warnings for SendMessage, GitHub MCP tools (actions_list, etc.), and skills (write-doc, poll-ci, check-npm-published) indicate attempted use before schema availability.
+
+<!-- session cbe7b2b7 2026-10-11 -->
+- Documentation updated (README.md, guiding-principles.md) without invoking `write-doc` skill first, violating project CLAUDE.md instruction — skill became known later in session.
+- Attempted to use `poll-ci` skill that wasn't yet loaded; worked around it with manual `sleep` loops + bash polling for CI status instead of fetching the skill schema first.
+
+<!-- session 06b0e19e 2026-10-11 -->
+- Assistant solved a surface symptom (dist-bundle gitignore) without addressing the root TypeScript compilation error in bundle.ts — when multi-part problems surface, verify all parts are solved, not just the first symptom.
+- Multiple ToolSearch/Skill calls issued warnings "NOT YET KNOWN" before use (SendMessage, write-doc, poll-ci, check-npm-published, github-wadeck-app tools). Load tools upfront with ToolSearch before proceeding with work that will need them.
+
+<!-- session c71f36ab 2026-09-27 -->
+- MCP GitHub Actions tools appeared as "NOT YET KNOWN" on multiple calls (19:28:14, 19:28:50, 19:29:13) — suggests tool schemas not pre-fetched or tool interface mismatch with availability.
 
 <!-- session 0f5a1440 2026-09-16 -->
 - Sub-agents invoked GitHub MCP tools (`mcp__github-wadeck-app__actions_list`, `mcp__github-wadeck-app__get_job_logs`) marked "NOT YET KNOWN", indicating schemas not loaded before tool use; ToolSearch was called later but tools were already invoked.
@@ -203,6 +282,36 @@
 
 ## Documentation gaps
 
+<!-- session 477c960e 2026-10-18 -->
+- Rule creation template in CLAUDE.md doesn't clarify relative import depth for nested subfolders (`dsl/` vs `app-module/` vs `ts/`) — each needs different `../../../` nesting level. Led to write-test-debug cycle.
+
+<!-- session 5f05c170 2026-10-17 -->
+- Tool/skill startup timing and MCP service readiness not documented; no guidance on expected delay between session start and tool availability.
+
+<!-- session 6790c06d 2026-10-17 -->
+- DSL folder structure assumptions for `no-app-components`, `no-app-hook`, `no-app-ui-outside-shell` were unclear; assistant required explicit clarification from cap-owner before proceeding (09:02:13, 09:02:17)
+
+<!-- session 2b13be85 2026-10-17 -->
+- Deferred tools workflow unclear in context: System-reminder lists many deferred tools as "available via ToolSearch", but the constraint that schemas must be fetched first is easy to miss. Unclear whether to fetch all at session start or on-demand per tool.
+
+<!-- session f5dd6b6b 2026-10-17 -->
+- No explicit guidance on when deferred tools require ToolSearch schema loading before invocation — "NOT YET KNOWN" warnings suggest this pattern isn't internalized.
+
+<!-- session 08aebc51 2026-10-11 -->
+- Local rule discovery required extensive code-reading (runner.ts across projects, .violations/rules/* patterns) to understand the contract. Should document: discovery activation logic, file layout expectations, how local rules are compiled/resolved, and which test projects validate this.
+
+<!-- session cbe7b2b7 2026-10-11 -->
+- Local rule auto-discovery feature required cross-project investigation (poker-grid, pokerMosaic, etc.) to reverse-engineer the pattern — the auto-discovery behavior itself wasn't documented before implementation, forcing discovery-by-exploration.
+
+<!-- session 06b0e19e 2026-10-11 -->
+- Local rule discovery feature added but documentation (README, guiding-principles.md) was updated only after the feature was implemented and tested. Discovery of the feature scope and requirements came from searching multiple repos/configs, not from existing docs.
+
+<!-- session 8110ae98 2026-09-27 -->
+- Test discovery in monorepo — multiple iterative grep/ls commands (7 attempts) to determine test structure, script location, runner (node:test), and output format. Session documentation could clarify: which packages run tests, invocation method, expected output patterns.
+
+<!-- session c71f36ab 2026-09-27 -->
+- Test file structure required multiple exploratory grep commands (cli.test, runner.test location, test script invocation) — unclear from project layout where CLI/runner tests live or how they integrate with root `npm test`.
+
 <!-- session 50d2b577 2026-09-16 -->
 - Fix scripts for `no-emoji` and `no-em-dash` rules themselves contained the violations they were meant to fix (em-dashes, box-drawing chars, arrows); required systematic audit + correction across `.violations/config.ts`, rule files, and react rules — suggests need for linting/validation of fix script code during development.
 
@@ -246,6 +355,54 @@
 - When Go version mismatches occur between `go-version-file` (reads directive) and explicit `go-version:` in workflows, CI produces different binaries but logs nothing — added diagnostic output in build-tray-binary.yml to expose actual GOVERSION/GOTOOLCHAIN/GOROOT on next run
 
 ## Known constraints
+
+<!-- session 5f05c170 2026-10-17 -->
+- Tool/skill initialization lag on session startup — SendMessage, poll-ci, and MCP services not immediately available; assistant used `sleep` + manual polling as workaround instead of waiting for poll-ci to become ready.
+
+<!-- session 6790c06d 2026-10-17 -->
+- GitHub Actions MCP tools may be unavailable at session start (`NOT YET KNOWN` state); manual `sleep` polling is the fallback for CI status checks
+
+<!-- session a6ec7c10 2026-10-17 -->
+- `poll-ci` skill and `mcp__github-wadeck-app__actions_list` showed "*** NOT YET KNOWN ***" despite being listed; agent fell back to manual `sleep` + `SendMessage` polling when these didn't become available.
+
+<!-- session 3c92f0b4 2026-10-17 -->
+- SendMessage, poll-ci, and mcp__github-wadeck-app__actions_list marked "NOT YET KNOWN" at session start; ToolSearch/Skill loading needed upfront
+- Git commits routed through custom bypass-request script (`~/.claude/plugins/local-marketplace/plugins/w-guardrails/scripts/request-bypass.js`) rather than direct git-commit permission; indicates permission configuration is non-standard
+
+<!-- session 0d5876c6 2026-10-17 -->
+- When deferred tools are listed in system-reminder but marked as NOT YET KNOWN in logs, agent must call ToolSearch explicitly to load their schemas before invoking them — don't assume they're available
+
+<!-- session 886c9f82 2026-09-12 -->
+- `no-rule-without-test` rule must exclude `*-fix.ts` companion scripts; local rules (`.violations/rules/`) need special handling in runner context to avoid false-positive suppressions and dead-suppress warnings.
+- GitHub Actions MCP tools required manual sleep-based polling workaround (sleep 15, sleep 20) when automatic polling failed; later ToolSearch calls succeeded, suggesting transient availability.
+
+<!-- session 6d4bde22 2026-10-17 -->
+- When polling CI after git push, used manual `sleep 15` loops instead of invoking the `poll-ci` skill, which is designed for exactly this scenario
+- GitHub MCP tools (`mcp__github-wadeck-app__actions_list`) showed "NOT YET KNOWN" during workflow polling — likely permission/auth issues; should fail explicitly or fall back to `poll-ci` skill instead
+
+<!-- session f5dd6b6b 2026-10-17 -->
+- Manual CI polling with sleep commands (15s between checks) was used instead of the available `poll-ci` skill, which would have been more efficient and avoided schema loading issues.
+
+<!-- session 08aebc51 2026-10-11 -->
+- Assistant manually implemented CI polling with `sleep` + API calls instead of `poll-ci` skill — added ~2min wall time. Skill unavailability during multi-part workflows (build→publish→verify) creates gaps for automation.
+
+<!-- session fecd448c 2026-10-11 -->
+- Multiple skills (`write-doc`, `poll-ci`) and MCP tools (GitHub actions, ToolSearch) showed "NOT YET KNOWN" warnings during the session, suggesting lazy loading or discovery delays; pre-loading or caching these tool schemas would reduce discovery latency.
+
+<!-- session 77841b00 2026-10-11 -->
+- Deferred tools listed in system-reminder require explicit ToolSearch fetch before calling—direct use triggers "NOT YET KNOWN" recovery pattern instead of succeeding on first attempt.
+
+<!-- session cbe7b2b7 2026-10-11 -->
+- MCP GitHub tools (`actions_list`, `actions_run_trigger`) and custom skills (`poll-ci`, `check-npm-published`, `write-doc`) were not pre-loaded; had to be fetched on-demand via ToolSearch or Skill, causing temporary WARN logs and forcing workarounds (manual polling, direct bash calls).
+
+<!-- session 06b0e19e 2026-10-11 -->
+- Feature testing required validation across multiple workspaces (poker-grid, pokerMosaic, agent-fleet, etc.) to confirm local rule discovery works correctly — this multi-repo testing pattern should be standard for CLI enhancements that affect user workflows.
+
+<!-- session 8110ae98 2026-09-27 -->
+- GitHub Actions MCP methods `list_workflow_runs`/`list_workflow_jobs` not in initial schema — forced fallback to sleep + CLI verification for deploy confirmation rather than active polling.
+
+<!-- session c71f36ab 2026-09-27 -->
+- Manual CI polling with `sleep 30` and `sleep 15` instead of `poll-ci` skill — project has automated monitoring available.
 
 <!-- session 0f5a1440 2026-09-16 -->
 - Manual sleep-based CI polling (16:45–16:49: multiple `sleep 15` and `sleep 20` calls) instead of using available `poll-ci` skill for workflow monitoring.
