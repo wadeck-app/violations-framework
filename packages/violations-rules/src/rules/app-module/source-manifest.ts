@@ -29,6 +29,15 @@ function isNonEmptyString(value: unknown): value is string {
   return typeof value === 'string' && value.length > 0
 }
 
+// Local part of a module's side menu slot ("<moduleId>:nav"). Same as app-core's MENU_SLOT_LOCAL.
+const MENU_SLOT_LOCAL = 'nav'
+
+// The module whose side menu the slot is ("<providerId>:nav"), else undefined. Same as app-core's menuSlotProvider.
+function menuSlotProvider(slot: string): string | undefined {
+  const parts = slot.split(':')
+  return parts.length === 2 && parts[1] === MENU_SLOT_LOCAL && ID_PATTERN.test(parts[0]) ? parts[0] : undefined
+}
+
 function slotProblem(slot: string): string | undefined {
   if (SHELL_SLOTS.includes(slot)) {
     return undefined
@@ -84,6 +93,22 @@ function checkExtensionPoint(ep: unknown, path: string, issues: string[]): Sourc
       issues.push(`${path}.path: path is only valid on extension points of kind "page"`)
     }
   }
+  // A contribution to `<providerId>:nav` is an entry in that module's side menu: it needs what a menu entry needs.
+  const provider = isNonEmptyString(ep.slot) ? menuSlotProvider(ep.slot) : undefined
+  if (provider !== undefined) {
+    const what = `an entry in the side menu of "${provider}"`
+    if (ep.kind !== 'page') {
+      issues.push(`${path}.kind: a contribution to "${ep.slot}" is ${what}, so its kind must be "page" (got "${String(ep.kind)}")`)
+    }
+    if (typeof ep.label !== 'string' || ep.label.trim() === '') {
+      issues.push(`${path}.label: a contribution to "${ep.slot}" is ${what}: add a "label", it is the text of the entry`)
+    }
+    if (ep.path === undefined) {
+      issues.push(`${path}.path: a contribution to "${ep.slot}" is ${what}: add a "path" (for example "/chart"), it is the page's address under /modules/<your id>`)
+    } else if (typeof ep.path === 'string' && ep.path.includes(':')) {
+      issues.push(`${path}.path: a contribution to "${ep.slot}" is ${what}: its path "${ep.path}" has a ":param" segment, but a menu entry needs a fixed address`)
+    }
+  }
   const view = ep.view
   if (!isObject(view) || (view.type !== 'inline' && view.type !== 'path')) {
     issues.push(`${path}.view.type: must be "inline" or "path"`)
@@ -125,6 +150,9 @@ function checkExpose(expose: unknown, issues: string[]): void {
     const path = `expose.slots.${name}`
     if (!ID_PATTERN.test(name)) {
       issues.push(`${path}: slot name must ${ID_RULE} (no ":", the module id is added as the prefix)`)
+    }
+    if (name === MENU_SLOT_LOCAL) {
+      issues.push(`${path}: slot name "${MENU_SLOT_LOCAL}" is reserved: every module's side menu is "<id>:${MENU_SLOT_LOCAL}" and accepts pages from the modules that require it, no declaration needed`)
     }
     if (!isObject(slot)) {
       issues.push(`${path}: must be an object with "accepts"`)

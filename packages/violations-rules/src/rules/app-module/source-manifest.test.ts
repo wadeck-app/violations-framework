@@ -47,6 +47,34 @@ describe('app-module/source-manifest validator', () => {
   })
 })
 
+describe('app-module/source-manifest side menu contributions', () => {
+  const menuEp = { kind: 'page', slot: 'flow:nav', label: 'Chart', path: '/chart', view: ep.view }
+
+  it('accepts a complete "<providerId>:nav" contribution', () => {
+    assert.deepEqual(issuesOf({ id: 'a', extensionPoints: [menuEp] }), [])
+  })
+
+  it('requires kind page, a non-blank label and a static path', () => {
+    assert.match(issuesOf({ id: 'a', extensionPoints: [{ ...menuEp, kind: 'widget', path: undefined }] }).join(), /kind: .*must be "page" \(got "widget"\)/)
+    assert.match(issuesOf({ id: 'a', extensionPoints: [{ ...menuEp, label: '  ' }] }).join(), /label: .*add a "label"/)
+    assert.match(issuesOf({ id: 'a', extensionPoints: [{ ...menuEp, label: undefined }] }).join(), /label: .*add a "label"/)
+    assert.match(issuesOf({ id: 'a', extensionPoints: [{ ...menuEp, path: undefined }] }).join(), /path: .*add a "path"/)
+    assert.match(issuesOf({ id: 'a', extensionPoints: [{ ...menuEp, path: '/jobs/:id' }] }).join(), /path: .*":param" segment/)
+  })
+
+  it('does not apply to the shell nav slot or to other custom slots', () => {
+    assert.deepEqual(issuesOf({ id: 'a', extensionPoints: [{ kind: 'widget', slot: 'flow:other', view: ep.view }] }), [])
+    assert.deepEqual(issuesOf({ id: 'a', extensionPoints: [{ kind: 'page', slot: 'nav', view: ep.view }] }), [])
+  })
+
+  it('reserves "nav" as an expose.slots name', () => {
+    assert.match(
+      issuesOf({ id: 'a', extensionPoints: [ep], expose: { slots: { nav: { accepts: ['Badge'] } } } }).join(),
+      /slot name "nav" is reserved/,
+    )
+  })
+})
+
 describe('app-module/source-manifest showInNav', () => {
   it('accepts a boolean showInNav', () => {
     assert.deepEqual(issuesOf({ id: 'a', extensionPoints: [ep], showInNav: false }), [])
