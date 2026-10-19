@@ -7,7 +7,7 @@ import { validateSourceManifest } from './source-manifest.js'
 export type Config = Record<never, never>
 
 // Every app-module must ship a valid source manifest.json (id, extensionPoints, plus the optional
-// dslLib.shared, requires, expose, lifecycle; `package` writes version, backendEntryPath and
+// dslLib.shared, requires, expose, lifecycle, showInNav; `package` writes version, backendEntryPath and
 // dslLib.entry/css into dist-module/manifest.json), and dslLib must agree with src/dsl-components.
 //
 // The rule API only hands check() existing files, so "a file is missing" cannot be represented from
@@ -48,7 +48,7 @@ export const rule: Rule<Config> = {
         violations.push({
           file: manifestPath,
           line: 1,
-          message: `manifest.json failed validation: ${result.issues.join('; ')}. The source manifest holds only id, extensionPoints, dslLib.shared, requires, expose and lifecycle; \`package\` writes the rest (version, backendEntryPath, dslLib.entry/css).`,
+          message: `manifest.json failed validation: ${result.issues.join('; ')}. The source manifest holds only id, extensionPoints, dslLib.shared, requires, expose, lifecycle and showInNav; \`package\` writes the rest (version, backendEntryPath, dslLib.entry/css).`,
         })
         continue
       }

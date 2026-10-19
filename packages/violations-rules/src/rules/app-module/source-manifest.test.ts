@@ -47,6 +47,19 @@ describe('app-module/source-manifest validator', () => {
   })
 })
 
+describe('app-module/source-manifest showInNav', () => {
+  it('accepts a boolean showInNav', () => {
+    assert.deepEqual(issuesOf({ id: 'a', extensionPoints: [ep], showInNav: false }), [])
+    assert.deepEqual(issuesOf({ id: 'a', extensionPoints: [ep], showInNav: true }), [])
+  })
+
+  it('rejects a non-boolean showInNav with a message naming the field', () => {
+    for (const value of ['false', 0, null]) {
+      assert.match(issuesOf({ id: 'a', extensionPoints: [ep], showInNav: value }).join(), /showInNav: must be a boolean/, JSON.stringify(value))
+    }
+  })
+})
+
 describe('app-module/source-manifest viewContentProblem', () => {
   it('accepts YAML mappings (block, quoted key, flow) and JSON objects', () => {
     assert.equal(viewContentProblem('a.yaml', '$type: Badge\n'), undefined)

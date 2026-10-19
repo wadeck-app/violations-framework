@@ -1,7 +1,7 @@
 // Dependency-free validator of the source manifest.json an app-module author writes at the module root.
 // Hand-written port of SourceManifestSchema (app-core: packages/server/src/manifest.ts, zod), because
 // this package has no runtime dependencies and must not shell out to app-core-cli. Keep in sync with it.
-// The source manifest holds only id, extensionPoints, dslLib.shared, requires, expose and lifecycle:
+// The source manifest holds only id, extensionPoints, dslLib.shared, requires, expose, lifecycle and showInNav:
 // version, backendEntryPath and dslLib.entry/css are written by `package` into dist-module/manifest.json.
 
 // Same pattern as app-core's MODULE_ID_PATTERN and SLOT_LOCAL_PATTERN.
@@ -166,7 +166,12 @@ export function validateSourceManifest(raw: unknown): SourceManifestResult {
   if (!isObject(raw)) {
     return { ok: false, issues: ['(root): must be a JSON object'] }
   }
-  rejectUnknownKeys(raw, ['id', 'extensionPoints', 'dslLib', 'requires', 'expose', 'lifecycle'], '(root)', issues)
+  rejectUnknownKeys(raw, ['id', 'extensionPoints', 'dslLib', 'requires', 'expose', 'lifecycle', 'showInNav'], '(root)', issues)
+
+  // A real boolean on purpose: "false" (string), 0 and null are rejected, like app-core's z.boolean().
+  if (raw.showInNav !== undefined && typeof raw.showInNav !== 'boolean') {
+    issues.push('showInNav: must be a boolean (true or false), not a string, number or null')
+  }
 
   if (typeof raw.id !== 'string') {
     issues.push('id: required string')
