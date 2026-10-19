@@ -75,6 +75,37 @@ describe('app-module/source-manifest side menu contributions', () => {
   })
 })
 
+describe('app-module/source-manifest widget size and title', () => {
+  const widget = { kind: 'widget', slot: 'dashboard', view: ep.view }
+
+  it('accepts integer width/height from 1 to 4 on a dashboard widget', () => {
+    assert.deepEqual(issuesOf({ id: 'a', extensionPoints: [{ ...widget, width: 1, height: 4 }] }), [])
+  })
+
+  it('rejects out-of-range, fractional and non-number sizes', () => {
+    for (const value of [0, 5, 1.5, '2', null]) {
+      assert.match(issuesOf({ id: 'a', extensionPoints: [{ ...widget, width: value }] }).join(), /width: must be between 1 and 4/, JSON.stringify(value))
+    }
+    assert.match(issuesOf({ id: 'a', extensionPoints: [{ ...widget, height: 9 }] }).join(), /height: must be between 1 and 4/)
+  })
+
+  it('only allows a size on kind widget in slot dashboard', () => {
+    assert.match(
+      issuesOf({ id: 'a', extensionPoints: [{ ...ep, width: 2 }] }).join(),
+      /"width" only sizes a widget on the dashboard \(kind "widget", slot "dashboard"\); this is kind "page" on slot "nav"/,
+    )
+    assert.match(issuesOf({ id: 'a', extensionPoints: [{ ...widget, slot: 'prov:thing', height: 2 }] }).join(), /"height" only sizes a widget/)
+    assert.match(issuesOf({ id: 'a', extensionPoints: [{ ...widget, kind: 'page', width: 2 }] }).join(), /"width" only sizes a widget/)
+  })
+
+  it('accepts a non-blank title and rejects a blank or non-string one', () => {
+    assert.deepEqual(issuesOf({ id: 'a', extensionPoints: [ep], title: 'Billing reports' }), [])
+    for (const value of ['', '   ', 3, null]) {
+      assert.match(issuesOf({ id: 'a', extensionPoints: [ep], title: value }).join(), /title: must not be blank/, JSON.stringify(value))
+    }
+  })
+})
+
 describe('app-module/source-manifest showInNav', () => {
   it('accepts a boolean showInNav', () => {
     assert.deepEqual(issuesOf({ id: 'a', extensionPoints: [ep], showInNav: false }), [])

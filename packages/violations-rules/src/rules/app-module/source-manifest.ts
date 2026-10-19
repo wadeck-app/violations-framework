@@ -1,7 +1,7 @@
 // Dependency-free validator of the source manifest.json an app-module author writes at the module root.
 // Hand-written port of SourceManifestSchema (app-core: packages/server/src/manifest.ts, zod), because
 // this package has no runtime dependencies and must not shell out to app-core-cli. Keep in sync with it.
-// The source manifest holds only id, extensionPoints, dslLib.shared, requires, expose, lifecycle and showInNav:
+// The source manifest holds only id, extensionPoints, dslLib.shared, requires, expose, lifecycle, showInNav and title:
 // version, backendEntryPath and dslLib.entry/css are written by `package` into dist-module/manifest.json.
 
 // Same pattern as app-core's MODULE_ID_PATTERN and SLOT_LOCAL_PATTERN.
@@ -28,6 +28,9 @@ function isObject(value: unknown): value is Record<string, unknown> {
 function isNonEmptyString(value: unknown): value is string {
   return typeof value === 'string' && value.length > 0
 }
+
+// Dashboard grid size limit of a widget. Same as app-core's WIDGET_MAX_SPAN.
+const WIDGET_MAX_SPAN = 4
 
 // Local part of a module's side menu slot ("<moduleId>:nav"). Same as app-core's MENU_SLOT_LOCAL.
 const MENU_SLOT_LOCAL = 'nav'
@@ -91,6 +94,21 @@ function checkExtensionPoint(ep: unknown, path: string, issues: string[]): Sourc
       issues.push(`${path}.path: must look like "/jobs/:id": segments of letters, digits, "_" or "-", or ":param"`)
     } else if (ep.kind !== 'page') {
       issues.push(`${path}.path: path is only valid on extension points of kind "page"`)
+    }
+  }
+  // `width` and `height` size a widget on the dashboard grid; anywhere else they would be silently ignored.
+  for (const field of ['width', 'height'] as const) {
+    const span = ep[field]
+    if (span === undefined) {
+      continue
+    }
+    if (typeof span !== 'number' || !Number.isInteger(span) || span < 1 || span > WIDGET_MAX_SPAN) {
+      issues.push(`${path}.${field}: must be between 1 and ${WIDGET_MAX_SPAN} (a whole number of dashboard grid cells)`)
+    }
+    if (ep.kind !== 'widget' || ep.slot !== 'dashboard') {
+      issues.push(
+        `${path}.${field}: "${field}" only sizes a widget on the dashboard (kind "widget", slot "dashboard"); this is kind "${String(ep.kind)}" on slot "${String(ep.slot)}". Remove it, or move the widget to the dashboard slot.`,
+      )
     }
   }
   // A contribution to `<providerId>:nav` is an entry in that module's side menu: it needs what a menu entry needs.
@@ -194,7 +212,12 @@ export function validateSourceManifest(raw: unknown): SourceManifestResult {
   if (!isObject(raw)) {
     return { ok: false, issues: ['(root): must be a JSON object'] }
   }
-  rejectUnknownKeys(raw, ['id', 'extensionPoints', 'dslLib', 'requires', 'expose', 'lifecycle', 'showInNav'], '(root)', issues)
+  rejectUnknownKeys(raw, ['id', 'extensionPoints', 'dslLib', 'requires', 'expose', 'lifecycle', 'showInNav', 'title'], '(root)', issues)
+
+  // Display name of the module in the navigation; blank is rejected because it would give an empty tab.
+  if (raw.title !== undefined && (typeof raw.title !== 'string' || raw.title.trim() === '')) {
+    issues.push('title: must not be blank: give the module a display name, or remove the field to derive it from the id')
+  }
 
   // A real boolean on purpose: "false" (string), 0 and null are rejected, like app-core's z.boolean().
   if (raw.showInNav !== undefined && typeof raw.showInNav !== 'boolean') {
