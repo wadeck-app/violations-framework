@@ -1,5 +1,6 @@
 import { describe, it } from 'node:test'
 import assert from 'node:assert/strict'
+import { SourceManifestSchema } from '@wadeck-app/app-core-sdk'
 import { validateSourceManifest, viewContentProblem } from './source-manifest.js'
 
 const ep = { kind: 'page', slot: 'nav', label: 'X', view: { type: 'path', value: './src/dsl-views/a.yaml' } }
@@ -9,113 +10,48 @@ function issuesOf(raw: unknown): string[] {
   return result.ok ? [] : result.issues
 }
 
-describe('app-module/source-manifest validator', () => {
-  it('accepts a minimal manifest and returns the parsed shape', () => {
+// The rules themselves live in app-core's SourceManifestSchema; these tests only pin the adapter:
+// a valid manifest passes, and an invalid one reports what the SDK reports, as "<path>: <message>".
+describe('app-module/source-manifest adapter (app-core SDK schema)', () => {
+  it('accepts a minimal manifest and returns the narrowed shape', () => {
     const result = validateSourceManifest({ id: 'queue', extensionPoints: [ep] })
     assert.ok(result.ok)
     assert.equal(result.ok && result.manifest.id, 'queue')
+    assert.equal(result.ok && result.manifest.dslLib, undefined)
   })
 
-  it('rejects a non-object root, missing id, empty extensionPoints', () => {
-    assert.deepEqual(issuesOf([]), ['(root): must be a JSON object'])
-    assert.match(issuesOf({ extensionPoints: [ep] }).join(), /id: required string/)
-    assert.match(issuesOf({ id: 'a', extensionPoints: [] }).join(), /extensionPoints: must be an array/)
+  it('returns dslLib.shared when the manifest declares dslLib', () => {
+    const result = validateSourceManifest({ id: 'queue', extensionPoints: [ep], dslLib: { shared: { react: '^19' } } })
+    assert.ok(result.ok)
+    assert.deepEqual(result.ok && result.manifest.dslLib, { shared: { react: '^19' } })
   })
 
-  it('rejects output-only and unknown keys', () => {
-    const issues = issuesOf({ id: 'a', extensionPoints: [ep], version: '1', backendEntryPath: 'x' })
-    assert.equal(issues.length, 2)
-  })
-
-  it('validates slots: shell slots and <providerId>:<local> pass, others fail', () => {
-    assert.deepEqual(issuesOf({ id: 'a', extensionPoints: [{ ...ep, slot: 'dashboard' }, { ...ep, slot: 'prov:thing' }] }), [])
-    assert.match(issuesOf({ id: 'a', extensionPoints: [{ ...ep, slot: 'custom' }] }).join(), /not a shell slot/)
-  })
-
-  it('validates the page path: only kind page, and a route-like shape', () => {
-    assert.deepEqual(issuesOf({ id: 'a', extensionPoints: [{ ...ep, path: '/jobs/:id' }] }), [])
-    assert.match(issuesOf({ id: 'a', extensionPoints: [{ ...ep, path: 'jobs' }] }).join(), /must look like/)
-    assert.match(issuesOf({ id: 'a', extensionPoints: [{ ...ep, kind: 'widget', path: '/x' }] }).join(), /only valid on extension points of kind "page"/)
-  })
-
-  it('validates dslLib, requires, expose and lifecycle', () => {
-    assert.deepEqual(issuesOf({ id: 'a', extensionPoints: [ep], dslLib: { shared: { react: '^19' } }, requires: { b: '^1' }, expose: { types: './src/commons/t.ts', slots: { s: { accepts: ['Badge'] } } }, lifecycle: { teardown: './src/backend/t.ts' } }), [])
-    assert.match(issuesOf({ id: 'a', extensionPoints: [ep], dslLib: { entry: 'x' } }).join(), /unrecognized key "entry"/)
-    assert.match(issuesOf({ id: 'a', extensionPoints: [ep], requires: { 'bad id': '^1' } }).join(), /module id must/)
-    assert.match(issuesOf({ id: 'a', extensionPoints: [ep], expose: { slots: { s: { accepts: [] } } } }).join(), /accepts/)
-    assert.match(issuesOf({ id: 'a', extensionPoints: [ep], lifecycle: { start: 'x' } }).join(), /unrecognized key "start"/)
-  })
-})
-
-describe('app-module/source-manifest side menu contributions', () => {
-  const menuEp = { kind: 'page', slot: 'flow:nav', label: 'Chart', path: '/chart', view: ep.view }
-
-  it('accepts a complete "<providerId>:nav" contribution', () => {
-    assert.deepEqual(issuesOf({ id: 'a', extensionPoints: [menuEp] }), [])
-  })
-
-  it('requires kind page, a non-blank label and a static path', () => {
-    assert.match(issuesOf({ id: 'a', extensionPoints: [{ ...menuEp, kind: 'widget', path: undefined }] }).join(), /kind: .*must be "page" \(got "widget"\)/)
-    assert.match(issuesOf({ id: 'a', extensionPoints: [{ ...menuEp, label: '  ' }] }).join(), /label: .*add a "label"/)
-    assert.match(issuesOf({ id: 'a', extensionPoints: [{ ...menuEp, label: undefined }] }).join(), /label: .*add a "label"/)
-    assert.match(issuesOf({ id: 'a', extensionPoints: [{ ...menuEp, path: undefined }] }).join(), /path: .*add a "path"/)
-    assert.match(issuesOf({ id: 'a', extensionPoints: [{ ...menuEp, path: '/jobs/:id' }] }).join(), /path: .*":param" segment/)
-  })
-
-  it('does not apply to the shell nav slot or to other custom slots', () => {
-    assert.deepEqual(issuesOf({ id: 'a', extensionPoints: [{ kind: 'widget', slot: 'flow:other', view: ep.view }] }), [])
-    assert.deepEqual(issuesOf({ id: 'a', extensionPoints: [{ kind: 'page', slot: 'nav', view: ep.view }] }), [])
-  })
-
-  it('reserves "nav" as an expose.slots name', () => {
-    assert.match(
-      issuesOf({ id: 'a', extensionPoints: [ep], expose: { slots: { nav: { accepts: ['Badge'] } } } }).join(),
-      /slot name "nav" is reserved/,
-    )
-  })
-})
-
-describe('app-module/source-manifest widget size and title', () => {
-  const widget = { kind: 'widget', slot: 'dashboard', view: ep.view }
-
-  it('accepts integer width/height from 1 to 4 on a dashboard widget', () => {
-    assert.deepEqual(issuesOf({ id: 'a', extensionPoints: [{ ...widget, width: 1, height: 4 }] }), [])
-  })
-
-  it('rejects out-of-range, fractional and non-number sizes', () => {
-    for (const value of [0, 5, 1.5, '2', null]) {
-      assert.match(issuesOf({ id: 'a', extensionPoints: [{ ...widget, width: value }] }).join(), /width: must be between 1 and 4/, JSON.stringify(value))
-    }
-    assert.match(issuesOf({ id: 'a', extensionPoints: [{ ...widget, height: 9 }] }).join(), /height: must be between 1 and 4/)
-  })
-
-  it('only allows a size on kind widget in slot dashboard', () => {
-    assert.match(
-      issuesOf({ id: 'a', extensionPoints: [{ ...ep, width: 2 }] }).join(),
-      /"width" only sizes a widget on the dashboard \(kind "widget", slot "dashboard"\); this is kind "page" on slot "nav"/,
-    )
-    assert.match(issuesOf({ id: 'a', extensionPoints: [{ ...widget, slot: 'prov:thing', height: 2 }] }).join(), /"height" only sizes a widget/)
-    assert.match(issuesOf({ id: 'a', extensionPoints: [{ ...widget, kind: 'page', width: 2 }] }).join(), /"width" only sizes a widget/)
-  })
-
-  it('accepts a non-blank title and rejects a blank or non-string one', () => {
-    assert.deepEqual(issuesOf({ id: 'a', extensionPoints: [ep], title: 'Billing reports' }), [])
-    for (const value of ['', '   ', 3, null]) {
-      assert.match(issuesOf({ id: 'a', extensionPoints: [ep], title: value }).join(), /title: must not be blank/, JSON.stringify(value))
+  it('reports exactly the SDK issues, each as "<path>: <message>" ("(root)" when the path is empty)', () => {
+    const invalid: unknown[] = [[], { extensionPoints: [ep] }, { id: 'a', extensionPoints: [ep], version: '1' }, { id: 'a', extensionPoints: [{ ...ep, slot: 'custom' }] }]
+    for (const raw of invalid) {
+      const parsed = SourceManifestSchema.safeParse(raw)
+      assert.ok(!parsed.success, JSON.stringify(raw))
+      const expected = parsed.error.issues.map((issue) => `${issue.path.length === 0 ? '(root)' : issue.path.join('.')}: ${issue.message}`)
+      assert.deepEqual(issuesOf(raw), expected, JSON.stringify(raw))
     }
   })
-})
 
-describe('app-module/source-manifest showInNav', () => {
-  it('accepts a boolean showInNav', () => {
-    assert.deepEqual(issuesOf({ id: 'a', extensionPoints: [ep], showInNav: false }), [])
-    assert.deepEqual(issuesOf({ id: 'a', extensionPoints: [ep], showInNav: true }), [])
-  })
-
-  it('rejects a non-boolean showInNav with a message naming the field', () => {
-    for (const value of ['false', 0, null]) {
-      assert.match(issuesOf({ id: 'a', extensionPoints: [ep], showInNav: value }).join(), /showInNav: must be a boolean/, JSON.stringify(value))
+  // Guards against a stale SDK: these are the app-core rules this package relied on when it was hand-written.
+  it('applies the app-core rules the previous hand-written port mirrored', () => {
+    const view = ep.view
+    const bad: Record<string, unknown> = {
+      'non-boolean showInNav': { id: 'a', extensionPoints: [ep], showInNav: 'false' },
+      'blank title': { id: 'a', extensionPoints: [ep], title: '   ' },
+      'menu page without a label': { id: 'a', extensionPoints: [{ kind: 'page', slot: 'flow:nav', path: '/x', view }] },
+      'menu page with a :param path': { id: 'a', extensionPoints: [{ kind: 'page', slot: 'flow:nav', label: 'X', path: '/x/:id', view }] },
+      'reserved expose slot "nav"': { id: 'a', extensionPoints: [ep], expose: { slots: { nav: { accepts: ['Badge'] } } } },
+      'width on a non-dashboard extension point': { id: 'a', extensionPoints: [{ ...ep, width: 2 }] },
+      'width above 4': { id: 'a', extensionPoints: [{ kind: 'widget', slot: 'dashboard', view, width: 5 }] },
     }
+    for (const [name, raw] of Object.entries(bad)) {
+      assert.ok(issuesOf(raw).length > 0, `${name} should be rejected`)
+    }
+    assert.deepEqual(issuesOf({ id: 'a', extensionPoints: [{ kind: 'widget', slot: 'dashboard', view, width: 4, height: 1 }], showInNav: false, title: 'Billing' }), [])
   })
 })
 

@@ -34,7 +34,7 @@ describe('app-module/manifest-exists-and-valid', () => {
   it('flags a manifest without an id', async () => {
     const violations = await run({ 'manifest.json': JSON.stringify({ extensionPoints: JSON.parse(VALID_MODULE_FILES['manifest.json']).extensionPoints }) })
     assert.equal(violations.length, 1)
-    assert.match(violations[0].message, /id: required string/)
+    assert.match(violations[0].message, /id: Required/)
   })
 
   it('flags an invalid id', async () => {
@@ -47,14 +47,14 @@ describe('app-module/manifest-exists-and-valid', () => {
     const violations = await run({ 'manifest.json': manifestWith({ version: '1.0.0', backendEntryPath: './api-backend/index.js' }) })
     assert.equal(violations.length, 1)
     assert.match(violations[0].message, /failed validation/)
-    assert.match(violations[0].message, /unrecognized key "version"/)
-    assert.match(violations[0].message, /unrecognized key "backendEntryPath"/)
+    assert.match(violations[0].message, /Unrecognized key.*'version'/)
+    assert.match(violations[0].message, /'backendEntryPath'/)
   })
 
   it('flags dslLib.entry (written by `package`, not by the author)', async () => {
     const violations = await run({ 'manifest.json': manifestWith({ dslLib: { entry: './dsl-lib/x.mjs', shared: {} } }) })
     assert.equal(violations.length, 1)
-    assert.match(violations[0].message, /unrecognized key "entry"/)
+    assert.match(violations[0].message, /Unrecognized key.*'entry'/)
   })
 
   it('flags dslLib declared without src/dsl-components/index.ts', async () => {
