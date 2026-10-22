@@ -1,57 +1,35 @@
 import { describe, it } from 'node:test'
 import assert from 'node:assert/strict'
-import { SourceManifestSchema } from '@wadeck-app/app-core-sdk'
-import { validateSourceManifest, viewContentProblem } from './source-manifest.js'
+import { readManifestShape, viewContentProblem } from './source-manifest.js'
 
-const ep = { kind: 'page', slot: 'nav', label: 'X', view: { type: 'path', value: './src/dsl-views/a.yaml' } }
-
-function issuesOf(raw: unknown): string[] {
-  const result = validateSourceManifest(raw)
-  return result.ok ? [] : result.issues
-}
-
-// The rules themselves live in app-core's SourceManifestSchema; these tests only pin the adapter:
-// a valid manifest passes, and an invalid one reports what the SDK reports, as "<path>: <message>".
-describe('app-module/source-manifest adapter (app-core SDK schema)', () => {
-  it('accepts a minimal manifest and returns the narrowed shape', () => {
-    const result = validateSourceManifest({ id: 'queue', extensionPoints: [ep] })
-    assert.ok(result.ok)
-    assert.equal(result.ok && result.manifest.id, 'queue')
-    assert.equal(result.ok && result.manifest.dslLib, undefined)
-  })
-
-  it('returns dslLib.shared when the manifest declares dslLib', () => {
-    const result = validateSourceManifest({ id: 'queue', extensionPoints: [ep], dslLib: { shared: { react: '^19' } } })
-    assert.ok(result.ok)
-    assert.deepEqual(result.ok && result.manifest.dslLib, { shared: { react: '^19' } })
-  })
-
-  it('reports exactly the SDK issues, each as "<path>: <message>" ("(root)" when the path is empty)', () => {
-    const invalid: unknown[] = [[], { extensionPoints: [ep] }, { id: 'a', extensionPoints: [ep], version: '1' }, { id: 'a', extensionPoints: [{ ...ep, slot: 'custom' }] }]
-    for (const raw of invalid) {
-      const parsed = SourceManifestSchema.safeParse(raw)
-      assert.ok(!parsed.success, JSON.stringify(raw))
-      const expected = parsed.error.issues.map((issue) => `${issue.path.length === 0 ? '(root)' : issue.path.join('.')}: ${issue.message}`)
-      assert.deepEqual(issuesOf(raw), expected, JSON.stringify(raw))
+// Schema validation is app-core's job (app-core-sdk/manifest-valid); this reader only has to be lenient.
+describe('app-module/source-manifest readManifestShape', () => {
+  it('returns undefined when the root is not a JSON object', () => {
+    for (const raw of [[], null, 'x', 3]) {
+      assert.equal(readManifestShape(raw), undefined, JSON.stringify(raw))
     }
   })
 
-  // Guards against a stale SDK: these are the app-core rules this package relied on when it was hand-written.
-  it('applies the app-core rules the previous hand-written port mirrored', () => {
-    const view = ep.view
-    const bad: Record<string, unknown> = {
-      'non-boolean showInNav': { id: 'a', extensionPoints: [ep], showInNav: 'false' },
-      'blank title': { id: 'a', extensionPoints: [ep], title: '   ' },
-      'menu page without a label': { id: 'a', extensionPoints: [{ kind: 'page', slot: 'flow:nav', path: '/x', view }] },
-      'menu page with a :param path': { id: 'a', extensionPoints: [{ kind: 'page', slot: 'flow:nav', label: 'X', path: '/x/:id', view }] },
-      'reserved expose slot "nav"': { id: 'a', extensionPoints: [ep], expose: { slots: { nav: { accepts: ['Badge'] } } } },
-      'width on a non-dashboard extension point': { id: 'a', extensionPoints: [{ ...ep, width: 2 }] },
-      'width above 4': { id: 'a', extensionPoints: [{ kind: 'widget', slot: 'dashboard', view, width: 5 }] },
-    }
-    for (const [name, raw] of Object.entries(bad)) {
-      assert.ok(issuesOf(raw).length > 0, `${name} should be rejected`)
-    }
-    assert.deepEqual(issuesOf({ id: 'a', extensionPoints: [{ kind: 'widget', slot: 'dashboard', view, width: 4, height: 1 }], showInNav: false, title: 'Billing' }), [])
+  it('reads the views of extension points and keeps their original index', () => {
+    const shape = readManifestShape({
+      id: 'a',
+      extensionPoints: [{ view: { type: 'inline', value: {} } }, 'garbage', { view: { type: 'path', value: './src/dsl-views/a.yaml' } }],
+    })
+    assert.deepEqual(shape?.views, [
+      { index: 0, type: 'inline', value: {} },
+      { index: 2, type: 'path', value: './src/dsl-views/a.yaml' },
+    ])
+  })
+
+  it('skips malformed entries instead of failing (schema errors belong to app-core)', () => {
+    const shape = readManifestShape({ extensionPoints: [{ view: 3 }, { view: { type: 4 } }, null] })
+    assert.deepEqual(shape, { views: [], hasDslLib: false })
+    assert.deepEqual(readManifestShape({ extensionPoints: 'nope' }), { views: [], hasDslLib: false })
+  })
+
+  it('reports whether dslLib is declared', () => {
+    assert.equal(readManifestShape({ dslLib: { shared: {} } })?.hasDslLib, true)
+    assert.equal(readManifestShape({ id: 'a' })?.hasDslLib, false)
   })
 })
 

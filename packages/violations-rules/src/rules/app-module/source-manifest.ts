@@ -1,42 +1,35 @@
-import { SourceManifestSchema } from '@wadeck-app/app-core-sdk'
+// Minimal, lenient reading of the source manifest.json for the app-module layout rules. It does NOT validate
+// the manifest schema: that belongs to app-core, which ships the rule `app-core-sdk/manifest-valid` inside
+// @wadeck-app/app-core-sdk/violations (always the schema version the module is built against). Reading
+// leniently means a malformed entry is skipped here and reported there, so a problem is never reported twice.
 
-// Validates the source manifest.json an app-module author writes at the module root with app-core's own
-// SourceManifestSchema (SDK main entry: imports only zod, never the "/register" subpath, which uses node and fetch).
-// There is no hand-written copy of the rules: a new app-core rule reaches this check with the next release of
-// this package that takes the new SDK version (the dependency is on the `latest` dist-tag).
+export type SourceManifestView = { index: number; type: string; value: unknown }
 
-export type SourceManifestView = { type: 'inline' | 'path'; value: unknown }
-
-export type SourceManifest = {
-  id: string
-  extensionPoints: Array<{ kind: string; slot: string; view: SourceManifestView }>
-  // Present when the manifest declares dslLib.
-  dslLib?: { shared: Record<string, string> }
+export type ManifestShape = {
+  // Extension points that carry a view object with a string type; `index` is the position in extensionPoints.
+  views: SourceManifestView[]
+  // True when the manifest declares dslLib.
+  hasDslLib: boolean
 }
-
-export type SourceManifestResult = { ok: true; manifest: SourceManifest } | { ok: false; issues: string[] }
 
 function isObject(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value)
 }
 
-export function validateSourceManifest(raw: unknown): SourceManifestResult {
-  const parsed = SourceManifestSchema.safeParse(raw)
-  if (!parsed.success) {
-    return {
-      ok: false,
-      issues: parsed.error.issues.map((issue) => `${issue.path.length === 0 ? '(root)' : issue.path.join('.')}: ${issue.message}`),
-    }
+// The parts of the manifest the layout rules need, or undefined when the root is not a JSON object.
+export function readManifestShape(raw: unknown): ManifestShape | undefined {
+  if (!isObject(raw)) {
+    return undefined
   }
-  const manifest = parsed.data
-  return {
-    ok: true,
-    manifest: {
-      id: manifest.id,
-      extensionPoints: manifest.extensionPoints.map((ep) => ({ kind: ep.kind, slot: ep.slot, view: ep.view as SourceManifestView })),
-      ...(manifest.dslLib === undefined ? {} : { dslLib: { shared: manifest.dslLib.shared ?? {} } }),
-    },
+  const views: SourceManifestView[] = []
+  if (Array.isArray(raw.extensionPoints)) {
+    raw.extensionPoints.forEach((ep, index) => {
+      if (isObject(ep) && isObject(ep.view) && typeof ep.view.type === 'string') {
+        views.push({ index, type: ep.view.type, value: ep.view.value })
+      }
+    })
   }
+  return { views, hasDslLib: raw.dslLib !== undefined }
 }
 
 // What is wrong with a view file's content, or undefined. A view is a YAML/JSON object (with a $type),

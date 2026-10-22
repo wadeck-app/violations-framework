@@ -2,13 +2,13 @@ import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import type { Rule, Violation } from '../types.js'
 import { isDir, listFiles, moduleRootOfRootFile } from './layout.js'
-import { validateSourceManifest } from './source-manifest.js'
+import { readManifestShape } from './source-manifest.js'
 
 export type Config = Record<never, never>
 
-// Every app-module must ship a valid source manifest.json (id, extensionPoints, plus the optional
-// dslLib.shared, requires, expose, lifecycle, showInNav, title; `package` writes version, backendEntryPath and
-// dslLib.entry/css into dist-module/manifest.json), and dslLib must agree with src/dsl-components.
+// Every app-module must ship a manifest.json that is a JSON object, and its dslLib must agree with
+// src/dsl-components. The manifest schema itself is validated by app-core's rule (app-core-sdk/manifest-valid,
+// shipped in @wadeck-app/app-core-sdk/violations).
 //
 // The rule API only hands check() existing files, so "a file is missing" cannot be represented from
 // manifest.json itself. The rule scopes itself to package.json (present in every real package) as an
@@ -43,24 +43,21 @@ export const rule: Rule<Config> = {
         continue
       }
 
-      const result = validateSourceManifest(raw)
-      if (!result.ok) {
-        violations.push({
-          file: manifestPath,
-          line: 1,
-          message: `manifest.json failed validation: ${result.issues.join('; ')}. The source manifest holds only id, extensionPoints, dslLib.shared, requires, expose, lifecycle, showInNav and title; \`package\` writes the rest (version, backendEntryPath, dslLib.entry/css).`,
-        })
+      // Schema errors (missing id, unknown keys, bad slots...) are reported by app-core's own rule,
+      // app-core-sdk/manifest-valid, so that they always follow the schema the module is built against.
+      const manifest = readManifestShape(raw)
+      if (manifest === undefined) {
+        violations.push({ file: manifestPath, line: 1, message: 'manifest.json must be a JSON object ({ "id": ..., "extensionPoints": [...] }).' })
         continue
       }
-      const manifest = result.manifest
 
       const componentsDir = join(root, 'src', 'dsl-components')
       const entryExists = existsSync(join(componentsDir, 'index.ts'))
       const hasComponents = isDir(componentsDir) && listFiles(componentsDir).length > 0
-      if (manifest.dslLib !== undefined && !entryExists) {
+      if (manifest.hasDslLib && !entryExists) {
         violations.push({ file: join(componentsDir, 'index.ts'), line: 1, message: 'manifest.json declares dslLib but src/dsl-components/index.ts is missing. Create it (default-exporting the ComponentRegistryEntry[]), or remove dslLib.' })
       }
-      if (manifest.dslLib === undefined && hasComponents) {
+      if (!manifest.hasDslLib && hasComponents) {
         violations.push({ file: manifestPath, line: 1, message: 'src/dsl-components has files but manifest.json has no dslLib, so they would not be packaged. Add `"dslLib": { "shared": { ... } }`, or delete src/dsl-components.' })
       }
     }

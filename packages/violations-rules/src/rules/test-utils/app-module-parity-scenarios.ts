@@ -44,11 +44,7 @@ export const PARITY_SCENARIOS: ParityScenario[] = [
   },
   { name: 'missing view file', fails: true, files: { 'src/dsl-views/page.yaml': null } },
   { name: 'view not an object', fails: true, files: { 'src/dsl-views/page.yaml': '- a\n' } },
-  {
-    name: 'manifest without id',
-    fails: true,
-    files: { 'manifest.json': JSON.stringify({ extensionPoints: JSON.parse(manifestWith({})).extensionPoints }) },
-  },
+  { name: 'manifest not an object', fails: true, files: { 'manifest.json': '[]' } },
   { name: 'dslLib without components entry', fails: true, files: { 'manifest.json': manifestWith({ dslLib: { shared: {} } }) } },
   { name: 'components without dslLib', fails: true, files: { 'src/dsl-components/index.ts': 'export default [];\n' } },
   { name: 'no .gitignore', fails: true, files: { '.gitignore': null } },

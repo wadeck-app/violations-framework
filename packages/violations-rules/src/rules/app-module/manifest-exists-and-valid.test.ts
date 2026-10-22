@@ -31,30 +31,18 @@ describe('app-module/manifest-exists-and-valid', () => {
     assert.match(violations[0].message, /not valid JSON/)
   })
 
-  it('flags a manifest without an id', async () => {
-    const violations = await run({ 'manifest.json': JSON.stringify({ extensionPoints: JSON.parse(VALID_MODULE_FILES['manifest.json']).extensionPoints }) })
+  it('flags a manifest whose root is not a JSON object', async () => {
+    const violations = await run({ 'manifest.json': '[]' })
     assert.equal(violations.length, 1)
-    assert.match(violations[0].message, /id: Required/)
+    assert.match(violations[0].message, /must be a JSON object/)
   })
 
-  it('flags an invalid id', async () => {
-    const violations = await run({ 'manifest.json': manifestWith({ id: 'bad id!' }) })
-    assert.equal(violations.length, 1)
-    assert.match(violations[0].message, /module id must/)
-  })
-
-  it('flags build-output fields in the source manifest (version, backendEntryPath)', async () => {
-    const violations = await run({ 'manifest.json': manifestWith({ version: '1.0.0', backendEntryPath: './api-backend/index.js' }) })
-    assert.equal(violations.length, 1)
-    assert.match(violations[0].message, /failed validation/)
-    assert.match(violations[0].message, /Unrecognized key.*'version'/)
-    assert.match(violations[0].message, /'backendEntryPath'/)
-  })
-
-  it('flags dslLib.entry (written by `package`, not by the author)', async () => {
-    const violations = await run({ 'manifest.json': manifestWith({ dslLib: { entry: './dsl-lib/x.mjs', shared: {} } }) })
-    assert.equal(violations.length, 1)
-    assert.match(violations[0].message, /Unrecognized key.*'entry'/)
+  it('leaves schema errors to app-core-sdk/manifest-valid (no id, bad id, build-output keys, dslLib.entry)', async () => {
+    const withoutId = JSON.stringify({ extensionPoints: JSON.parse(VALID_MODULE_FILES['manifest.json']).extensionPoints })
+    for (const manifest of [withoutId, manifestWith({ id: 'bad id!' }), manifestWith({ version: '1.0.0', backendEntryPath: './api-backend/index.js' }), manifestWith({ dslLib: { entry: './dsl-lib/x.mjs', shared: {} } })]) {
+      const violations = (await run({ 'manifest.json': manifest })).filter((v) => !/dslLib/.test(v.message))
+      assert.deepEqual(violations, [], manifest)
+    }
   })
 
   it('flags dslLib declared without src/dsl-components/index.ts', async () => {

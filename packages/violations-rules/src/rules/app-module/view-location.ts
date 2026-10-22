@@ -2,13 +2,13 @@ import { existsSync, readFileSync, statSync } from 'node:fs'
 import { isAbsolute, join, relative, resolve } from 'node:path'
 import type { Rule, Violation } from '../types.js'
 import { moduleRootOfRootFile, toPosix } from './layout.js'
-import { validateSourceManifest, viewContentProblem } from './source-manifest.js'
+import { readManifestShape, viewContentProblem } from './source-manifest.js'
 
 export type Config = Record<never, never>
 
 // Every path-type view in the source manifest must be a file inside src/dsl-views/ holding a YAML/JSON
-// object (DSL data, never code). Mirrors `app-core-cli check`. An invalid manifest is left to
-// app-module/manifest-exists-and-valid.
+// object (DSL data, never code). Mirrors `app-core-cli check`. A manifest that is not a JSON object is left
+// to app-module/manifest-exists-and-valid, and schema errors to app-core's own rule (app-core-sdk/manifest-valid).
 export const rule: Rule<Config> = {
   id: 'app-module/view-location',
   tags: 'app-module',
@@ -25,23 +25,24 @@ export const rule: Rule<Config> = {
         continue
       }
 
-      let result
+      let shape
       try {
-        result = validateSourceManifest(JSON.parse(readFileSync(manifestPath, 'utf-8')))
+        shape = readManifestShape(JSON.parse(readFileSync(manifestPath, 'utf-8')))
       } catch {
         continue
       }
-      if (!result.ok) {
+      if (shape === undefined) {
         continue
       }
 
       const viewsDir = join(root, 'src', 'dsl-views')
       const seen = new Set<string>()
-      result.manifest.extensionPoints.forEach((ep, index) => {
-        if (ep.view.type !== 'path') {
+      shape.views.forEach((view) => {
+        if (view.type !== 'path' || typeof view.value !== 'string') {
           return
         }
-        const value = String(ep.view.value)
+        const index = view.index
+        const value = view.value
         const abs = resolve(root, value)
         if (seen.has(abs)) {
           return
