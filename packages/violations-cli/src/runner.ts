@@ -2,6 +2,7 @@ import { readFile, mkdir, readdir } from 'node:fs/promises'
 import { join, resolve, dirname, basename, extname } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { existsSync } from 'node:fs'
+import { createRequire } from 'node:module'
 import picomatch from 'picomatch'
 import { walk } from './walk.js'
 import { isSuppressed, getSuppressReason } from './suppress.js'
@@ -49,6 +50,52 @@ async function loadConfig(projectRoot: string, frameworkVersion: string): Promis
 	throw new Error(`No .violations/config.ts or config.js found in ${projectRoot}`)
 }
 
+// Rule shipped by an npm package of the project, keyed by its import specifier (scoped package).
+export const APP_CORE_SDK_RULE_KEY = '@wadeck-app/app-core-sdk/violations'
+
+function isPackageRuleKey(ruleKey: string): boolean {
+	return ruleKey.startsWith('@')
+}
+
+// A key that is loaded from outside the library (local file or project package), as opposed to a library rule id.
+function isExternalRuleKey(ruleKey: string): boolean {
+	return ruleKey.startsWith('./') || ruleKey.startsWith('../') || isPackageRuleKey(ruleKey)
+}
+
+// Resolves the package from the project root, so the version the project is built against is the one that runs.
+async function loadPackageRule(ruleKey: string, projectRoot: string): Promise<Rule> {
+	let resolved: string
+	try {
+		resolved = createRequire(join(projectRoot, 'package.json')).resolve(ruleKey)
+	} catch (err) {
+		const packageName = ruleKey.split('/').slice(0, 2).join('/')
+		throw new Error(
+			`[violations] Cannot resolve the rule '${ruleKey}' from ${projectRoot}: ${(err as Error).message}\n` +
+			`       Install the package in the project: npm install ${packageName}\n` +
+			`       Or disable the rule in .violations/config.ts rules: '${ruleKey}': { $severity: false }`
+		)
+	}
+	const mod = await import(pathToFileURL(resolved).href) as { default?: Rule; rule?: Rule }
+	const rule = mod.default ?? mod.rule
+	if (!rule) {
+		throw new Error(
+			`[violations] '${ruleKey}' (${resolved}) does not export a rule (expected 'export const rule' or 'export default').\n` +
+			`       Check the version of the package installed in the project.`
+		)
+	}
+	return rule
+}
+
+// A project has app-module(s) if it contains <anything>/app-module-<name>/manifest.json outside generated output.
+// Same marker as the app-module/* rules (a module root is a folder named app-module-<name>).
+export async function hasAppModule(projectRoot: string, excludeGlobs: string[]): Promise<boolean> {
+	const files = await walk(projectRoot, { extensions: [], excludeGlobs })
+	return files.some(file => {
+		const posix = file.split('\\').join('/')
+		return /(^|\/)app-module-[^/]+\/manifest\.json$/.test(posix) && !/\/(dist-module|\.app-core-dev)\//.test(posix)
+	})
+}
+
 async function loadRule(
 	ruleKey: string,
 	projectRoot: string,
@@ -56,6 +103,10 @@ async function loadRule(
 	manifestPath: string,
 	frameworkVersion: string
 ): Promise<Rule | null> {
+	if (isPackageRuleKey(ruleKey)) {
+		return loadPackageRule(ruleKey, projectRoot)
+	}
+
 	const isLocal = ruleKey.startsWith('./') || ruleKey.startsWith('../')
 
 	if (isLocal) {
@@ -230,13 +281,24 @@ export async function run(options: RunOptions): Promise<RuleResult[]> {
 		mergedRules[key] = val as RuleOverride | true
 	}
 
+	// A project with app-module(s) always has the app-core SDK, which ships the manifest schema rule: it is
+	// activated automatically so the schema is never silently unchecked. An explicit config entry (override or
+	// $severity: false) takes priority. A missing SDK is an error (see loadPackageRule), not a silent skip.
+	if (!(APP_CORE_SDK_RULE_KEY in rulesConfig) && await hasAppModule(projectRoot, config.globalExclude ?? [])) {
+		mergedRules[APP_CORE_SDK_RULE_KEY] = true
+		process.stderr.write(
+			'[auto] app-module-* detected - activating the manifest schema rule of @wadeck-app/app-core-sdk automatically.\n' +
+			`       Disable with rules: '${APP_CORE_SDK_RULE_KEY}': { $severity: false } in .violations/config.ts.\n`
+		)
+	}
+
 	// Load all local rules once, caching the Rule instance.
 	// Lib rules: config key IS the rule id (no load needed for ID collection).
 	// Local rules (./...): the key is a file path; we need rule.id (e.g. 'security/no-raw-err')
 	// for no-dead-suppress validation. Caching avoids a second compile+import in Promise.all.
 	const localRuleCache = new Map<string, Rule>()
 	for (const [ruleKey, override] of Object.entries(mergedRules)) {
-		if (!ruleKey.startsWith('./') && !ruleKey.startsWith('../')) {
+		if (!isExternalRuleKey(ruleKey)) {
 		  continue;
 		}
 		if (isDisabled(override)) {
@@ -257,7 +319,7 @@ export async function run(options: RunOptions): Promise<RuleResult[]> {
 	const activeRuleIds: string[] = [
 		...Object.entries(mergedRules)
 			.filter(([, override]) => !isDisabled(override))
-			.filter(([ruleKey]) => !ruleKey.startsWith('./') && !ruleKey.startsWith('../'))
+			.filter(([ruleKey]) => !isExternalRuleKey(ruleKey))
 			.map(([ruleKey]) => ruleKey),
 		...[...localRuleCache.values()].map(r => r.id),
 	]
@@ -268,8 +330,8 @@ export async function run(options: RunOptions): Promise<RuleResult[]> {
 			  return;
 			}
 
-			const isLocal = ruleKey.startsWith('./') || ruleKey.startsWith('../')
-			const rule = isLocal
+			const isExternal = isExternalRuleKey(ruleKey)
+			const rule = isExternal
 				? (localRuleCache.get(ruleKey) ?? await loadRule(ruleKey, projectRoot, cacheDir, manifestPath, frameworkVersion))
 				: await loadRule(ruleKey, projectRoot, cacheDir, manifestPath, frameworkVersion)
 			if (!rule) {

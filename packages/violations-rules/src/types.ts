@@ -109,6 +109,10 @@ type RuleConfigMap = {
 // Cannot be typed statically, so they accept the base override shape only.
 type LocalRulePath = `./${string}`
 
+// A rule shipped by an npm package of the project, keyed by its import specifier
+// (e.g. '@wadeck-app/app-core-sdk/violations'). Resolved from the project root.
+type PackageRuleSpecifier = `@${string}/${string}`
+
 export type ViolationsConfig = {
   projectTags: string[]
   globalExclude?: string[]
@@ -116,6 +120,8 @@ export type ViolationsConfig = {
     [K in keyof RuleConfigMap]?: RuleOverride<RuleConfigMap[K]> | true
   } & {
     [K in LocalRulePath]?: RuleOverride | true
+  } & {
+    [K in PackageRuleSpecifier]?: RuleOverride | true
   }
 }
 
