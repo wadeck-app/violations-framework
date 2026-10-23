@@ -82,6 +82,19 @@ describe('app-core SDK manifest rule auto-activation (app-module-* detected)', (
 		}
 	})
 
+	it('tells to update (not install) when the installed SDK has no ./violations export', async () => {
+		const dir = await makeProject({ appModule: true, sdk: false })
+		try {
+			const sdkDir = join(dir, 'node_modules', '@wadeck-app', 'app-core-sdk')
+			await mkdir(sdkDir, { recursive: true })
+			await writeFile(join(sdkDir, 'package.json'), JSON.stringify({ name: '@wadeck-app/app-core-sdk', version: '0.0.1', type: 'module', exports: { '.': './index.js' } }))
+			await writeFile(join(sdkDir, 'index.js'), 'export {}\n')
+			await assert.rejects(run({ projectRoot: dir }), /too old[\s\S]*npm install @wadeck-app\/app-core-sdk@latest/)
+		} finally {
+			await rm(dir, { recursive: true, force: true })
+		}
+	})
+
 	it('can be turned off with $severity: false, without needing the SDK', async () => {
 		const dir = await makeProject({ appModule: true, sdk: false, rules: `'${SDK_KEY}': { $severity: false }` })
 		try {

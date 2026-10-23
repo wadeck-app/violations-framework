@@ -69,9 +69,13 @@ async function loadPackageRule(ruleKey: string, projectRoot: string): Promise<Ru
 		resolved = createRequire(join(projectRoot, 'package.json')).resolve(ruleKey)
 	} catch (err) {
 		const packageName = ruleKey.split('/').slice(0, 2).join('/')
+		// The package is installed but its version has no such subpath: installing is not the fix, updating is.
+		const fix = (err as NodeJS.ErrnoException).code === 'ERR_PACKAGE_PATH_NOT_EXPORTED'
+			? `The installed version of ${packageName} is too old (it does not export '${ruleKey}'). Update it: npm install ${packageName}@latest`
+			: `Install the package in the project: npm install ${packageName}`
 		throw new Error(
 			`[violations] Cannot resolve the rule '${ruleKey}' from ${projectRoot}: ${(err as Error).message}\n` +
-			`       Install the package in the project: npm install ${packageName}\n` +
+			`       ${fix}\n` +
 			`       Or disable the rule in .violations/config.ts rules: '${ruleKey}': { $severity: false }`
 		)
 	}
