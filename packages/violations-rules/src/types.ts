@@ -103,6 +103,7 @@ type RuleConfigMap = {
   'app-module/source-layout':                   Record<never, never>
   'app-module/import-boundaries':               Record<never, never>
   'app-module/publishing':                      Record<never, never>
+  'queue-sdk/no-off-outside-tests':             Record<never, never>
 }
 
 // Local rule paths are relative strings (e.g. './.violations/rules/my-rule.js').

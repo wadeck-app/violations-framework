@@ -79,6 +79,7 @@ export { rule as appModuleNoRawColorInViews } from './app-module/no-raw-color-in
 export { rule as appModuleSourceLayout } from './app-module/source-layout.js'
 export { rule as appModuleImportBoundaries } from './app-module/import-boundaries.js'
 export { rule as appModulePublishing } from './app-module/publishing.js'
+export { rule as queueSdkNoOffOutsideTests } from './queue-sdk/no-off-outside-tests.js'
 
 export type { Config as NoEmDashConfig } from './shared/no-em-dash.js'
 export type { Config as NoFrenchConfig } from './shared/no-french.js'
@@ -161,6 +162,7 @@ export type { Config as AppModuleNoRawColorInViewsConfig } from './app-module/no
 export type { Config as AppModuleSourceLayoutConfig } from './app-module/source-layout.js'
 export type { Config as AppModuleImportBoundariesConfig } from './app-module/import-boundaries.js'
 export type { Config as AppModulePublishingConfig } from './app-module/publishing.js'
+export type { Config as QueueSdkNoOffOutsideTestsConfig } from './queue-sdk/no-off-outside-tests.js'
 
 import { rule as noEmDash } from './shared/no-em-dash.js'
 import { rule as noFrench } from './shared/no-french.js'
@@ -243,6 +245,7 @@ import { rule as appModuleNoRawColorInViews } from './app-module/no-raw-color-in
 import { rule as appModuleSourceLayout } from './app-module/source-layout.js'
 import { rule as appModuleImportBoundaries } from './app-module/import-boundaries.js'
 import { rule as appModulePublishing } from './app-module/publishing.js'
+import { rule as queueSdkNoOffOutsideTests } from './queue-sdk/no-off-outside-tests.js'
 import type { Rule } from '../types.js'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -328,4 +331,5 @@ export const allRules: Rule<any>[] = [
   appModuleSourceLayout,
   appModuleImportBoundaries,
   appModulePublishing,
+  queueSdkNoOffOutsideTests,
 ]
