@@ -27,6 +27,20 @@ function runCli(
 
 describe('violations CLI integration', () => {
 
+	it('rules info prints the details of a known rule id', async () => {
+		const { code, stdout } = await runCli(['rules', 'info', 'queue-sdk/no-off-outside-tests'])
+		assert.equal(code, 0, stdout)
+		assert.match(stdout, /id:\s+queue-sdk\/no-off-outside-tests/)
+		assert.match(stdout, /defaultSeverity:\s+error/)
+	})
+
+	it('rules info on an unknown id exits 1 and points to rules list', async () => {
+		const { code, stdout } = await runCli(['rules', 'info', 'nope/unknown'])
+		assert.equal(code, 1)
+		assert.match(stdout, /Rule not found: nope\/unknown/)
+		assert.match(stdout, /violations rules list/)
+	})
+
 	it('cli self-check writes only to stderr (no stdout output)', async () => {
 		const { code, stdout, stderr } = await runCli(['cli', 'self-check'])
 		assert.equal(stdout, '', `Expected empty stdout, got: ${JSON.stringify(stdout)}`)

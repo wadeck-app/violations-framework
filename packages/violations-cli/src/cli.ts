@@ -508,17 +508,21 @@ async function cmdRulesInfo(id: string): Promise<void> {
 		process.exit(1)
 	}
 
-	let rule: { id: string; tags: string; defaultSeverity: string; defaultScope: string[] } | undefined
+	type RuleInfo = { id: string; tags: string; defaultSeverity: string; defaultScope: string[] }
+	let rule: RuleInfo | undefined
 
+	// Same source as `violations rules list`: rule files export a named `rule`, not a default.
 	try {
-		const mod = await import(`@wadeck-app/violations-rules/rules/${id}`) as { default: typeof rule }
-		rule = mod.default
-	} catch {
-		// Not found
+		const mod = await import('@wadeck-app/violations-rules') as { allRules?: RuleInfo[] }
+		rule = mod.allRules?.find(r => r.id === id)
+	} catch (err) {
+		console.log(`Cannot load @wadeck-app/violations-rules: ${String(err)}`)
+		process.exit(1)
 	}
 
 	if (!rule) {
 		console.log(`Rule not found: ${id}`)
+		console.log('Run: violations rules list  to see the available rule ids.')
 		process.exit(1)
 	}
 
