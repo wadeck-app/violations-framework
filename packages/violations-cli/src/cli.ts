@@ -11,7 +11,7 @@ import { cliLogsCommand, cliVersionCommand, cliUpdateCommand, warnUnknownArgs } 
 import { readChannelFromConfig } from '@wadeck-app/shared-cli/ChannelConfig'
 import { loadUserConfig } from './config.js'
 import { VERSION } from './version.js'
-import { isReleaseVersion, devBuildRefusalMessage } from './devBuildGuard.js'
+import { isReleaseVersion, devBuildRefusalMessage } from '@wadeck-app/shared-cli/ReleaseVersion'
 import { run } from './runner.js'
 import { writeReports } from './report.js'
 import { compileIfNeeded, typeCheck } from './compiler.js'
@@ -882,7 +882,7 @@ async function main(): Promise<void> {
 				await cmdCliSelfCheck()
 			} else if (sub === 'update') {
 				if (!isReleaseVersion(VERSION)) {
-					process.stderr.write(`[fail] ${devBuildRefusalMessage(VERSION)}\n`)
+					process.stderr.write(`[fail] ${devBuildRefusalMessage('violations', VERSION)}\n`)
 					process.exit(1)
 				}
 				const updaterPath = join(dirname(bundlePath), 'violations-updater.cjs')
@@ -904,9 +904,9 @@ async function main(): Promise<void> {
 			process.exit(1)
 		}
 	} finally {
-		// Dev builds never auto-update: only GitHub Packages releases (CalVer) may touch the global install.
-		if (!userConfig.update.disabled && isReleaseVersion(VERSION)) {
-			updater.scheduleBackgroundUpdate(bundlePath, 'violations-updater.cjs')
+		// Passing VERSION: dev builds never auto-update, only GitHub Packages releases (CalVer) may touch the global install.
+		if (!userConfig.update.disabled) {
+			updater.scheduleBackgroundUpdate(bundlePath, 'violations-updater.cjs', VERSION)
 		}
 	}
 }

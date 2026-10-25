@@ -3,7 +3,7 @@
 import { runUpdater, execNpm } from '@wadeck-app/shared-updater';
 import { ConfigDir } from '@wadeck-app/shared-cli/ConfigDir';
 import { join } from 'node:path';
-import { isReleaseVersion, devBuildRefusalMessage } from '../devBuildGuard.js';
+import { isReleaseVersion, devBuildRefusalMessage } from '@wadeck-app/shared-cli/ReleaseVersion';
 
 declare const __VIOLATIONS_CLI_VERSION__: string;
 
@@ -12,7 +12,7 @@ const configDir = process.env['VIOLATIONS_CONFIG_DIR'] ?? ConfigDir.get('violati
 const rawVersion = typeof __VIOLATIONS_CLI_VERSION__ !== 'undefined' ? __VIOLATIONS_CLI_VERSION__ : '0.0.0-dev';
 // Defence in depth (the CLI already checks): never let a repo-built bundle run `npm install -g`.
 if (!isReleaseVersion(rawVersion)) {
-	process.stderr.write(`[violations-updater] ${devBuildRefusalMessage(rawVersion)}\n`);
+	process.stderr.write(`[violations-updater] ${devBuildRefusalMessage('violations', rawVersion)}\n`);
 	process.exit(1);
 }
 const currentVersion = rawVersion;
