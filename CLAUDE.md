@@ -104,6 +104,8 @@ Rules receive pre-filtered `files[]` - never call `walk()` inside a rule.
 - **TypeScript compiler API** (not esbuild) in `compiler.ts` - gives real type-checking of local `.ts` rules, not just transpilation.
 - **`Record<never, never>`** as default Config generic - avoids index signature conflict that `Record<string, never>` causes in `RuleOverride` intersection.
 - **Reports go in `.violations/.reports/`** - gitignored via `.violations/.gitignore`, never in project root.
+- **Only GitHub Packages releases auto-update** - `violations-cli/src/devBuildGuard.ts` accepts only the CI-stamped CalVer `YYYY.MM.DD-BBB-hash8`; any other version (`0.1.0`, local HHMMSS bundle) is a dev build. Dev builds skip the background update, and `cli update` and `violations-updater.cjs` exit 1 with a message. Stable semver releases (`1.2.0`) are never published, so they are deliberately not supported. Reason: an interrupted `npm install -g` uninstalls the global CLI (incident 2026-10-24).
+- **Spawned CLIs in tests run isolated** - `cli.integration.test.ts` gives every spawn a temp config dir, home, npm prefix/cache/config and an unreachable registry, never the real ones. Keep this for any new test that spawns the CLI.
 - **`violations-meta/no-legacy-violations-folder`** suppressed in this repo - we host the migration tooling, `scripts/violations/` intentionally absent here.
 
 ---

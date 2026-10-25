@@ -1,11 +1,54 @@
-import { describe, it } from 'node:test'
+import { after, describe, it } from 'node:test'
 import assert from 'node:assert/strict'
 import { spawn } from 'node:child_process'
+import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const CLI_PATH = join(__dirname, '..', 'dist', 'cli.js')
+
+// Incident 2026-10-24: a test ran `cli update` against the REAL config dir and REAL global npm;
+// the install was killed halfway and the global CLI vanished. Every spawned CLI must run in a
+// throwaway tree: own config dir, home, npm prefix/cache/config, and an unreachable registry.
+const UNREACHABLE_REGISTRY = 'http://127.0.0.1:9'
+const ISOLATION_ROOT = mkdtempSync(join(tmpdir(), 'violations-test-iso-'))
+after(() => rmSync(ISOLATION_ROOT, { recursive: true, force: true }))
+
+// Env vars that steer the updater / launcher / npm / home lookup must not leak from the parent shell.
+const STRIPPED = /^(UPDATER_|LAUNCHER_|CLI_SELF_CHECK|NPM_CONFIG_|XDG_CONFIG_HOME$|HOME$|USERPROFILE$|APPDATA$|LOCALAPPDATA$)/i
+
+function isolatedEnv(): NodeJS.ProcessEnv {
+	const home = join(ISOLATION_ROOT, 'home')
+	const configDir = join(home, '.config', 'violations')
+	const npmPrefix = join(ISOLATION_ROOT, 'npm-prefix')
+	const npmCache = join(ISOLATION_ROOT, 'npm-cache')
+	for (const d of [configDir, npmPrefix, npmCache, join(home, 'AppData', 'Roaming'), join(home, 'AppData', 'Local')]) {
+		mkdirSync(d, { recursive: true })
+	}
+	// Own npm config files for user AND global level so the real auth tokens / scope registries are never read.
+	const npmConfig = `registry=${UNREACHABLE_REGISTRY}\n@wadeck-app:registry=${UNREACHABLE_REGISTRY}\nfetch-retries=0\nfetch-timeout=3000\naudit=false\nfund=false\nupdate-notifier=false\n`
+	const userConfig = join(ISOLATION_ROOT, 'npm-user.ini')
+	const globalConfig = join(ISOLATION_ROOT, 'npm-global.ini')
+	writeFileSync(userConfig, npmConfig)
+	writeFileSync(globalConfig, npmConfig)
+	const env: NodeJS.ProcessEnv = {}
+	for (const [k, v] of Object.entries(process.env)) if (!STRIPPED.test(k)) env[k] = v
+	return Object.assign(env, {
+		VIOLATIONS_CONFIG_DIR: configDir,
+		XDG_CONFIG_HOME: join(home, '.config'),
+		HOME: home,
+		USERPROFILE: home,
+		APPDATA: join(home, 'AppData', 'Roaming'),
+		LOCALAPPDATA: join(home, 'AppData', 'Local'),
+		NPM_CONFIG_PREFIX: npmPrefix,
+		NPM_CONFIG_CACHE: npmCache,
+		NPM_CONFIG_USERCONFIG: userConfig,
+		NPM_CONFIG_GLOBALCONFIG: globalConfig,
+		NPM_CONFIG_REGISTRY: UNREACHABLE_REGISTRY,
+	})
+}
 
 function runCli(
 	args: string[],
@@ -13,7 +56,7 @@ function runCli(
 ): Promise<{ code: number; stdout: string; stderr: string }> {
 	return new Promise((resolve) => {
 		const child = spawn(process.execPath, [CLI_PATH, ...args], {
-			env: { ...process.env, ...env },
+			env: { ...isolatedEnv(), ...env },
 		})
 		let stdout = ''
 		let stderr = ''
@@ -73,8 +116,10 @@ describe('violations CLI integration', () => {
 
 	it('cli update in dev mode prints [fail] on stderr and exits 1', async () => {
 		const { code, stderr } = await runCli(['cli', 'update'])
-		assert.equal(code, 1, `Expected exit 1 in dev mode (updater bundle absent), got ${code}`)
+		assert.equal(code, 1, `Expected exit 1 in dev mode, got ${code}`)
 		assert.ok(stderr.includes('[fail]'), `Expected [fail] in stderr, got: ${JSON.stringify(stderr)}`)
+		// Must be the dev-build guard, not the "updater bundle absent" accident
+		assert.ok(stderr.includes('dev build'), `Expected the dev-build refusal, got: ${JSON.stringify(stderr)}`)
 	})
 
 	it('unknown top-level command exits 1', async () => {
