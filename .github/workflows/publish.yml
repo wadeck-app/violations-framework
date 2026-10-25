@@ -24,7 +24,12 @@ permissions:
 
 jobs:
   build-and-test:
-    runs-on: ubuntu-latest
+    # The CLI runs on the maintainer's Windows machine and on Linux/macOS CI: test where it is used.
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
         with:
