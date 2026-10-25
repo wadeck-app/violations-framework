@@ -47,6 +47,8 @@ function isolatedEnv(): NodeJS.ProcessEnv {
 		NPM_CONFIG_USERCONFIG: userConfig,
 		NPM_CONFIG_GLOBALCONFIG: globalConfig,
 		NPM_CONFIG_REGISTRY: UNREACHABLE_REGISTRY,
+		// A scoped registry from a project/user .npmrc outranks NPM_CONFIG_REGISTRY; only this env variable beats it.
+		'npm_config_@wadeck-app:registry': UNREACHABLE_REGISTRY,
 	})
 }
 
