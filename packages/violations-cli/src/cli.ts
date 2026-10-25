@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { readFile, writeFile, mkdir, rm } from 'node:fs/promises'
-import { existsSync } from 'node:fs'
+import { existsSync, realpathSync } from 'node:fs'
 import { spawn } from 'node:child_process'
 import { join, dirname, resolve, extname, basename } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
@@ -245,7 +245,10 @@ async function cmdCheck(args: string[]): Promise<void> {
 		for (const f of files) {
 			const abs = resolve(projectRoot, f).split('\\').join('/')
 			if (existsSync(abs)) {
-				resolved.push(abs)
+				// The walker works from process.cwd(), which is the canonical path (macOS: /var -> /private/var).
+				// An absolute --files entry through a symlink must be canonicalized too, or it matches no walked file
+				// and the run reports a false "[ok] 0 violations".
+				resolved.push(realpathSync(abs).split('\\').join('/'))
 			} else {
 				missing.push(f)
 			}

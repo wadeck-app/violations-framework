@@ -1,7 +1,7 @@
 import { describe, it, before, after } from 'node:test'
 import assert from 'node:assert/strict'
 import { spawn } from 'node:child_process'
-import { mkdtemp, rm, writeFile, mkdir } from 'node:fs/promises'
+import { mkdtemp, rm, writeFile, mkdir, symlink } from 'node:fs/promises'
 import { join } from 'node:path'
 import { tmpdir } from 'node:os'
 import { fileURLToPath } from 'node:url'
@@ -136,6 +136,22 @@ export default {
 		const { stdout } = await runCli(['check', '--files', `${a},${b}`], dir)
 		assert.match(stdout, /2 files.*checked/)
 		assert.match(stdout, /1 violation/)
+	})
+
+	// macOS: tmpdir() is /var/folders/... but process.cwd() is /private/var/folders/..., so an absolute path
+	// built from tmpdir() went through a symlink and matched no walked file (false "[ok] 0 violations").
+	it('an absolute path through a symlinked parent directory is still checked', async () => {
+		const linkParent = await mkdtemp(join(tmpdir(), 'violations-cli-link-'))
+		try {
+			const link = join(linkParent, 'project-link')
+			await symlink(dir, link, 'junction')
+			const viaLink = join(link, 'src', 'bad.txt').split('\\').join('/')
+			const { code, stdout } = await runCli(['check', '--files', viaLink], dir)
+			assert.equal(code, 1, `expected 1 violation (exit 1), got exit ${code}. stdout: ${stdout}`)
+			assert.match(stdout, /1 violation/)
+		} finally {
+			await rm(linkParent, { recursive: true, force: true })
+		}
 	})
 
 	it('space-separated file list: BOTH files are checked, not just the first', async () => {
