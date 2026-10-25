@@ -48,7 +48,18 @@ jobs:
 
       - run: npm run build
 
-      - run: npm test
+      # Failures are also written as an annotation: job logs need admin rights to read, annotations are public.
+      - name: Run npm test
+        shell: bash
+        run: |
+          set +e
+          npm test 2>&1 | tee test-output.txt
+          code=${PIPESTATUS[0]}
+          if [ "$code" -ne 0 ]; then
+            msg=$(grep -A40 'failing tests:' test-output.txt | head -40 | sed 's/%/%25/g' | sed 's/$/%0A/' | tr -d '\n\r')
+            echo "::error title=npm test failed on ${{ matrix.os }}::${msg}"
+          fi
+          exit $code
 
   publish:
     needs: build-and-test
