@@ -7,7 +7,7 @@ import { rule } from './no-dead-rule-scope.js'
 
 describe('violations-meta/no-dead-rule-scope', () => {
   it('fires when a rule file has a defaultScope pointing to a non-existent path', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-dead-scope-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-dead-scope-'))
     try {
       const ruleFile = join(dir, 'my-rule.ts')
       await writeFile(ruleFile, `
@@ -31,7 +31,7 @@ export const rule = {
   })
 
   it('does not fire when a rule file has a defaultScope pointing to an existing path', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-dead-scope-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-dead-scope-'))
     try {
       await mkdir(join(dir, 'packages', 'my-pkg', 'src'), { recursive: true })
       const ruleFile = join(dir, 'my-rule.ts')
@@ -55,7 +55,7 @@ export const rule = {
   })
 
   it('skips rule files with no defaultScope array (dynamic scan rules)', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-dead-scope-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-dead-scope-'))
     try {
       const ruleFile = join(dir, 'dynamic-rule.ts')
       await writeFile(ruleFile, `

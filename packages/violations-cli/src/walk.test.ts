@@ -22,7 +22,7 @@ describe('walk', () => {
 	let root: string
 
 	before(async () => {
-		root = (await mkdtemp(join(tmpdir(), 'walk-test-'))).split('\\').join('/')
+		root = (await mkdtemp(join(tmpdir(), 'violations-walk-test-'))).split('\\').join('/')
 		for (const rel of FILES) {
 			await mkdir(join(root, rel, '..'), { recursive: true })
 			await writeFile(join(root, rel), '')

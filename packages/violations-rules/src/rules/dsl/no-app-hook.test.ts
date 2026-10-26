@@ -7,7 +7,7 @@ import { rule } from './no-app-hook.js'
 
 describe('dsl/no-app-hook', () => {
   async function withAppFile(content: string): Promise<[string, () => Promise<void>]> {
-    const dir = await mkdtemp(join(tmpdir(), 'no-app-hook-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-app-hook-'))
     const srcDir = join(dir, 'packages', 'orch-app', 'src')
     await mkdir(srcDir, { recursive: true })
     const file = join(srcDir, 'hooks.ts')

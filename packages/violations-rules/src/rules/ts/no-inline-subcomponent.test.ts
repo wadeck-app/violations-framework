@@ -7,7 +7,7 @@ import { rule } from './no-inline-subcomponent.js'
 
 describe('ts/no-inline-subcomponent', () => {
   it('fires when file has 2+ component functions', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-inline-subcomponent-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-inline-subcomponent-'))
     try {
       const file = join(dir, 'MyPage.tsx')
       await writeFile(
@@ -31,7 +31,7 @@ function Bar() {
   })
 
   it('does not fire when file has only 1 component function', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-inline-subcomponent-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-inline-subcomponent-'))
     try {
       const file = join(dir, 'MyPage.tsx')
       await writeFile(
@@ -49,7 +49,7 @@ function Bar() {
   })
 
   it('does not fire on .dialogs.tsx files even with multiple components', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-inline-subcomponent-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-inline-subcomponent-'))
     try {
       const file = join(dir, 'my.dialogs.tsx')
       await writeFile(
@@ -71,7 +71,7 @@ function Bar() {
   })
 
   it('does not fire on .skeleton.tsx files', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-inline-subcomponent-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-inline-subcomponent-'))
     try {
       const file = join(dir, 'my.skeleton.tsx')
       await writeFile(

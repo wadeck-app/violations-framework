@@ -7,7 +7,7 @@ import { rule } from './no-french.js'
 
 describe('shared/no-french', () => {
   it('fires on accented characters', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-french-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-french-'))
     try {
       const file = join(dir, 'test.ts')
       // violations-suppress: shared/no-french intentional test
@@ -21,7 +21,7 @@ describe('shared/no-french', () => {
   })
 
   it('fires on built-in French words', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-french-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-french-'))
     try {
       const file = join(dir, 'test.ts')
       await writeFile(file, 'const x = "dans le code"\n')
@@ -34,7 +34,7 @@ describe('shared/no-french', () => {
   })
 
   it('fires on extra words from config', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-french-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-french-'))
     try {
       const file = join(dir, 'test.ts')
       // Word must be surrounded by whitespace for the word-boundary regex to match
@@ -47,7 +47,7 @@ describe('shared/no-french', () => {
   })
 
   it('does not fire on plain English code', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-french-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-french-'))
     try {
       const file = join(dir, 'test.ts')
       await writeFile(file, 'const msg = "hello world"\nexport function getValue(): string { return "test" }\n')

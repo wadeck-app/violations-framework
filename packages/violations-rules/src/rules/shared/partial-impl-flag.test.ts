@@ -8,7 +8,7 @@ import { rule } from './partial-impl-flag.js'
 // violations-suppress-start: shared/partial-impl-flag intentional - test file for this rule
 describe('shared/partial-impl-flag', () => {
   it('fires when PARTIAL IMPLEMENTATION appears after line 5', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'partial-impl-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-partial-impl-'))
     try {
       const file = join(dir, 'test.ts')
       const content = [
@@ -31,7 +31,7 @@ describe('shared/partial-impl-flag', () => {
   })
 
   it('only reports the first occurrence per file', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'partial-impl-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-partial-impl-'))
     try {
       const file = join(dir, 'test.ts')
       const content = [
@@ -50,7 +50,7 @@ describe('shared/partial-impl-flag', () => {
   })
 
   it('does not fire when marker is in lines 1-5 (grace zone)', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'partial-impl-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-partial-impl-'))
     try {
       const file = join(dir, 'test.ts')
       // Marker at line 2 (index 1) - inside grace zone
@@ -64,7 +64,7 @@ describe('shared/partial-impl-flag', () => {
   })
 
   it('does not fire on files without the marker', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'partial-impl-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-partial-impl-'))
     try {
       const file = join(dir, 'test.ts')
       await writeFile(file, 'export function complete() { return 42 }\n')

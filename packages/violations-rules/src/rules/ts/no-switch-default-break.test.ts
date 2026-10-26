@@ -7,7 +7,7 @@ import { rule } from './no-switch-default-break.js'
 
 describe('ts/no-switch-default-break', () => {
   it('fires on single-line default: break;', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-switch-default-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-switch-default-'))
     try {
       const file = join(dir, 'test.ts')
       await writeFile(file, 'switch (x) {\n  default: break;\n}\n')
@@ -20,7 +20,7 @@ describe('ts/no-switch-default-break', () => {
   })
 
   it('fires on multiline default: followed by break;', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-switch-default-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-switch-default-'))
     try {
       const file = join(dir, 'test.ts')
       await writeFile(file, 'switch (x) {\n  default:\n    break;\n}\n')
@@ -32,7 +32,7 @@ describe('ts/no-switch-default-break', () => {
   })
 
   it('does not fire when default throws', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-switch-default-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-switch-default-'))
     try {
       const file = join(dir, 'test.ts')
       await writeFile(file, "switch (x) {\n  default:\n    throw new Error('unknown')\n}\n")
@@ -44,7 +44,7 @@ describe('ts/no-switch-default-break', () => {
   })
 
   it('does not fire on comment lines containing default:', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-switch-default-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-switch-default-'))
     try {
       const file = join(dir, 'test.ts')
       await writeFile(file, '// default: break;\n')

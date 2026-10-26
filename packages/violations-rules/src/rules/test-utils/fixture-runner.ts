@@ -49,7 +49,7 @@ function runFixtureSuiteInDir(fixturesDir: string, rule: Rule<Record<string, unk
             return { line: parseInt(line.slice(0, colonIdx), 10), ruleId: line.slice(colonIdx + 1).trim() }
           })
 
-      const tmpRoot = mkdtempSync(join(tmpdir(), 'vtest-'))
+      const tmpRoot = mkdtempSync(join(tmpdir(), 'violations-vtest-'))
       const relDir = dirname(relToBase)
       const destDir = relDir === '.' ? tmpRoot : join(tmpRoot, relDir)
       mkdirSync(destDir, { recursive: true })

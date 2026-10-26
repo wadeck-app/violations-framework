@@ -7,7 +7,7 @@ import { rule } from './no-legacy-violations-folder.js'
 
 describe('violations-meta/no-legacy-violations-folder', () => {
   it('fires when scripts/violations/ directory exists', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-legacy-violations-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-legacy-violations-'))
     try {
       await mkdir(join(dir, 'scripts', 'violations'), { recursive: true })
       const violations = await rule.check([], { projectRoot: dir })
@@ -19,7 +19,7 @@ describe('violations-meta/no-legacy-violations-folder', () => {
   })
 
   it('does not fire when scripts/violations/ directory does not exist', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-legacy-violations-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-legacy-violations-'))
     try {
       const violations = await rule.check([], { projectRoot: dir })
       assert.equal(violations.length, 0)
@@ -29,7 +29,7 @@ describe('violations-meta/no-legacy-violations-folder', () => {
   })
 
   it('does not fire when only scripts/ exists but not scripts/violations/', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-legacy-violations-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-legacy-violations-'))
     try {
       await mkdir(join(dir, 'scripts'), { recursive: true })
       const violations = await rule.check([], { projectRoot: dir })

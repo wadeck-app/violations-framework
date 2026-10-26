@@ -7,7 +7,7 @@ import { rule } from './no-union-with-string.js'
 
 describe('ts/no-union-with-string', () => {
   it("fires on 'a' | 'b' | string", async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-union-string-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-union-string-'))
     try {
       const file = join(dir, 'test.ts')
       await writeFile(file, "type Foo = 'a' | 'b' | string\n")
@@ -20,7 +20,7 @@ describe('ts/no-union-with-string', () => {
   })
 
   it('fires on SomeType | string', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-union-string-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-union-string-'))
     try {
       const file = join(dir, 'test.ts')
       await writeFile(file, 'type Bar = SomeType | string\n')
@@ -32,7 +32,7 @@ describe('ts/no-union-with-string', () => {
   })
 
   it('does not fire on string[]', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-union-string-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-union-string-'))
     try {
       const file = join(dir, 'test.ts')
       await writeFile(file, 'type Arr = string[]\n')
@@ -44,7 +44,7 @@ describe('ts/no-union-with-string', () => {
   })
 
   it("does not fire on 'a' | 'b' without | string", async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-union-string-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-union-string-'))
     try {
       const file = join(dir, 'test.ts')
       await writeFile(file, "type Baz = 'a' | 'b'\n")

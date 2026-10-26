@@ -7,7 +7,7 @@ import { rule } from './no-cross-package-relative.js'
 
 describe('ts/no-cross-package-relative', () => {
   it('fires on cross-package relative import to dsl-renderer', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-cross-package-relative-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-cross-package-relative-'))
     try {
       const file = join(dir, 'test.ts')
       await writeFile(file, "import { Foo } from '../../dsl-renderer/src/Bar'\n")
@@ -21,7 +21,7 @@ describe('ts/no-cross-package-relative', () => {
   })
 
   it('fires on cross-package relative import to dsl-ui', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-cross-package-relative-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-cross-package-relative-'))
     try {
       const file = join(dir, 'test.ts')
       await writeFile(file, "import { Bar } from '../../../dsl-ui/src/components/Baz'\n")
@@ -34,7 +34,7 @@ describe('ts/no-cross-package-relative', () => {
   })
 
   it('does not fire on package alias import', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-cross-package-relative-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-cross-package-relative-'))
     try {
       const file = join(dir, 'test.ts')
       await writeFile(file, "import { Foo } from 'dsl-renderer'\n")
@@ -46,7 +46,7 @@ describe('ts/no-cross-package-relative', () => {
   })
 
   it('does not fire on local relative import', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-cross-package-relative-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-cross-package-relative-'))
     try {
       const file = join(dir, 'test.ts')
       await writeFile(file, "import { Foo } from './local'\n")

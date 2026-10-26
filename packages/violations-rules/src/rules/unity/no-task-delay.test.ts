@@ -10,7 +10,7 @@ describe('unity/no-task-delay', () => {
   runFixtureSuiteInline(rule, import.meta.url, 'no-task-delay')
 
   it('fires on extraBannedMethods', async () => {
-    const dir = mkdtempSync(join(tmpdir(), 'vtest-'))
+    const dir = mkdtempSync(join(tmpdir(), 'violations-vtest-'))
     try {
       const file = join(dir, 'Foo.cs')
       writeFileSync(file, 'DelayerHelper.Delay(500);\n')
@@ -22,7 +22,7 @@ describe('unity/no-task-delay', () => {
   })
 
   it('does not fire on extraBannedMethods when not in code', async () => {
-    const dir = mkdtempSync(join(tmpdir(), 'vtest-'))
+    const dir = mkdtempSync(join(tmpdir(), 'violations-vtest-'))
     try {
       const file = join(dir, 'Foo.cs')
       writeFileSync(file, 'SomeOtherHelper.DoStuff();\n')

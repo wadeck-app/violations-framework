@@ -7,7 +7,7 @@ import { rule } from './no-err-message-direct.js'
 
 describe('ts/no-err-message-direct', () => {
   it('fires on err.message in catch block', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-err-message-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-err-message-'))
     try {
       const file = join(dir, 'test.ts')
       await writeFile(file, 'catch (err) { console.log(err.message) }\n')
@@ -21,7 +21,7 @@ describe('ts/no-err-message-direct', () => {
   })
 
   it('does not fire on comment lines containing err.message', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-err-message-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-err-message-'))
     try {
       const file = join(dir, 'test.ts')
       await writeFile(file, '// err.message is forbidden here\n')
@@ -33,7 +33,7 @@ describe('ts/no-err-message-direct', () => {
   })
 
   it('does not fire on files ending with utils/errors.ts', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-err-message-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-err-message-'))
     try {
       const { mkdir } = await import('node:fs/promises')
       await mkdir(join(dir, 'utils'), { recursive: true })
@@ -47,7 +47,7 @@ describe('ts/no-err-message-direct', () => {
   })
 
   it('does not fire on files ending with src/errors.ts', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-err-message-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-err-message-'))
     try {
       const { mkdir } = await import('node:fs/promises')
       await mkdir(join(dir, 'src'), { recursive: true })

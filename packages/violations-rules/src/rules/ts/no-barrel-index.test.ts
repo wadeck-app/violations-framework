@@ -7,7 +7,7 @@ import { rule } from './no-barrel-index.js'
 
 describe('ts/no-barrel-index', () => {
   it('fires on a file named index.ts', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-barrel-index-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-barrel-index-'))
     try {
       const file = join(dir, 'index.ts')
       await writeFile(file, "export { Foo } from './Foo'\n")
@@ -21,7 +21,7 @@ describe('ts/no-barrel-index', () => {
   })
 
   it('fires on a file named index.tsx', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-barrel-index-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-barrel-index-'))
     try {
       const file = join(dir, 'index.tsx')
       await writeFile(file, "export { Foo } from './Foo'\n")
@@ -33,7 +33,7 @@ describe('ts/no-barrel-index', () => {
   })
 
   it('does not fire on myComponent.ts', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-barrel-index-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-barrel-index-'))
     try {
       const file = join(dir, 'myComponent.ts')
       await writeFile(file, 'export const x = 1\n')
@@ -45,7 +45,7 @@ describe('ts/no-barrel-index', () => {
   })
 
   it('does not fire on indexHelper.ts', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-barrel-index-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-barrel-index-'))
     try {
       const file = join(dir, 'indexHelper.ts')
       await writeFile(file, 'export const x = 1\n')

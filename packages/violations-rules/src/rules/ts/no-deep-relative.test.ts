@@ -7,7 +7,7 @@ import { rule } from './no-deep-relative.js'
 
 describe('ts/no-deep-relative', () => {
   it('flags two-level relative imports', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-deep-relative-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-deep-relative-'))
     try {
       const file = join(dir, 'test.ts')
       await writeFile(file, `import { foo } from '../../utils/foo'\n`)
@@ -21,7 +21,7 @@ describe('ts/no-deep-relative', () => {
   })
 
   it('flags three-level relative imports', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-deep-relative-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-deep-relative-'))
     try {
       const file = join(dir, 'test.ts')
       await writeFile(file, `import { foo } from '../../../utils/foo'\n`)
@@ -33,7 +33,7 @@ describe('ts/no-deep-relative', () => {
   })
 
   it('flags export statement with deep relative', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-deep-relative-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-deep-relative-'))
     try {
       const file = join(dir, 'test.ts')
       await writeFile(file, `export { bar } from '../../lib/bar'\n`)
@@ -45,7 +45,7 @@ describe('ts/no-deep-relative', () => {
   })
 
   it('allows single-level relative imports', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-deep-relative-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-deep-relative-'))
     try {
       const file = join(dir, 'test.ts')
       await writeFile(file, `import { foo } from '../foo'\n`)
@@ -57,7 +57,7 @@ describe('ts/no-deep-relative', () => {
   })
 
   it('allows path alias imports', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-deep-relative-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-deep-relative-'))
     try {
       const file = join(dir, 'test.ts')
       await writeFile(file, `import { foo } from '@/utils/foo'\n`)

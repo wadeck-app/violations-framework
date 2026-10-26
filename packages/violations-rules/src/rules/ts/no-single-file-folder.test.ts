@@ -7,7 +7,7 @@ import { rule } from './no-single-file-folder.js'
 
 describe('ts/no-single-file-folder', () => {
   it('fires when a non-exempt directory has exactly 1 .ts source file', async () => {
-    const base = await mkdtemp(join(tmpdir(), 'no-single-file-folder-'))
+    const base = await mkdtemp(join(tmpdir(), 'violations-no-single-file-folder-'))
     try {
       const dir = join(base, 'myFeature')
       await mkdir(dir)
@@ -24,7 +24,7 @@ describe('ts/no-single-file-folder', () => {
   })
 
   it('does not fire when a directory has multiple source files', async () => {
-    const base = await mkdtemp(join(tmpdir(), 'no-single-file-folder-'))
+    const base = await mkdtemp(join(tmpdir(), 'violations-no-single-file-folder-'))
     try {
       const dir = join(base, 'myFeature')
       await mkdir(dir)
@@ -40,7 +40,7 @@ describe('ts/no-single-file-folder', () => {
   })
 
   it('does not fire when directory name is src', async () => {
-    const base = await mkdtemp(join(tmpdir(), 'no-single-file-folder-'))
+    const base = await mkdtemp(join(tmpdir(), 'violations-no-single-file-folder-'))
     try {
       const dir = join(base, 'src')
       await mkdir(dir)
@@ -54,7 +54,7 @@ describe('ts/no-single-file-folder', () => {
   })
 
   it('does not fire for generated/ by default', async () => {
-    const base = await mkdtemp(join(tmpdir(), 'no-single-file-folder-'))
+    const base = await mkdtemp(join(tmpdir(), 'violations-no-single-file-folder-'))
     try {
       const dir = join(base, 'generated')
       await mkdir(dir)
@@ -68,7 +68,7 @@ describe('ts/no-single-file-folder', () => {
   })
 
   it('does not fire when directory name is in exemptNames', async () => {
-    const base = await mkdtemp(join(tmpdir(), 'no-single-file-folder-'))
+    const base = await mkdtemp(join(tmpdir(), 'violations-no-single-file-folder-'))
     try {
       const dir = join(base, 'components')
       await mkdir(dir)
@@ -82,7 +82,7 @@ describe('ts/no-single-file-folder', () => {
   })
 
   it('does not fire when directory has subdirectories', async () => {
-    const base = await mkdtemp(join(tmpdir(), 'no-single-file-folder-'))
+    const base = await mkdtemp(join(tmpdir(), 'violations-no-single-file-folder-'))
     try {
       const dir = join(base, 'myFeature')
       const subdir = join(dir, 'sub')

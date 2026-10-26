@@ -7,7 +7,7 @@ import { rule } from './no-button-classname-style-override.js'
 
 describe('tailwind/no-button-classname-style-override', () => {
   it('fires when <Button> has className with text-* style token', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-btn-cn-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-btn-cn-'))
     try {
       const file = join(dir, 'Form.tsx')
       await writeFile(file, '<Button className="text-red-500 font-bold">Submit</Button>\n')
@@ -21,7 +21,7 @@ describe('tailwind/no-button-classname-style-override', () => {
   })
 
   it('fires when <Button> has className with bg-* style token', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-btn-cn-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-btn-cn-'))
     try {
       const file = join(dir, 'Form.tsx')
       await writeFile(file, '<Button className="bg-blue-500">Submit</Button>\n')
@@ -33,7 +33,7 @@ describe('tailwind/no-button-classname-style-override', () => {
   })
 
   it('fires when <Button> has className with px-N token', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-btn-cn-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-btn-cn-'))
     try {
       const file = join(dir, 'Form.tsx')
       await writeFile(file, '<Button className="px-4 py-2">Submit</Button>\n')
@@ -45,7 +45,7 @@ describe('tailwind/no-button-classname-style-override', () => {
   })
 
   it('does not fire when <Button> className contains only layout tokens (shrink-0, w-full)', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-btn-cn-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-btn-cn-'))
     try {
       const file = join(dir, 'Form.tsx')
       await writeFile(file, '<Button className="shrink-0 w-full ml-auto">Submit</Button>\n')
@@ -57,7 +57,7 @@ describe('tailwind/no-button-classname-style-override', () => {
   })
 
   it('does not fire when <Button> uses dynamic className expression', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-btn-cn-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-btn-cn-'))
     try {
       const file = join(dir, 'Form.tsx')
       await writeFile(file, '<Button className={btnClass}>Submit</Button>\n')
@@ -69,7 +69,7 @@ describe('tailwind/no-button-classname-style-override', () => {
   })
 
   it('does not fire when there is no <Button> in the file', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-btn-cn-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-btn-cn-'))
     try {
       const file = join(dir, 'Form.tsx')
       await writeFile(file, '<div className="text-red-500">text</div>\n')

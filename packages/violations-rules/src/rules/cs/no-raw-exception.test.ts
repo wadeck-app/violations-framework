@@ -10,7 +10,7 @@ describe('cs/no-raw-exception', () => {
   runFixtureSuiteInline(rule, import.meta.url, 'no-raw-exception')
 
   it('fires with custom bannedTypes config', async () => {
-    const dir = mkdtempSync(join(tmpdir(), 'vtest-'))
+    const dir = mkdtempSync(join(tmpdir(), 'violations-vtest-'))
     try {
       const file = join(dir, 'Foo.cs')
       writeFileSync(file, 'throw new MyException("oops");\n')

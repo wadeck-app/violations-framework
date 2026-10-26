@@ -7,7 +7,7 @@ import { rule } from './publishconfig-missing-access-public.js'
 
 describe('cli/publishconfig-missing-access-public', () => {
   it('fires on scoped package with publishConfig but no access:public', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'pkg-test-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-pkg-test-'))
     try {
       const file = join(dir, 'package.json')
       await writeFile(file, JSON.stringify({
@@ -24,7 +24,7 @@ describe('cli/publishconfig-missing-access-public', () => {
   })
 
   it('does not fire when access:public is present', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'pkg-test-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-pkg-test-'))
     try {
       const file = join(dir, 'package.json')
       await writeFile(file, JSON.stringify({
@@ -43,7 +43,7 @@ describe('cli/publishconfig-missing-access-public', () => {
   })
 
   it('does not fire on unscoped package', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'pkg-test-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-pkg-test-'))
     try {
       const file = join(dir, 'package.json')
       await writeFile(file, JSON.stringify({
@@ -59,7 +59,7 @@ describe('cli/publishconfig-missing-access-public', () => {
   })
 
   it('does not fire when no publishConfig', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'pkg-test-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-pkg-test-'))
     try {
       const file = join(dir, 'package.json')
       await writeFile(file, JSON.stringify({

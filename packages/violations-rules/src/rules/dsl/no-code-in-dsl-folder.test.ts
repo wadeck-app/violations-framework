@@ -7,7 +7,7 @@ import { rule } from './no-code-in-dsl-folder.js'
 
 describe('dsl/no-code-in-dsl-folder', () => {
   async function withFiles(rels: string[]): Promise<[string[], () => Promise<void>]> {
-    const dir = await mkdtemp(join(tmpdir(), 'no-code-in-dsl-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-code-in-dsl-'))
     const files: string[] = []
     for (const rel of rels) {
       const file = join(dir, 'packages', 'orch-app', 'src', 'dsl', rel)

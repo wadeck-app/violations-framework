@@ -16,7 +16,7 @@ async function setupWorkspace(root: string) {
 
 describe('shared/no-workspace-shadow', () => {
   it('fires when a workspace package is shadowed by a real directory in node_modules', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'ws-shadow-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-ws-shadow-'))
     try {
       const rootPkg = await setupWorkspace(dir)
       const shadowDir = join(dir, 'packages', 'pkg-b', 'node_modules', 'pkg-a')
@@ -34,7 +34,7 @@ describe('shared/no-workspace-shadow', () => {
   })
 
   it('does not fire when the node_modules entry is a symlink (legitimate workspace link)', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'ws-shadow-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-ws-shadow-'))
     try {
       const rootPkg = await setupWorkspace(dir)
       const nmDir = join(dir, 'packages', 'pkg-b', 'node_modules')
@@ -58,7 +58,7 @@ describe('shared/no-workspace-shadow', () => {
   })
 
   it('does not fire when no shadow exists', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'ws-shadow-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-ws-shadow-'))
     try {
       const rootPkg = await setupWorkspace(dir)
       const violations = await rule.check([rootPkg], {})
@@ -69,7 +69,7 @@ describe('shared/no-workspace-shadow', () => {
   })
 
   it('skips non-workspace package.json files silently', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'ws-shadow-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-ws-shadow-'))
     try {
       const pkgFile = join(dir, 'package.json')
       await writeFile(pkgFile, JSON.stringify({ name: 'just-a-lib', version: '1.0.0' }))

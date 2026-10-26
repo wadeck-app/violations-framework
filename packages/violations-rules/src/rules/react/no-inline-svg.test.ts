@@ -7,7 +7,7 @@ import { rule } from './no-inline-svg.js'
 
 describe('react/no-inline-svg', () => {
   it('fires on <svg in a non-atomic file', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-inline-svg-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-inline-svg-'))
     try {
       const file = join(dir, 'Icon.tsx')
       await writeFile(file, 'export function Icon() {\n  return <svg viewBox="0 0 16 16" />\n}\n')
@@ -21,7 +21,7 @@ describe('react/no-inline-svg', () => {
   })
 
   it('does not fire in an atomic file', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-inline-svg-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-inline-svg-'))
     try {
       const file = join(dir, 'SvgIcon.tsx')
       await writeFile(
@@ -36,7 +36,7 @@ describe('react/no-inline-svg', () => {
   })
 
   it('does not fire in a display/Chart.tsx file', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-inline-svg-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-inline-svg-'))
     try {
       const displayDir = join(dir, 'display')
       await mkdir(displayDir)
@@ -50,7 +50,7 @@ describe('react/no-inline-svg', () => {
   })
 
   it('does not fire when no <svg in file', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-inline-svg-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-inline-svg-'))
     try {
       const file = join(dir, 'Card.tsx')
       await writeFile(file, 'export function Card() {\n  return <div />\n}\n')

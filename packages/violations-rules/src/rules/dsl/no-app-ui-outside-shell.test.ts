@@ -7,7 +7,7 @@ import { rule } from './no-app-ui-outside-shell.js'
 
 describe('dsl/no-app-ui-outside-shell', () => {
   async function withAppFile(relPath: string, content: string): Promise<[string, () => Promise<void>]> {
-    const dir = await mkdtemp(join(tmpdir(), 'no-app-ui-outside-shell-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-app-ui-outside-shell-'))
     const file = join(dir, 'packages', 'orch-app', 'src', relPath)
     await mkdir(join(file, '..'), { recursive: true })
     await writeFile(file, content)
@@ -113,7 +113,7 @@ describe('dsl/no-app-ui-outside-shell', () => {
   })
 
   it('ignores files outside any *-app package', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-app-ui-outside-shell-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-app-ui-outside-shell-'))
     const file = join(dir, 'packages', 'dsl-ui', 'src', 'components', 'NavBadge.tsx')
     await mkdir(join(file, '..'), { recursive: true })
     await writeFile(file, "export function NavBadge() { return null; }")

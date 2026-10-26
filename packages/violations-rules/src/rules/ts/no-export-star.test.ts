@@ -7,7 +7,7 @@ import { rule } from './no-export-star.js'
 
 describe('ts/no-export-star', () => {
   it('fires on export * from', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-export-star-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-export-star-'))
     try {
       const file = join(dir, 'test.ts')
       await writeFile(file, "export * from './other'\n")
@@ -21,7 +21,7 @@ describe('ts/no-export-star', () => {
   })
 
   it('does not fire on named exports', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-export-star-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-export-star-'))
     try {
       const file = join(dir, 'test.ts')
       await writeFile(file, "export { Foo } from './other'\n")

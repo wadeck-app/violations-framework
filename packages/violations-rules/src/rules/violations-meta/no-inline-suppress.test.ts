@@ -7,7 +7,7 @@ import { rule } from './no-inline-suppress.js'
 
 describe('violations-meta/no-inline-suppress', () => {
   async function withFile(name: string, content: string): Promise<[string, () => Promise<void>]> {
-    const dir = await mkdtemp(join(tmpdir(), 'no-inline-suppress-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-inline-suppress-'))
     const file = join(dir, name)
     await writeFile(file, content)
     return [file, () => rm(dir, { recursive: true })]

@@ -6,7 +6,7 @@ import { tmpdir } from 'node:os'
 import { rule } from './no-emoji.js'
 
 async function withTmp(name: string, fn: (dir: string) => Promise<void>): Promise<void> {
-  const dir = await mkdtemp(join(tmpdir(), `no-emoji-${name}-`))
+  const dir = await mkdtemp(join(tmpdir(), `violations-no-emoji-${name}-`))
   try { await fn(dir) } finally { await rm(dir, { recursive: true }) }
 }
 

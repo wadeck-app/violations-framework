@@ -7,7 +7,7 @@ import { rule } from './updater-strategy-missing-windows-hide.js'
 
 describe('cli/updater-strategy-missing-windows-hide', () => {
   it('fires on Go file that spawns npm via exec.Command without suppression', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'go-update-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-go-update-'))
     try {
       const file = join(dir, 'update.go')
       await writeFile(file, `
@@ -27,7 +27,7 @@ func spawnUpdate() {
   })
 
   it('does not fire when spawnUpdateAndExit helper is present nearby', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'go-update-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-go-update-'))
     try {
       const file = join(dir, 'update.go')
       await writeFile(file, `
@@ -48,7 +48,7 @@ func spawnUpdate() {
   })
 
   it('does not fire on Go file with no npm usage', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'go-update-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-go-update-'))
     try {
       const file = join(dir, 'launcher.go')
       await writeFile(file, `

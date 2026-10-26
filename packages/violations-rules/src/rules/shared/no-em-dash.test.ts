@@ -7,7 +7,7 @@ import { rule } from './no-em-dash.js'
 
 describe('shared/no-em-dash', () => {
   it('fires on a file containing an em-dash (U+2014)', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-em-dash-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-em-dash-'))
     try {
       const file = join(dir, 'test.ts')
       // violations-suppress: shared/no-em-dash intentional test fixture
@@ -22,7 +22,7 @@ describe('shared/no-em-dash', () => {
   })
 
   it('fires on a file containing an en-dash (U+2013)', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-em-dash-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-em-dash-'))
     try {
       const file = join(dir, 'test.ts')
       // violations-suppress: shared/no-em-dash intentional test fixture
@@ -35,7 +35,7 @@ describe('shared/no-em-dash', () => {
   })
 
   it('fires on the correct line number', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-em-dash-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-em-dash-'))
     try {
       const file = join(dir, 'test.ts')
       // violations-suppress: shared/no-em-dash intentional test fixture
@@ -49,7 +49,7 @@ describe('shared/no-em-dash', () => {
   })
 
   it('fires on a file containing a middle-dot (U+00B7)', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-em-dash-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-em-dash-'))
     try {
       const file = join(dir, 'test.tsx')
       // violations-suppress: shared/no-em-dash intentional test fixture
@@ -64,7 +64,7 @@ describe('shared/no-em-dash', () => {
   })
 
   it('fires on a file containing a hyphenation-point (U+2027)', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-em-dash-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-em-dash-'))
     try {
       const file = join(dir, 'test.ts')
       // violations-suppress: shared/no-em-dash intentional test fixture
@@ -77,7 +77,7 @@ describe('shared/no-em-dash', () => {
   })
 
   it('fires on a file containing a bullet (U+2022)', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-em-dash-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-em-dash-'))
     try {
       const file = join(dir, 'test.tsx')
       // violations-suppress: shared/no-em-dash intentional test fixture
@@ -90,7 +90,7 @@ describe('shared/no-em-dash', () => {
   })
 
   it('fires on a file containing a triangular bullet (U+2023)', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-em-dash-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-em-dash-'))
     try {
       const file = join(dir, 'test.tsx')
       // violations-suppress: shared/no-em-dash intentional test fixture
@@ -103,7 +103,7 @@ describe('shared/no-em-dash', () => {
   })
 
   it('fires on a file containing a single angle quote (U+203A)', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-em-dash-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-em-dash-'))
     try {
       const file = join(dir, 'test.tsx')
       // violations-suppress: shared/no-em-dash intentional test fixture
@@ -116,7 +116,7 @@ describe('shared/no-em-dash', () => {
   })
 
   it('fires on a file containing a double angle quote (U+00BB)', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-em-dash-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-em-dash-'))
     try {
       const file = join(dir, 'test.tsx')
       // violations-suppress: shared/no-em-dash intentional test fixture
@@ -129,7 +129,7 @@ describe('shared/no-em-dash', () => {
   })
 
   it('fires on a file containing an ellipsis (U+2026)', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-em-dash-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-em-dash-'))
     try {
       const file = join(dir, 'test.tsx')
       // violations-suppress: shared/no-em-dash intentional test fixture
@@ -142,7 +142,7 @@ describe('shared/no-em-dash', () => {
   })
 
   it('does not fire on a file with only plain hyphens', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-em-dash-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-em-dash-'))
     try {
       const file = join(dir, 'test.ts')
       await writeFile(file, 'const x = "hello-world"\n')

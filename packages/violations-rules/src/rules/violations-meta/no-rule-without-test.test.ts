@@ -7,7 +7,7 @@ import { rule } from './no-rule-without-test.js'
 
 describe('violations-meta/no-rule-without-test', () => {
   it('fires when a rule file has no corresponding test file', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-rule-without-test-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-rule-without-test-'))
     try {
       const ruleFile = join(dir, 'my-rule.ts')
       await writeFile(ruleFile, 'export const rule = {}')
@@ -21,7 +21,7 @@ describe('violations-meta/no-rule-without-test', () => {
   })
 
   it('does not fire when a .test.ts file exists alongside the rule', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-rule-without-test-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-rule-without-test-'))
     try {
       const ruleFile = join(dir, 'my-rule.ts')
       const testFile = join(dir, 'my-rule.test.ts')
@@ -35,7 +35,7 @@ describe('violations-meta/no-rule-without-test', () => {
   })
 
   it('does not fire when a .test.js file exists alongside the rule', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-rule-without-test-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-rule-without-test-'))
     try {
       const ruleFile = join(dir, 'my-rule.ts')
       const testFile = join(dir, 'my-rule.test.js')
@@ -49,7 +49,7 @@ describe('violations-meta/no-rule-without-test', () => {
   })
 
   it('skips .test.ts files themselves', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-rule-without-test-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-rule-without-test-'))
     try {
       const testFile = join(dir, 'my-rule.test.ts')
       await writeFile(testFile, '// test')

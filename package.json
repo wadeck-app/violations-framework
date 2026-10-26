@@ -5,7 +5,8 @@
   "workspaces": ["packages/*"],
   "scripts": {
     "build": "npm run build --workspace packages/violations-rules && npm run build --workspace packages/violations-cli",
-    "test": "npm run test --workspaces --if-present"
+    "test": "node scripts/test-with-tmp-cleanup.mjs",
+    "test:workspaces": "npm run test --workspaces --if-present"
   },
   "engines": { "node": ">=18" }
 }

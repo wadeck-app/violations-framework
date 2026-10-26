@@ -6,7 +6,7 @@ import { tmpdir } from 'node:os'
 import { rule } from './node-builtin-prefix.js'
 
 async function withFile(content: string, fn: (path: string) => Promise<void>): Promise<void> {
-  const dir = await mkdtemp(join(tmpdir(), 'node-builtin-prefix-'))
+  const dir = await mkdtemp(join(tmpdir(), 'violations-node-builtin-prefix-'))
   const file = join(dir, 'test.ts')
   try {
     await writeFile(file, content, 'utf8')

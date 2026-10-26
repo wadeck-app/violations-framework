@@ -7,7 +7,7 @@ import { rule } from './no-context-in-renderer.js'
 
 describe('react/no-context-in-renderer', () => {
   it('fires when createContext() appears in a file (no restriction)', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-context-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-context-'))
     try {
       const file = join(dir, 'renderer.ts')
       await writeFile(file, 'import { createContext } from "react"\nconst ctx = createContext(null)\n')
@@ -21,7 +21,7 @@ describe('react/no-context-in-renderer', () => {
   })
 
   it('does not fire when createContext() is in a // comment line', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-context-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-context-'))
     try {
       const file = join(dir, 'renderer.ts')
       await writeFile(file, '// createContext() is forbidden here\nexport const x = 1\n')
@@ -33,7 +33,7 @@ describe('react/no-context-in-renderer', () => {
   })
 
   it('does not fire on an inline comment after code on the same line', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-context-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-context-'))
     try {
       const file = join(dir, 'renderer.ts')
       await writeFile(file, 'export const x = 1 // createContext() is forbidden\n')
@@ -46,7 +46,7 @@ describe('react/no-context-in-renderer', () => {
 
   // violations-suppress: shared/no-em-dash intentional test fixture
   it('respects restrictToPackages - skips files not under the restricted path', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-context-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-context-'))
     try {
       const file = join(dir, 'other.ts')
       await writeFile(file, 'const ctx = createContext(null)\n')
@@ -59,7 +59,7 @@ describe('react/no-context-in-renderer', () => {
 
   // violations-suppress: shared/no-em-dash intentional test fixture
   it('respects restrictToPackages - fires for files under the restricted path', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-context-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-context-'))
     try {
       // Simulate a path that contains 'packages/dsl-renderer'
       const subdir = join(dir, 'packages', 'dsl-renderer')

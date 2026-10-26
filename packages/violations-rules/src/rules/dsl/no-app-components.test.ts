@@ -7,7 +7,7 @@ import { rule } from './no-app-components.js'
 
 describe('dsl/no-app-components', () => {
   async function withAppComponent(name: string): Promise<[string, () => Promise<void>]> {
-    const dir = await mkdtemp(join(tmpdir(), 'no-app-components-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-app-components-'))
     const compDir = join(dir, 'packages', 'orch-app', 'src', 'components')
     await mkdir(compDir, { recursive: true })
     const file = join(compDir, name)
@@ -39,7 +39,7 @@ describe('dsl/no-app-components', () => {
   })
 
   it('flags multiple files - one violation per file', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-app-components-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-app-components-'))
     try {
       const compDir = join(dir, 'packages', 'orch-app', 'src', 'components')
       await mkdir(compDir, { recursive: true })

@@ -7,7 +7,7 @@ import { rule } from './no-raw-color-class.js'
 
 describe('tailwind/no-raw-color-class', () => {
   it('fires on bg-gray-100 in a non-atomic file', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-raw-color-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-raw-color-'))
     try {
       const file = join(dir, 'Card.tsx')
       await writeFile(file, 'export function Card() {\n  return <div className="bg-gray-100" />\n}\n')
@@ -21,7 +21,7 @@ describe('tailwind/no-raw-color-class', () => {
   })
 
   it('fires on text-green-700', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-raw-color-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-raw-color-'))
     try {
       const file = join(dir, 'Card.tsx')
       await writeFile(file, '<span className="text-green-700">ok</span>\n')
@@ -33,7 +33,7 @@ describe('tailwind/no-raw-color-class', () => {
   })
 
   it('fires on border-blue-500', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-raw-color-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-raw-color-'))
     try {
       const file = join(dir, 'Box.tsx')
       await writeFile(file, '<div className="border-blue-500" />\n')
@@ -45,7 +45,7 @@ describe('tailwind/no-raw-color-class', () => {
   })
 
   it('does not fire on semantic tokens (bg-surface, text-muted)', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-raw-color-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-raw-color-'))
     try {
       const file = join(dir, 'Card.tsx')
       await writeFile(file, '<div className="bg-surface text-muted border-danger" />\n')
@@ -57,7 +57,7 @@ describe('tailwind/no-raw-color-class', () => {
   })
 
   it('does not fire in an atomic file', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-raw-color-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-raw-color-'))
     try {
       const file = join(dir, 'Badge.tsx')
       await writeFile(
@@ -72,7 +72,7 @@ describe('tailwind/no-raw-color-class', () => {
   })
 
   it('does not fire on flex, w-full, p-4 (layout classes)', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-raw-color-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-raw-color-'))
     try {
       const file = join(dir, 'Layout.tsx')
       await writeFile(file, '<div className="flex w-full p-4 gap-2" />\n')

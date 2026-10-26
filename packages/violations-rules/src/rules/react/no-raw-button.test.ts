@@ -7,7 +7,7 @@ import { rule } from './no-raw-button.js'
 
 describe('react/no-raw-button', () => {
   it('fires when a non-atomic file contains <button', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-raw-button-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-raw-button-'))
     try {
       const file = join(dir, 'Foo.tsx')
       await writeFile(file, 'export function Foo() {\n  return <button>click</button>\n}\n')
@@ -21,7 +21,7 @@ describe('react/no-raw-button', () => {
   })
 
   it('does not fire when the file is tagged @registryCategory atomic', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-raw-button-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-raw-button-'))
     try {
       const file = join(dir, 'Button.tsx')
       await writeFile(
@@ -36,7 +36,7 @@ describe('react/no-raw-button', () => {
   })
 
   it('does not fire when there is no <button in the file', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-raw-button-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-raw-button-'))
     try {
       const file = join(dir, 'Card.tsx')
       await writeFile(file, 'export function Card() {\n  return <div>content</div>\n}\n')

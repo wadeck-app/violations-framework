@@ -6,15 +6,17 @@ import { dirname, join } from 'node:path'
 import { rule } from './no-off-outside-tests.js'
 
 describe('queue-sdk/no-off-outside-tests', () => {
-  let dir: string | undefined
+  // run() can be called several times in one test: track every directory, not only the last.
+  const dirs: string[] = []
   afterEach(() => {
-    if (dir !== undefined) {
-      rmSync(dir, { recursive: true, force: true })
+    for (const d of dirs.splice(0)) {
+      rmSync(d, { recursive: true, force: true })
     }
   })
 
   async function run(files: Record<string, string>) {
-    dir = mkdtempSync(join(tmpdir(), 'queue-sdk-off-'))
+    const dir = mkdtempSync(join(tmpdir(), 'violations-queue-sdk-off-'))
+    dirs.push(dir)
     const paths: string[] = []
     for (const [name, content] of Object.entries(files)) {
       const path = join(dir, name)

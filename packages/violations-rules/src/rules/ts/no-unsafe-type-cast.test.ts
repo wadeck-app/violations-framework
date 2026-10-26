@@ -7,7 +7,7 @@ import { rule } from './no-unsafe-type-cast.js'
 
 describe('ts/no-unsafe-type-cast', () => {
   it('fires on cast to unknown', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-unsafe-type-cast-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-unsafe-type-cast-'))
     try {
       const file = join(dir, 'test.ts')
       await writeFile(file, 'const x = foo as unknown;\n')
@@ -21,7 +21,7 @@ describe('ts/no-unsafe-type-cast', () => {
   })
 
   it('fires on cast to any', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-unsafe-type-cast-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-unsafe-type-cast-'))
     try {
       const file = join(dir, 'test.ts')
       await writeFile(file, 'const x = foo as any\n')
@@ -33,7 +33,7 @@ describe('ts/no-unsafe-type-cast', () => {
   })
 
   it('fires on cast to Record<string, unknown>', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-unsafe-type-cast-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-unsafe-type-cast-'))
     try {
       const file = join(dir, 'test.ts')
       await writeFile(file, 'return foo as Record<string, unknown>\n')
@@ -45,7 +45,7 @@ describe('ts/no-unsafe-type-cast', () => {
   })
 
   it('does not fire on cast to string', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-unsafe-type-cast-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-unsafe-type-cast-'))
     try {
       const file = join(dir, 'test.ts')
       await writeFile(file, 'const x = foo as string\n')
@@ -57,7 +57,7 @@ describe('ts/no-unsafe-type-cast', () => {
   })
 
   it('does not fire on type annotation without as', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-unsafe-type-cast-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-unsafe-type-cast-'))
     try {
       const file = join(dir, 'test.ts')
       await writeFile(file, 'const x: unknown = foo\n')

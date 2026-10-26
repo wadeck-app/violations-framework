@@ -9,7 +9,7 @@ const LONG_CLASS = 'flex items-center justify-between gap-4 px-4 py-2 rounded-lg
 
 describe('tailwind/no-inline-classname', () => {
   it('fires when className string exceeds default 80 chars', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-inline-cn-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-inline-cn-'))
     try {
       const file = join(dir, 'Card.tsx')
       await writeFile(file, `<div className="${LONG_CLASS}" />\n`)
@@ -23,7 +23,7 @@ describe('tailwind/no-inline-classname', () => {
   })
 
   it('does not fire when className string is within default 80 chars', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-inline-cn-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-inline-cn-'))
     try {
       const file = join(dir, 'Card.tsx')
       await writeFile(file, '<div className="flex items-center gap-2" />\n')
@@ -35,7 +35,7 @@ describe('tailwind/no-inline-classname', () => {
   })
 
   it('respects custom maxChars config', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-inline-cn-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-inline-cn-'))
     try {
       const file = join(dir, 'Card.tsx')
       // 30+ char class that is under 80 but over 20
@@ -48,7 +48,7 @@ describe('tailwind/no-inline-classname', () => {
   })
 
   it('does not fire on const declarations (the extraction target)', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-inline-cn-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-inline-cn-'))
     try {
       const file = join(dir, 'Card.tsx')
       await writeFile(file, `const cardClass = "${LONG_CLASS}"\n`)
@@ -60,7 +60,7 @@ describe('tailwind/no-inline-classname', () => {
   })
 
   it('does not fire on dynamic className (template literal)', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-inline-cn-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-inline-cn-'))
     try {
       const file = join(dir, 'Card.tsx')
       await writeFile(file, 'const x = `className="${LONG_CLASS} ${extra}"`\n')

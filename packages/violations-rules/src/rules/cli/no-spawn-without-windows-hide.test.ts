@@ -7,7 +7,7 @@ import { rule } from './no-spawn-without-windows-hide.js'
 
 describe('cli/no-spawn-without-windows-hide', () => {
   async function withFile(name: string, content: string): Promise<[string, () => Promise<void>]> {
-    const dir = await mkdtemp(join(tmpdir(), 'spawn-wh-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-spawn-wh-'))
     const file = join(dir, name)
     await writeFile(file, content)
     return [file, () => rm(dir, { recursive: true })]

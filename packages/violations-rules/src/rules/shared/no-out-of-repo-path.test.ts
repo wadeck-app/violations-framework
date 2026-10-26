@@ -7,7 +7,7 @@ import { rule } from './no-out-of-repo-path.js'
 
 describe('shared/no-out-of-repo-path', () => {
   it('fires on os.homedir() usage', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-out-of-repo-path-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-out-of-repo-path-'))
     try {
       const file = join(dir, 'test.ts')
       await writeFile(file, 'const home = os.homedir()\n')
@@ -21,7 +21,7 @@ describe('shared/no-out-of-repo-path', () => {
   })
 
   it('fires on os.homedir() at the correct line', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-out-of-repo-path-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-out-of-repo-path-'))
     try {
       const file = join(dir, 'test.ts')
       await writeFile(file, 'const a = 1\nconst b = 2\nconst home = os.homedir()\n')
@@ -34,7 +34,7 @@ describe('shared/no-out-of-repo-path', () => {
   })
 
   it('fires on process.env.HOME usage', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-out-of-repo-path-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-out-of-repo-path-'))
     try {
       const file = join(dir, 'test.ts')
       await writeFile(file, 'const h = process.env.HOME\n')
@@ -47,7 +47,7 @@ describe('shared/no-out-of-repo-path', () => {
   })
 
   it('fires on process.env.USERPROFILE usage', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-out-of-repo-path-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-out-of-repo-path-'))
     try {
       const file = join(dir, 'test.ts')
       await writeFile(file, 'const h = process.env.USERPROFILE\n')
@@ -60,7 +60,7 @@ describe('shared/no-out-of-repo-path', () => {
   })
 
   it('fires on hardcoded Windows path with backslash', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-out-of-repo-path-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-out-of-repo-path-'))
     try {
       const file = join(dir, 'test.ts')
       await writeFile(file, 'const p = "C:\\\\Workspace_Tooling\\\\foo"\n')
@@ -73,7 +73,7 @@ describe('shared/no-out-of-repo-path', () => {
   })
 
   it('fires on hardcoded Windows path with forward slash', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-out-of-repo-path-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-out-of-repo-path-'))
     try {
       const file = join(dir, 'test.ts')
       await writeFile(file, 'const p = "C:/Workspace_Other/"\n')
@@ -86,7 +86,7 @@ describe('shared/no-out-of-repo-path', () => {
   })
 
   it('does not fire on process.env.MY_CUSTOM_PATH', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-out-of-repo-path-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-out-of-repo-path-'))
     try {
       const file = join(dir, 'test.ts')
       await writeFile(file, 'const p = process.env.MY_CUSTOM_PATH\n')
@@ -98,7 +98,7 @@ describe('shared/no-out-of-repo-path', () => {
   })
 
   it('does not fire on __dirname usage', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-out-of-repo-path-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-out-of-repo-path-'))
     try {
       const file = join(dir, 'test.ts')
       await writeFile(file, 'const p = path.join(__dirname, "../utils")\n')
@@ -110,7 +110,7 @@ describe('shared/no-out-of-repo-path', () => {
   })
 
   it('does not fire on plain relative paths', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-out-of-repo-path-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-out-of-repo-path-'))
     try {
       const file = join(dir, 'test.ts')
       await writeFile(file, 'import foo from "../utils"\n')

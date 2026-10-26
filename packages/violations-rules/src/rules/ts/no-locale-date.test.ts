@@ -7,7 +7,7 @@ import { rule } from './no-locale-date.js'
 
 describe('ts/no-locale-date', () => {
   it('fires on .toLocaleString()', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-locale-date-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-locale-date-'))
     try {
       const file = join(dir, 'test.ts')
       await writeFile(file, 'const s = date.toLocaleString()\n')
@@ -20,7 +20,7 @@ describe('ts/no-locale-date', () => {
   })
 
   it('fires on .toLocaleDateString()', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-locale-date-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-locale-date-'))
     try {
       const file = join(dir, 'test.ts')
       await writeFile(file, 'const s = date.toLocaleDateString()\n')
@@ -32,7 +32,7 @@ describe('ts/no-locale-date', () => {
   })
 
   it('fires on .toLocaleTimeString()', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-locale-date-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-locale-date-'))
     try {
       const file = join(dir, 'test.ts')
       await writeFile(file, 'const s = date.toLocaleTimeString()\n')
@@ -44,7 +44,7 @@ describe('ts/no-locale-date', () => {
   })
 
   it('does not fire on unrelated code', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-locale-date-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-locale-date-'))
     try {
       const file = join(dir, 'test.ts')
       await writeFile(file, 'const s = date.toISOString()\n')

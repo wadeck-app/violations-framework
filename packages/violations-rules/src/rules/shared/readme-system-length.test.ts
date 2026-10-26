@@ -11,7 +11,7 @@ function makeLines(n: number): string {
 
 describe('shared/readme-system-length', () => {
   it('fires when README.md exceeds the default 50-line limit', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'readme-length-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-readme-length-'))
     try {
       const file = join(dir, 'README.md')
       await writeFile(file, makeLines(51))
@@ -25,7 +25,7 @@ describe('shared/readme-system-length', () => {
   })
 
   it('fires when README.md exceeds a custom maxLines config', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'readme-length-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-readme-length-'))
     try {
       const file = join(dir, 'README.md')
       await writeFile(file, makeLines(21))
@@ -38,7 +38,7 @@ describe('shared/readme-system-length', () => {
   })
 
   it('does not fire when README.md is at or under the limit', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'readme-length-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-readme-length-'))
     try {
       const file = join(dir, 'README.md')
       await writeFile(file, makeLines(50))
@@ -50,7 +50,7 @@ describe('shared/readme-system-length', () => {
   })
 
   it('skips files that are not README.md', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'readme-length-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-readme-length-'))
     try {
       const file = join(dir, 'CONTRIBUTING.md')
       await writeFile(file, makeLines(100))
@@ -62,7 +62,7 @@ describe('shared/readme-system-length', () => {
   })
 
   it('handles case-insensitive README filename', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'readme-length-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-readme-length-'))
     try {
       const file = join(dir, 'readme.md')
       await writeFile(file, makeLines(60))

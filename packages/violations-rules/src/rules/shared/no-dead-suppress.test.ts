@@ -7,7 +7,7 @@ import { rule } from './no-dead-suppress.js'
 
 describe('shared/no-dead-suppress', () => {
   it('fires when a suppress comment references a non-existent rule ID', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-dead-suppress-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-dead-suppress-'))
     try {
       const file = join(dir, 'test.ts')
       await writeFile(file, '// violations-suppress: ts/old-deleted-rule\nconst x = 1\n')
@@ -20,7 +20,7 @@ describe('shared/no-dead-suppress', () => {
   })
 
   it('fires on multiple invalid rule IDs in one suppress comment', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-dead-suppress-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-dead-suppress-'))
     try {
       const file = join(dir, 'test.ts')
       await writeFile(file, '// violations-suppress: ts/old-rule,shared/gone\nconst x = 1\n')
@@ -32,7 +32,7 @@ describe('shared/no-dead-suppress', () => {
   })
 
   it('does not fire when all suppress rule IDs are active', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-dead-suppress-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-dead-suppress-'))
     try {
       const file = join(dir, 'test.ts')
       await writeFile(file, '// violations-suppress: ts/no-export-star\nconst x = 1\n')
@@ -44,7 +44,7 @@ describe('shared/no-dead-suppress', () => {
   })
 
   it('handles /* comment style suppress', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-dead-suppress-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-dead-suppress-'))
     try {
       const file = join(dir, 'test.ts')
       await writeFile(file, '/* violations-suppress: shared/gone */\nconst x = 1\n')
@@ -56,7 +56,7 @@ describe('shared/no-dead-suppress', () => {
   })
 
   it('returns empty array when no suppress comments exist', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'no-dead-suppress-'))
+    const dir = await mkdtemp(join(tmpdir(), 'violations-no-dead-suppress-'))
     try {
       const file = join(dir, 'test.ts')
       await writeFile(file, 'const x = 1\nexport function foo() {}\n')
