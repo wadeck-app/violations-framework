@@ -370,6 +370,24 @@ async function cmdTest(args: string[]): Promise<void> {
 		process.exit(0)
 	}
 
+	// Tests run through 'node --test'; a vitest/jest import would only surface as a bare "test failed".
+	const foreignRunnerPattern = /(?:from\s+|require\(\s*|import\(\s*)['"](vitest|@jest\/globals)['"]/
+	const foreignRunnerFiles: string[] = []
+	for (const f of testFiles) {
+		const text = await readFile(f, 'utf8').catch(() => '')
+		if (foreignRunnerPattern.test(text)) {
+			foreignRunnerFiles.push(f)
+		}
+	}
+	if (foreignRunnerFiles.length > 0) {
+		console.error(`[violations] ${foreignRunnerFiles.length} test file(s) import vitest/jest, but 'violations test' runs them with 'node --test':`)
+		for (const f of foreignRunnerFiles) {
+			console.error(`  ${f}`)
+		}
+		console.error(`Fix: use "import { describe, it } from 'node:test'" and "import assert from 'node:assert/strict'" (see docs/writing-rule-tests.md), or run these files with their own runner outside 'violations test'.`)
+		process.exit(1)
+	}
+
 	// Compile TS test files before running
 	const cacheDir = join(dotViolationsDir, '.cache')
 	const manifestPath = join(cacheDir, 'manifest.json')

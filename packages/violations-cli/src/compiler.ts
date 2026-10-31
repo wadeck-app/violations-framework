@@ -72,6 +72,45 @@ async function _doCompile(
 
 	// Compile
 	const source = await readFile(sourcePath, 'utf8')
+	// Rewrite relative imports to absolute file:// URLs so the compiled file
+	// resolves correctly from the cache directory (not the source directory).
+	// If importRedirects is provided, redirect rule imports to their cache paths.
+	// Also rewrite import.meta.dirname to the source directory so fixture paths
+	// (e.g. resolve(import.meta.dirname, 'fixtures/...')) resolve correctly.
+	// Done on the AST, not with regexes on the output: string and template literals that merely
+	// contain "from './x.js'" or "import.meta.dirname" (e.g. violation messages) must stay intact.
+	const srcDir = dirname(sourcePath)
+	const rewriteSpecifier = (rel: string): string => {
+		const absUrl = pathToFileURL(resolve(srcDir, rel)).href
+		return importRedirects?.get(absUrl) ?? absUrl
+	}
+	const rewriteModuleSpecifiers: ts.TransformerFactory<ts.SourceFile> = (context) => {
+		const visit = (node: ts.Node): ts.Node => {
+			if (
+				(ts.isImportDeclaration(node) || ts.isExportDeclaration(node))
+				&& node.moduleSpecifier
+				&& ts.isStringLiteral(node.moduleSpecifier)
+				&& node.moduleSpecifier.text.startsWith('.')
+			) {
+				const specifier = context.factory.createStringLiteral(rewriteSpecifier(node.moduleSpecifier.text), true)
+				return ts.isImportDeclaration(node)
+					? context.factory.updateImportDeclaration(node, node.modifiers, node.importClause, specifier, node.attributes)
+					: context.factory.updateExportDeclaration(node, node.modifiers, node.isTypeOnly, node.exportClause, specifier, node.attributes)
+			}
+			if (
+				ts.isPropertyAccessExpression(node)
+				&& node.name.text === 'dirname'
+				&& ts.isMetaProperty(node.expression)
+				&& node.expression.keywordToken === ts.SyntaxKind.ImportKeyword
+				&& node.expression.name.text === 'meta'
+			) {
+				return context.factory.createStringLiteral(srcDir.replace(/\\/g, '/'), false)
+			}
+			return ts.visitEachChild(node, visit, context)
+		}
+		return (sf) => ts.visitNode(sf, visit) as ts.SourceFile
+	}
+
 	const result = ts.transpileModule(source, {
 		compilerOptions: {
 			module: ts.ModuleKind.ESNext,
@@ -80,28 +119,11 @@ async function _doCompile(
 			esModuleInterop: true,
 		},
 		fileName: sourcePath,
+		transformers: { after: [rewriteModuleSpecifiers] },
 	})
 
-	// Rewrite relative imports to absolute file:// URLs so the compiled file
-	// resolves correctly from the cache directory (not the source directory).
-	// If importRedirects is provided, redirect rule imports to their cache paths.
-	// Also rewrite import.meta.dirname to the source directory so fixture paths
-	// (e.g. resolve(import.meta.dirname, 'fixtures/...')) resolve correctly.
-	const srcDir = dirname(sourcePath)
-	const rewritten = result.outputText
-		.replace(
-			/from\s+['"](\.[^'"]+)['"]/g,
-			(_, rel) => {
-				const absPath = resolve(srcDir, rel)
-				const absUrl = pathToFileURL(absPath).href
-				const redirect = importRedirects?.get(absUrl)
-				return `from '${redirect ?? absUrl}'`
-			}
-		)
-		.replace(/\bimport\.meta\.dirname\b/g, JSON.stringify(srcDir.replace(/\\/g, '/')))
-
 	await mkdir(dirname(outputPath), { recursive: true })
-	await writeFile(outputPath, rewritten, 'utf8')
+	await writeFile(outputPath, result.outputText, 'utf8')
 
 	// Update manifest
 	manifest.files[sourcePath] = { mtimeMs: sourceMtime, compiledPath: outputPath }

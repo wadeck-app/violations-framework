@@ -9,7 +9,8 @@
 - Auto-detect fallback applies when no `.violations/config.ts` is present: prints `[auto]` to stderr and runs with inferred tags — no silence on missing config.
 - TypeScript compiler API (not esbuild/transpile-only) is used for local `.ts` rules — type-checking is part of the compile contract.
 - Per-manifest serialization lock (`compileLocks` Map) must be maintained in `compiler.ts` to prevent Windows NTFS EPERM on concurrent writes.
-- Relative imports in compiled rules are rewritten to absolute `file://` URLs; `import.meta.dirname` is rewritten to the source directory — do not break this rewrite logic.
+- Relative imports in compiled rules are rewritten to absolute `file://` URLs; `import.meta.dirname` is rewritten to the source directory — do not break this rewrite logic. The rewrite is an AST transformer (import/export declarations and `import.meta.dirname` expressions only); never go back to regexes on the output, they corrupt string/template literals such as `"export * from './${stem}.js'"`.
+- `check(files, config)` gets no project root and cwd is where the CLI was launched (a stray `.violations/` cache can exist in subfolders); a rule locating project files must walk up to the directory holding `.violations/config.ts` and fail loudly if none is found.
 - `Record<never, never>` is the correct default Config generic — `Record<string, never>` causes an index signature conflict in `RuleOverride` intersections.
 - Version format: `1.0.YYYYMMDD-HHMMSS-BUILD-SHA` — CI-managed, never via `npm version`.
 - `violations-rules` must be published before `violations-cli` on every release (CLI has it as a peer dep).

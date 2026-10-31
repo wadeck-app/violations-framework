@@ -55,9 +55,11 @@ function isolatedEnv(): NodeJS.ProcessEnv {
 function runCli(
 	args: string[],
 	env?: Record<string, string>,
+	cwd?: string,
 ): Promise<{ code: number; stdout: string; stderr: string }> {
 	return new Promise((resolve) => {
 		const child = spawn(process.execPath, [CLI_PATH, ...args], {
+			cwd,
 			env: { ...isolatedEnv(), ...env },
 		})
 		let stdout = ''
@@ -128,6 +130,21 @@ describe('violations CLI integration', () => {
 		const { code, stderr } = await runCli(['completely-unknown-xyz'])
 		assert.equal(code, 1, `Expected exit 1 for unknown command, got ${code}`)
 		assert.ok(stderr.includes('[fail]'), `Expected [fail] in stderr, got: ${JSON.stringify(stderr)}`)
+	})
+
+	it('test --local on a vitest-based local test exits 1 and names the file and the fix', async () => {
+		const project = mkdtempSync(join(tmpdir(), 'violations-vitest-'))
+		try {
+			mkdirSync(join(project, '.violations', 'rules'), { recursive: true })
+			writeFileSync(join(project, '.violations', 'rules', 'foo.test.ts'), "import { describe, it, expect } from 'vitest'\n")
+			const { code, stderr } = await runCli(['test', '--local'], undefined, project)
+			assert.equal(code, 1, stderr)
+			assert.match(stderr, /import vitest\/jest/)
+			assert.match(stderr, /foo\.test\.ts/)
+			assert.match(stderr, /node:test/)
+		} finally {
+			rmSync(project, { recursive: true, force: true })
+		}
 	})
 
 	it('unknown cli subcommand exits 1', async () => {

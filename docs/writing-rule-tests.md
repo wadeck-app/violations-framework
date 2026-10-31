@@ -22,6 +22,8 @@ Place the test file next to the rule file:
 
 Tests use Node's built-in `node:test` runner. No external framework is needed.
 
+`violations test` runs every test with `node --test`. Vitest/jest are not supported: a test importing `vitest` or `@jest/globals` makes `violations test` exit 1 with a message listing the files.
+
 ```ts
 import { describe, it } from 'node:test'
 import assert from 'node:assert/strict'
