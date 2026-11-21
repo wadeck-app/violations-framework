@@ -97,6 +97,7 @@ type RuleConfigMap = {
   'app-module/manifest-exists-and-valid':       Record<never, never>
   'app-module/backend-entry-location':          Record<never, never>
   'app-module/view-location':                   Record<never, never>
+  'app-module/route-page-under-menu-page':      Record<never, never>
   'app-module/no-raw-timers':                   Record<never, never>
   'app-module/no-react':                        Record<never, never>
   'app-module/no-raw-color-in-views':           Record<never, never>

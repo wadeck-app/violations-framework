@@ -75,6 +75,7 @@ export { rule as appModuleNamingConvention } from './app-module/naming-conventio
 export { rule as appModuleManifestExistsAndValid } from './app-module/manifest-exists-and-valid.js'
 export { rule as appModuleBackendEntryLocation } from './app-module/backend-entry-location.js'
 export { rule as appModuleViewLocation } from './app-module/view-location.js'
+export { rule as appModuleRoutePageUnderMenuPage } from './app-module/route-page-under-menu-page.js'
 export { rule as appModuleNoRawTimers } from './app-module/no-raw-timers.js'
 export { rule as appModuleNoReact } from './app-module/no-react.js'
 export { rule as appModuleNoRawColorInViews } from './app-module/no-raw-color-in-views.js'
@@ -160,6 +161,7 @@ export type { Config as AppModuleNamingConventionConfig } from './app-module/nam
 export type { Config as AppModuleManifestExistsAndValidConfig } from './app-module/manifest-exists-and-valid.js'
 export type { Config as AppModuleBackendEntryLocationConfig } from './app-module/backend-entry-location.js'
 export type { Config as AppModuleViewLocationConfig } from './app-module/view-location.js'
+export type { Config as AppModuleRoutePageUnderMenuPageConfig } from './app-module/route-page-under-menu-page.js'
 export type { Config as AppModuleNoRawTimersConfig } from './app-module/no-raw-timers.js'
 export type { Config as AppModuleNoReactConfig } from './app-module/no-react.js'
 export type { Config as AppModuleNoRawColorInViewsConfig } from './app-module/no-raw-color-in-views.js'
@@ -245,6 +247,7 @@ import { rule as appModuleNamingConvention } from './app-module/naming-conventio
 import { rule as appModuleManifestExistsAndValid } from './app-module/manifest-exists-and-valid.js'
 import { rule as appModuleBackendEntryLocation } from './app-module/backend-entry-location.js'
 import { rule as appModuleViewLocation } from './app-module/view-location.js'
+import { rule as appModuleRoutePageUnderMenuPage } from './app-module/route-page-under-menu-page.js'
 import { rule as appModuleNoRawTimers } from './app-module/no-raw-timers.js'
 import { rule as appModuleNoReact } from './app-module/no-react.js'
 import { rule as appModuleNoRawColorInViews } from './app-module/no-raw-color-in-views.js'
@@ -333,6 +336,7 @@ export const allRules: Rule<any>[] = [
   appModuleManifestExistsAndValid,
   appModuleBackendEntryLocation,
   appModuleViewLocation,
+  appModuleRoutePageUnderMenuPage,
   appModuleNoRawTimers,
   appModuleNoReact,
   appModuleNoRawColorInViews,
