@@ -5,10 +5,13 @@ import { join, relative, sep } from 'node:path'
 // Shared by the app-module/* rules. Replicates the layout verdicts of `app-core-cli check`
 // (app-core: packages/app-core-cli/src/check.ts, the authoritative implementation) with plain text
 // scanning: the CLI is a bin-only package and these rules must run without it.
-// layout-parity.test.ts pins the expected verdict of 28 reference modules, so a drift is visible.
+// layout-parity.test.ts pins the expected verdict of the reference modules, so a drift is visible.
 
-export const SRC_DIRS = ['backend', 'dsl-views', 'dsl-components', 'commons'] as const
+export const SRC_DIRS = ['backend', 'dsl-views', 'dsl-components', 'dsl-scenarios', 'commons'] as const
 export type SrcDir = (typeof SRC_DIRS)[number]
+
+// Entry of the browser mock backends (since app-core 2026.11.28-252); required when the folder has files.
+export const DSL_SCENARIOS_ENTRY = 'src/dsl-scenarios/index.ts'
 
 export const OUTPUT_DIR = 'dist-module'
 export const BACKEND_ENTRY = 'src/backend/index.ts'
@@ -20,9 +23,10 @@ export const EXCLUDED_FOLDERS = [OUTPUT_DIR, '.app-core-dev', 'node_modules', '.
 
 // Which source folder may not import which.
 export const FORBIDDEN_FOLDER_IMPORTS: Record<SrcDir, SrcDir[]> = {
-  backend: ['dsl-components'],
-  commons: ['backend', 'dsl-components'],
-  'dsl-components': ['backend'],
+  backend: ['dsl-components', 'dsl-scenarios'],
+  commons: ['backend', 'dsl-components', 'dsl-scenarios'],
+  'dsl-components': ['backend', 'dsl-scenarios'],
+  'dsl-scenarios': ['backend'],
   'dsl-views': [],
 }
 

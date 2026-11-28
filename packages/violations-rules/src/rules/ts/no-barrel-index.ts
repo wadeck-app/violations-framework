@@ -3,6 +3,10 @@ import { basename } from 'node:path'
 
 export type Config = Record<never, never>
 
+// Fixed entry points of an app-module (decision 81): the module build looks them up by path, so they
+// are not barrels. Exempted here, in the shared default, so no repo has to repeat an $exclude.
+const APP_MODULE_ENTRY = /(?:^|\/)app-module-[^/]+\/src\/(?:backend|dsl-components|dsl-scenarios)\/index\.ts$/
+
 export const rule: Rule<Config> = {
   id: 'ts/no-barrel-index',
   tags: 'ts',
@@ -15,6 +19,9 @@ export const rule: Rule<Config> = {
       const name = basename(file)
       if (name !== 'index.ts' && name !== 'index.tsx') {
         continue;
+      }
+      if (APP_MODULE_ENTRY.test(file.replaceAll('\\', '/'))) {
+        continue
       }
       violations.push({
         file,

@@ -44,6 +44,24 @@ describe('ts/no-barrel-index', () => {
     }
   })
 
+  it('does not fire on the fixed app-module entries (backend, dsl-components, dsl-scenarios), on either separator', async () => {
+    const entries = [
+      'w/packages/app-module-x/src/backend/index.ts',
+      'w\\packages\\app-module-x\\src\\dsl-components\\index.ts',
+      'packages/app-module-x/src/dsl-scenarios/index.ts',
+    ]
+    assert.equal((await rule.check(entries, {})).length, 0)
+  })
+
+  it('still fires on other index.ts inside an app-module (commons, nested, dsl-views)', async () => {
+    const files = [
+      'w/packages/app-module-x/src/commons/index.ts',
+      'w/packages/app-module-x/src/dsl-scenarios/sub/index.ts',
+      'w/packages/not-a-module/src/backend/index.ts',
+    ]
+    assert.equal((await rule.check(files, {})).length, 3)
+  })
+
   it('does not fire on indexHelper.ts', async () => {
     const dir = await mkdtemp(join(tmpdir(), 'violations-no-barrel-index-'))
     try {

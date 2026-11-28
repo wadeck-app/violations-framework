@@ -37,8 +37,8 @@ async function rulesFail(root: string): Promise<string[]> {
 }
 
 describe('app-module rules agree with the `app-core-cli check` verdicts', () => {
-  it('has 28 scenarios', () => {
-    assert.equal(PARITY_SCENARIOS.length, 28)
+  it('has 37 scenarios', () => {
+    assert.equal(PARITY_SCENARIOS.length, 37)
   })
 
   for (const scenario of PARITY_SCENARIOS) {

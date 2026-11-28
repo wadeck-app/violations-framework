@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import type { Rule, Violation } from '../types.js'
-import { isDir, listFiles, moduleRootOfRootFile } from './layout.js'
+import { DSL_SCENARIOS_ENTRY, isDir, listFiles, moduleRootOfRootFile } from './layout.js'
 import { readManifestShape } from './source-manifest.js'
 
 export type Config = Record<never, never>
@@ -56,6 +56,10 @@ export const rule: Rule<Config> = {
       const hasComponents = isDir(componentsDir) && listFiles(componentsDir).length > 0
       if (manifest.hasDslLib && !entryExists) {
         violations.push({ file: join(componentsDir, 'index.ts'), line: 1, message: 'manifest.json declares dslLib but src/dsl-components/index.ts is missing. Create it (default-exporting the ComponentRegistryEntry[]), or remove dslLib.' })
+      }
+      const scenariosDir = join(root, 'src', 'dsl-scenarios')
+      if (isDir(scenariosDir) && listFiles(scenariosDir).length > 0 && !existsSync(join(root, DSL_SCENARIOS_ENTRY))) {
+        violations.push({ file: join(root, DSL_SCENARIOS_ENTRY), line: 1, message: `src/dsl-scenarios has files but ${DSL_SCENARIOS_ENTRY} is missing, so they would not be packaged. Create it (default-exporting defineScenarios([...]) from '@wadeck-app/app-core-sdk/scenarios'), or delete src/dsl-scenarios.` })
       }
       if (!manifest.hasDslLib && hasComponents) {
         violations.push({ file: manifestPath, line: 1, message: 'src/dsl-components has files but manifest.json has no dslLib, so they would not be packaged. Add `"dslLib": { "shared": { ... } }`, or delete src/dsl-components.' })

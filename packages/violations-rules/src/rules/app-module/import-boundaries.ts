@@ -5,9 +5,11 @@ import { FORBIDDEN_FOLDER_IMPORTS, importSpecifiers, isNodeSpecifier, moduleRoot
 
 export type Config = Record<never, never>
 
-// src/commons is shared with the browser-side dsl-components: no Node builtins there. And the folders
-// may not reach into each other: backend and dsl-components never import each other, commons imports
-// neither. Mirrors `app-core-cli check`.
+// src/commons is shared with the browser-side dsl-components: no Node builtins there, nor in the
+// browser-side src/dsl-scenarios. And the folders may not reach into each other (see FORBIDDEN_FOLDER_IMPORTS,
+// the same table as app-core): backend and dsl-components never import each other, dsl-scenarios never imports
+// backend (it may import commons and dsl-components), and commons imports none of them.
+// Mirrors `app-core-cli check`.
 export const rule: Rule<Config> = {
   id: 'app-module/import-boundaries',
   tags: 'app-module',
@@ -38,6 +40,9 @@ export const rule: Rule<Config> = {
       for (const { spec, line } of importSpecifiers(readFileSync(file, 'utf-8'))) {
         if (folder === 'commons' && isNodeSpecifier(spec)) {
           violations.push({ file, line, message: `src/commons must not import the Node builtin "${spec}" (it is shared with the browser-side dsl-components). Move that code to src/backend.` })
+        }
+        if (folder === 'dsl-scenarios' && isNodeSpecifier(spec)) {
+          violations.push({ file, line, message: `src/dsl-scenarios must not import the Node builtin "${spec}" (it runs in the browser). Keep the mock backend to plain objects and browser APIs; share types and data through src/commons.` })
         }
         if (spec.startsWith('.')) {
           const target = srcFolderOf(root, resolve(dirname(file), spec))

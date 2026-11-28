@@ -6,7 +6,7 @@ import { isDir, listFiles, moduleRootOfRootFile, OUTPUT_DIR, SRC_DIRS } from './
 export type Config = Record<never, never>
 
 // Module layout (decision 81): only manifest.json/package files at the root, sources only under
-// src/{backend,dsl-views,dsl-components,commons}, and only data files in src/dsl-views.
+// src/{backend,dsl-views,dsl-components,dsl-scenarios,commons}, and only data files in src/dsl-views.
 // Mirrors `app-core-cli check`. Anchored on manifest.json (always present in a module).
 const ROOT_DIRS = new Set(['src', OUTPUT_DIR, 'node_modules'])
 const ROOT_FILES = new Set(['manifest.json', 'package.json', 'package-lock.json', 'npm-shrinkwrap.json', 'pnpm-lock.yaml', 'yarn.lock'])
