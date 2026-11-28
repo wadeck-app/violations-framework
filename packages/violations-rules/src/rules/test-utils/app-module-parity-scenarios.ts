@@ -56,6 +56,7 @@ export const PARITY_SCENARIOS: ParityScenario[] = [
     },
   },
   { name: 'scenarios import dsl-components (allowed: app-core only forbids scenarios -> backend)', fails: false, files: { 'src/dsl-scenarios/index.ts': "import { c } from '../dsl-components/c.js';\nexport default [c];\n" } },
+  { name: 'scenarios entry without default export', fails: true, files: { 'src/dsl-scenarios/index.ts': 'export const scenarios = [];\n' } },
   { name: 'scenarios without entry', fails: true, files: { 'src/dsl-scenarios/mock.ts': 'export {};\n' } },
   { name: 'node in scenarios', fails: true, files: { 'src/dsl-scenarios/index.ts': "import fs from 'node:fs';\nexport default [fs];\n" } },
   { name: 'tsx in scenarios', fails: true, files: { 'src/dsl-scenarios/index.ts': 'export default [];\n', 'src/dsl-scenarios/W.tsx': 'export const x = 1;\n' } },

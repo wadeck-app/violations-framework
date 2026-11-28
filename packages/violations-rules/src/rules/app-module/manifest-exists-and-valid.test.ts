@@ -61,6 +61,19 @@ describe('app-module/manifest-exists-and-valid', () => {
     assert.equal((await run({ 'manifest.json': withDslLib, 'src/dsl-components/index.ts': 'export default [];\n' })).length, 0)
   })
 
+  it('flags src/dsl-scenarios files without src/dsl-scenarios/index.ts', async () => {
+    const violations = await run({ 'src/dsl-scenarios/mock.ts': 'export {};\n' })
+    assert.equal(violations.length, 1)
+    assert.match(violations[0].message, /dsl-scenarios\/index\.ts/)
+  })
+
+  it('flags a scenarios entry without a default export, and passes one with it', async () => {
+    const violations = await run({ 'src/dsl-scenarios/index.ts': 'export const scenarios = [];\n' })
+    assert.equal(violations.length, 1)
+    assert.match(violations[0].message, /no default export/)
+    assert.equal((await run({ 'src/dsl-scenarios/index.ts': 'export default [];\n' })).length, 0)
+  })
+
   it('ignores a package.json inside dist-module', async () => {
     mod?.cleanup()
     mod = createModule({ 'dist-module/package.json': '{}' })
